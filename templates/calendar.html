@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Global</title>
+<link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="{{STATIC_URL}}css/style.css" rel="stylesheet" type="text/css" />
+<link href="{{STATIC_URL}}css/fullcalendar.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="menu">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <nav class="navbar navbar-default" role="navigation">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+            <a class="navbar-brand visible-xs" href="#">MEMU</a> </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav margin-top15">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="#">Download</a></li>
+              <li><a href="#">Supports</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#" style="border:none;">Contact</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="cl"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6 col-sm-3 col-md-4 col-xs-12">
+      <div class="logo"><a href="index.html"><img width="155" height="88" alt="" src="images/logo.jpg"></a></div>
+    </div>
+    <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
+      <div class="dropdown">
+        <button class="btn my-account btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true"> <i class="glyphicon glyphicon-user"></i> My Account <span class="caret"></span> </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="my-account.html">
+            <h4>John Smith</h4>
+            <p>View Profile</p>
+            </a>
+            <hr style="margin:5px 0;" />
+          </li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Log Out</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Account Settings</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change Password</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sync with mobile app Options</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment Options</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment History</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set default calendar view</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set language</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Email notifications</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="contan-eria">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div role="tabpanel">
+          <ul role="tablist" class="nav nav-tabs text-center">
+            <li role="presentation" class="active"><a href="calendar.html" class="right-tab"><i class="glyphicon glyphicon-calendar"></i> Calendar </a></li>
+            <li role="presentation" class=""><a href="add-route1.html" class="right-tab"  aria-expanded="true"><i class="glyphicon glyphicon-map-marker"></i> Route Map </a></li>
+          </ul>
+          <div class="tab-content tab-content-2">
+            <div role="tabpanel" class="tab-pane active" id="home">
+              <div id="myModal" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none; ">
+                <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
+                  <h4 style="  margin: 0 0 15px;">Route Title</h4>
+                  <form role="form">
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="Start location name">
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="End location name">
+                    </div>
+                    <div class="form-group"> <a href="add-route2.html" class="btn btn-primary">Find Route</a></div>
+                  </form>
+                </div>
+              </div>
+              <a href="add-route.html" class="btn btn-primary">Add New Route</a>
+              <div class="calender">
+                <div class="drag"> <a data-toggle="modal" href="#myModal" ><i class="glyphicon glyphicon-map-marker"></i></a> </div>
+                <div id="myModal2" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none; ">
+                  <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
+                    <h4 style="  margin: 0 0 15px;">Route Title</h4>
+                    <form role="form" class="pre-scrollable">
+                      <div class="title"> <a href="#">
+                        <h5>Rout Title............ </h5>
+                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                        </a> </div>
+                      <div class="title"> <a href="#">
+                        <h5>Rout Title............ </h5>
+                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                        </a> </div>
+                      <div class="title"> <a href="#">
+                        <h5>Rout Title............ </h5>
+                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                        </a> </div>
+                      <div class="title"> <a href="#">
+                        <h5>Rout Title............ </h5>
+                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                        </a> </div>
+                      <div class="title"> <a href="#">
+                        <h5>Rout Title............ </h5>
+                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                        </a> </div>
+                      <div class="title"> <a href="#">
+                        <h5>Rout Title............ </h5>
+                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                        </a> </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="drag-day"> <a data-toggle="modal" href="#myModal2" ><i class="glyphicon glyphicon-map-marker"></i></a> </div>
+                <div id="calendar" class="fc"> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="fotter">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-bd-6 col-sm-6 col-xs-12">
+        <div class="fotter-nav">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a style="border:none;" href="#">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6 col-bd-6 col-sm-6 col-xs-12">All Rights Reserved 2015</div>
+    </div>
+  </div>
+</div>
+<script src="{{STATIC_URL}}js/jquery.min.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+<script class="cssdesk" src="js/jquery-ui.min.js" type="text/javascript"></script>
+<script class="cssdesk" src="js/fullcalendar.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+function MM_jumpMenu(targ,selObj,restore){ //v3.0
+  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+  if (restore) selObj.selectedIndex=0;
+}
+</script>
+<script>/* Javascript */
+$(function () {
+	var date = new Date();
+	var d = date.getDate();
+	var m = date.getMonth();
+	var y = date.getFullYear();
+	$('#calendar').fullCalendar({
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,agendaWeek,agendaDay'
+		},
+		editable: true
+	});
+});</script>
+</body>
+</html>
