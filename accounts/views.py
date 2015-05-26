@@ -26,7 +26,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             request.session['token'] = user.token
-            message = 'Please verify your email by clicking on this link ' + 'http://localhost:8000/verification/'+user.token
+            message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user.token
             print user.user.email
             send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user.user.email)],
                       fail_silently=False)
