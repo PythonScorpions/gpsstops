@@ -7,28 +7,63 @@
                 </a>
             </div>
         </div>
-        <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
-            <div class="input-box">
-                <form class="form-horizontal form-without-legend" role="form" method="post" action="/login">
-                {% csrf_token %}
-                    <span>
-                        <input type="email" class="input" placeholder="Email" name="email">
-                    </span>
-                    <span>
-                        <input type="password" class="input" placeholder="Password" name="password">
-                        <br>
-                        <a href="forgotpassword.html">Forget username / password?</a>
-                    </span>
-                    <!--<a href="calendar.html" class="btn btn-primary buttun2 buttun">LOGIN</a>-->
-                    <input type="submit" class="btn btn-primary buttun2 buttun" value="LOGIN" />
-                    <a href="/signup" class="btn btn-primary buttun2 buttun">Create Account</a>
-                </form>
-                {% if messages %}
-                    {% for message in messages %}
-                        <span style="color: red;margin-left: 238px">{{ message }}</span>
-                    {% endfor %}
-                {% endif %}
+
+        {% if user.is_authenticated %}
+            <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
+                <div class="dropdown">
+                    <button class="btn my-account btn-default dropdown-toggle"
+                            type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        <i class="glyphicon glyphicon-user"></i> My Account
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation">
+                            <a role="menuitem" tabindex="-1" href="/update-profile">
+                                <h4>{{ user.first_name }}</h4>
+                                <p>View Profile</p>
+                            </a>
+                            <hr style="margin:5px 0;" />
+                        </li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/logout">Log Out</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Account Settings</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change Password</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sync with mobile app Options</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment Options</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment History</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set default calendar view</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set language</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Email notifications</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
+
+        {% else %}
+
+            <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
+                <div class="input-box">
+                    <form class="form-horizontal form-without-legend" role="form" method="post"
+                          action="/login">
+                        {% csrf_token %}
+                            <span>
+                                <input type="email" class="input" placeholder="Email" name="email">
+                            </span>
+                            <span>
+                                <input type="password" class="input" placeholder="Password" name="password">
+                                <br>
+                                <a href="/forgot-password">Forget username / password?</a>
+                            </span>
+                    <!--<a href="calendar.html" class="btn btn-primary buttun2 buttun">LOGIN</a>-->
+                            <input type="submit" class="btn btn-primary buttun2 buttun" value="LOGIN" />
+                            <a href="/signup" class="btn btn-primary buttun2 buttun">Create Account</a>
+                    </form>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <span style="color: red;margin-left: 238px">{{ message }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
