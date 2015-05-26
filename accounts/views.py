@@ -80,8 +80,8 @@ class Calender(TemplateView):
 
 
 class Add_route_prime(View):
-    template1 = "add_route.html"
-    template2 = "add_route.html"
+    template1 = "add-route.html"
+    template2 = "add-route.html"
 
     def get(self, request):
         active = "maps"
