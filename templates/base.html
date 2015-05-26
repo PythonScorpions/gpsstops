@@ -35,8 +35,10 @@
                                     <li><a href="#">Download</a> </li>
                                     <li><a href="#">Supports</a> </li>
                                     <li><a href="#">About</a></li>
-                                    <li><a href="{% url 'calender_prime' %}">Calender</a></li>
-                                    <li><a href="{% url 'add_route_prime' %}">Add route</a><li>
+                                    {% if user.is_authenticated %}
+                                        <li><a href="{% url 'calender_prime' %}">Calender</a></li>
+                                        <li><a href="{% url 'add_route_prime' %}">Add route</a><li>
+                                    {% endif %}
                                     <li><a href="#" style="border:none;">Contact</a></li>
                                 </ul>
                             </div>
