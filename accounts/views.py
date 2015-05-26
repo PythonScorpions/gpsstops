@@ -82,7 +82,7 @@ def user_logout(request):
 
 class Calender(TemplateView):
 
-    template_name = 'calendar.html'
+    template_name = 'calendar_prime.html'
 
 
 class ForgotPassword(TemplateView):
