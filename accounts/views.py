@@ -1,10 +1,13 @@
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView, UpdateView
 from django.shortcuts import render_to_response, redirect
 from accounts.forms import *
 from django.template import RequestContext, Context
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.template import loader
+from django.contrib.sites.models import Site
+from gpsstops import settings
 
 
 class IndexView(TemplateView):
@@ -23,9 +26,9 @@ def register(request):
         if form.is_valid():
             user = form.save()
             request.session['token'] = user.token
-            message = 'Please verify your email by clicking on this link ' + 'http://localhost:8000/verfification/'+user.token
+            message = 'Please verify your email by clicking on this link ' + 'http://localhost:8000/verification/'+user.token
             print user.user.email
-            send_mail('Verification Link', message, 'testing.zealousys@gmail.com', [str(user.user.email)],
+            send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user.user.email)],
                       fail_silently=False)
             print "yes sent"
             return redirect('email-sent')
@@ -72,6 +75,89 @@ class LoginView(TemplateView):
         return render_to_response(self.template_name, context_instance=RequestContext(request),)
 
 
+def user_logout(request):
+    logout(request)
+    return redirect('/')
+
+
 class Calender(TemplateView):
 
     template_name = 'calendar.html'
+
+
+class ForgotPassword(TemplateView):
+
+    template_name = 'forgotpassword.html'
+
+    def post(self, request, *args, **kwargs):
+        if User.objects.filter(email=request.POST['email']).exists():
+            email = User.objects.get(email=request.POST['email'])
+            user = UserProfiles.objects.get(user=email)
+            site = Site.objects.get(pk=1)
+            t = loader.get_template('password.txt')
+            c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
+            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'scorpionspython@gmail.com',
+                      [email.email], fail_silently=False)
+            messages.success(request, 'Reset link has sent to your email')
+
+        else:
+            messages.success(request, 'User with this email Doesnt exist')
+        return render_to_response(self.template_name, context_instance=RequestContext(request),)
+
+
+class ResetPassword(TemplateView):
+
+    template_name = 'change-password.html'
+    template2_name = 'index.html'
+
+    def post(self, request, *args, **kwargs):
+        print "yes"
+        user = UserProfiles.objects.get(token=kwargs['key'])
+        if user and request.POST['password1'] == request.POST['password2']:
+            user_data = User.objects.get(id=int(user.user.id))
+            user_data.password = make_password(request.POST['password2'])
+            user_data.save()
+            print "yes 2"
+            return render_to_response(self.template2_name, context_instance=RequestContext(request),)
+        else:
+            messages.success(request, 'Please Make Sure Two password Fields are Same')
+        return render_to_response(self.template_name, context_instance=RequestContext(request),)
+
+
+class UpdateProfile(UpdateView):
+    template_name = 'my-account.html'
+    form_class = ProfileUpdateForm
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(username=request.user)
+        profile = UserProfiles.objects.get(user=user)
+        id = user.id
+        form = self.form_class({'first_name': profile.user.first_name, 'email': profile.user.email,
+                                'country': profile.country, 'state': profile.state, 'city': profile.state,
+                                'phone_number': profile.phone_number, 'occupation': profile.occupation,
+                                'company_name': profile.company_name, 'address': profile.address,
+                                'zip_code': profile.zip_code})
+        return render_to_response(self.template_name, {'form': form, 'id': id},
+                                  context_instance=RequestContext(request),)
+
+    def post(self, request, *args, **kwargs):
+        user = User.objects.get(username=request.user)
+        profile = UserProfiles.objects.get(user=user)
+        form = self.form_class(request.POST, instance=user)
+        if form.is_valid():
+            profile.phone_number = request.POST['phone_number']
+            profile.company_name = request.POST['company_name']
+            profile.zip_code = request.POST['zip_code']
+            profile.address = request.POST['address']
+            profile.state = request.POST['state']
+            profile.city = request.POST['city']
+            profile.occupation = request.POST['occupation']
+            profile.country = request.POST['country']
+            user.first_name = request.POST['first_name']
+            user.email = request.POST['email']
+            user.save()
+            profile.save()
+            messages.success(request, 'Profile Editted Successfully.')
+            return redirect('/update-profile')
+        return render_to_response(self.template_name, {'form': form, 'id': id},
+                                  context_instance=RequestContext(request))
