@@ -1,13 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Global</title>
-<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-<link href="css/fullcalendar.css" rel="stylesheet" type="text/css" />
-<link href="js/datepicker.css" rel="stylesheet" type="text/css" />
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "logo_account.html" %}
+
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+<script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/src/js/bootstrap-datetimepicker.js"></script>
+<link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
 <script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
+
+
 <script>
 YUI().use(
   'aui-sortable-list',
@@ -15,7 +20,6 @@ YUI().use(
     // code goes here
   }
 );
-
 
 YUI().use(
   'aui-sortable-list',
@@ -32,36 +36,283 @@ YUI().use(
   }
 );
 </script>
-</head>
-<body>
-<div class="menu">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-        <nav class="navbar navbar-default" role="navigation">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-            <a class="navbar-brand visible-xs" href="#">MEMU</a> </div>
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav margin-top15">
-              <li><a href="index.html">Home</a> </li>
-              <li><a href="#">Download</a> </li>
-              <li><a href="#">Supports</a> </li>
-              <li><a href="#">About</a></li>
-              <li><a href="#" style="border:none;">Contact</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="cl"></div>
-<div class="container">
+
+<style>
+    .map-box{
+        background: #FFF !important;
+        padding: 25px;
+        height:600px;
+    }
+    #map-canvas {
+        width:100%;
+        height: 550px;
+        float: left;
+    }
+
+  #target {
+    width: 345px;
+  }
+
+  .trip_loopn{margin-top: 10px; margin-bottom:10px;}
+</style>
+
+<script>
+var map;
+var markers = [];
+
+// drag make possible
+
+var geocoder = new google.maps.Geocoder();
+
+function geocodePosition(pos,box_no) {
+geocoder.geocode({
+latLng: pos
+}, function(responses) {
+if (responses && responses.length > 0) {
+    if(box_no == '1'){
+        updateMarkerAddress1(responses[0].formatted_address);
+    }
+    else{
+        updateMarkerAddress2(responses[0].formatted_address);
+    }
+
+} else {
+    if(box_no == '1'){
+        updateMarkerAddress1('Cannot determine address at this location.');
+    }
+    else{
+        updateMarkerAddress2('Cannot determine address at this location.');
+    }
+}
+});
+}
+
+function updateMarkerPosition(latLng) {
+var str =  latLng.lat() +" "+ latLng.lng();
+$('#info').val(str);
+}
+
+function updateMarkerAddress1(str) {
+$('#address1').val(str);
+}
+function updateMarkerAddress2(str) {
+$('#address2').val(str);
+}
+// drag end
+var mj;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var rendererOptions = {
+  draggable: true
+};
+
+function initialize() {
+directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+var mapOptions = {
+  zoom: 6,
+  center: chicago
+}
+
+map = new google.maps.Map(document.getElementById('map-canvas'), {
+mapTypeId: google.maps.MapTypeId.ROADMAP,
+zoom: 6,
+center: chicago
+});
+
+//   var defaultBounds = new google.maps.LatLngBounds(
+//   new google.maps.LatLng(-33.8902, 151.1759),
+//   new google.maps.LatLng(-33.8474, 151.2631));
+//   map.fitBounds(defaultBounds);
+//   map.setZoom(10);
+
+// direction service code
+directionsDisplay.setMap(map);
+// google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+//   //   computeTotalDistance(directionsDisplay.getDirections());
+//   directionsDisplay.setMap(map);
+//   calcRoute();
+//   });
+
+// search box defined here
+var input1 = $('.pac-input')[0];
+var input2 = $('.pac-input')[1];
+// map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+var searchBox1 = new google.maps.places.SearchBox((input1));
+var searchBox2 = new google.maps.places.SearchBox((input2));
+
+// search function start here
+google.maps.event.addListener(searchBox1, 'places_changed', function() {
+  console.log("searchbox 1");
+var places = searchBox1.getPlaces();
+if (places.length == 0) {
+  return;
+}
+for (var i = 0, marker; marker = markers[i]; i++) {
+  marker.setMap(null);
+}
+// For each place, get the icon, place name, and location.
+var bounds = new google.maps.LatLngBounds();
+for (var i = 0, place; place = places[i]; i++) {
+  // Create a marker for each place.
+   marker = new google.maps.Marker({
+    map: map,
+    title: place.name,
+    position: place.geometry.location,
+    draggable: true
+  });
+$(".latitude").val(place.geometry.location.lat());
+$(".longitude").val(place.geometry.location.lng());
+updateMarkerPosition(marker.getPosition());
+geocodePosition(marker.getPosition(),'1');
+
+google.maps.event.addListener(marker, 'dragend', function() {
+geocodePosition(marker.getPosition(),'1');
+$(".latitude").val(marker.getPosition().lat());
+$(".longitude").val(marker.getPosition().lat());
+});
+markers.push(marker);
+bounds.extend(place.geometry.location);
+}
+if($('#address2').val().length > 0 && $('#address2').val() != 'undefined')
+{
+    console.log("searchbox 1 make route");
+    setTimeout(function() {
+        calcRoute();
+    }, 500);
+}
+else{
+    map.fitBounds(bounds);
+    map.setZoom(9);
+}
+});
+
+// google.maps.event.addListener(map, 'bounds_changed', function() {
+//     var bounds = map.getBounds();
+//     searchBox1.setBounds(bounds);
+//     // map.setZoom(9);
+//   });
+
+
+google.maps.event.addListener(searchBox2, 'places_changed', function() {
+console.log("searchbox 2");
+var places1 = searchBox2.getPlaces();
+if (places1.length == 0) {
+return;
+}
+for (var i = 0, marker; marker = markers[i]; i++) {
+marker.setMap(null);
+}
+// For each place, get the icon, place name, and location.
+var bounds = new google.maps.LatLngBounds();
+for (var i = 0, place; place = places1[i]; i++) {
+// Create a marker for each place.
+marker = new google.maps.Marker({
+      map: map,
+      title: place.name,
+      position: place.geometry.location,
+      draggable: true
+});
+$(".latitude2").val(place.geometry.location.lat());
+$(".longitude2").val(place.geometry.location.lng());
+updateMarkerPosition(marker.getPosition());
+geocodePosition(marker.getPosition(),'2');
+
+google.maps.event.addListener(marker, 'dragend', function() {
+  geocodePosition(marker.getPosition(),'2');
+  $(".latitude2").val(marker.getPosition().lat());
+  $(".longitude2").val(marker.getPosition().lat());
+});
+markers.push(marker);
+bounds.extend(place.geometry.location);
+}
+if($('#address1').val().length > 0 && $('#address1').val() != 'undefined')
+{
+    console.log("searchbox 2 make route");
+    setTimeout(function() {
+        calcRoute();
+    }, 500);
+}
+else{
+    map.fitBounds(bounds);
+    map.setZoom(9);
+}
+});
+//   google.maps.event.addListener(map, 'bounds_changed', function() {
+//   var bounds = map.getBounds();
+//   searchBox2.setBounds(bounds);
+//   map.setZoom(10);
+// });
+
+}
+//initial function close here
+
+
+// calculate route function
+function calcRoute() {
+var start = $('#address1').val();
+var end = $('#address2').val();
+console.log("Start-->"+start  + " "+ "end-->"+end);
+console.log("Enter into dragon");
+var waypts = [];
+// var checkboxArray = document.getElementById('waypoints');
+// for (var i = 0; i < checkboxArray.length; i++) {
+//   if (checkboxArray.options[i].selected == true) {
+//     waypts.push({
+//         location:checkboxArray[i].value,
+//         stopover:true});
+//   }
+// }
+
+var request = {
+  origin: start,
+  destination: end,
+//   waypoints: waypts,
+  optimizeWaypoints: true,
+  travelMode: google.maps.TravelMode.DRIVING
+};
+directionsService.route(request, function(response, status) {
+if (status == google.maps.DirectionsStatus.OK) {
+  directionsDisplay.setDirections(response);
+  console.log("Done");
+  var route = response.routes[0];
+//   var summaryPanel = document.getElementById('directions_panel');
+//   summaryPanel.innerHTML = '';
+  // For each route, display summary information.
+//   for (var i = 0; i < route.legs.length; i++) {
+//     var routeSegment = i + 1;
+//     summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment + '</b><br>';
+//     summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+//     summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+//     summaryPanel.innerHTML += route.legs[i].distance.text + '<br>';
+//     summaryPanel.innerHTML += route.legs[i].duration.text + '<br>';
+//   }
+}
+});
+}
+
+//to compute total distance function
+function computeTotalDistance(result) {
+var total = 0;
+var myroute = result.routes[0];
+for (var i = 0; i < myroute.legs.length; i++) {
+total += myroute.legs[i].distance.value;
+}
+total = total / 1000.0;
+document.getElementById('total').innerHTML = total + ' km';
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+
+<!-- <div class="container">
   <div class="row">
     <div class="col-lg-6 col-sm-3 col-md-4 col-xs-12">
       <div class="logo"><a href="index.html"><img width="155" height="88" alt="" src="images/logo.jpg"></a></div>
     </div>
+    My account dropdown
     <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
       <div class="dropdown">
         <button aria-expanded="true" data-toggle="dropdown" id="dropdownMenu1" type="button" class="btn my-account btn-default dropdown-toggle"> <i class="glyphicon glyphicon-user"></i> My Account <span class="caret"></span> </button>
@@ -86,15 +337,19 @@ YUI().use(
       </div>
     </div>
   </div>
-</div>
+</div> -->
+
+
 <div class="contan-eria">
   <div class="container">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div role="tabpanel">
           <ul role="tablist" class="nav nav-tabs text-center">
-            <li role="presentation" class=""><a href="calendar.html" class="right-tab"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
-            <li role="presentation" class="active"><a href="add-route1.html" class="right-tab"  aria-expanded="true"><i class="glyphicon glyphicon-map-marker"></i> Route Map</a></li>
+            <li role="presentation" class=""><a href="{% url 'calender_prime' %}" class="right-tab">
+                <i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
+            <li role="presentation" class="active"><a href="{% url 'add_route_prime' %}" class="right-tab"  aria-expanded="true">
+                <i class="glyphicon glyphicon-map-marker"></i> Route Map</a></li>
           </ul>
           <div class="tab-content tab-content-2">
             <div role="tabpanel" class="tab-pane active " id="profile">
@@ -105,30 +360,77 @@ YUI().use(
                     <a href="#" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                     <div>&nbsp;</div>
                     <div class="cl"></div>
-                    <ul  id="myList">
+                    <ul id="myList">
+
+                        <style>
+                        .title{
+                            margin-bottom:10px;
+                        }
+                        .title input,textarea{
+                            margin-top:10px;
+                        }
+                        .title h4{
+                            margin-top:10px;
+                        }
+                        </style>
                       <li class="title">
-                        <input type="text" placeholder="Trip Title" class="map-input" name="">
-                        <div>&nbsp;</div>
-                        <input type="text" placeholder="Start Location" class="map-input" name="">
-                        <input type="text" placeholder="Note for Location" class="map-input map-input-2" name="">
-                        <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </li>
+                        <h4>Trip Title  : </h4>
+                        <input type="text" class="form-control" name="trip_title" value="" placeholder="Trip Title"/>
+                          <!--  map-input -->
+                        <!-- <h4>Trip Date  : </h4> -->
+                        <!-- <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" name="route_date" placeholder="Trip date"/>
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div> -->
+                        <h4>Start location : </h4>
+                        <input class="controls form-control pac-input" type="text" placeholder="Search Box">
+                        <h4> Nearest Address</h4>
+                        <input id="address1" class="controls form-control" type="text" placeholder="Start location Address">
+                        <h4>start location Note:</h4>
+                        <textarea class="form-control" placeholder="Note for start location" ></textarea>
+                        <input TYPE="hidden" name="latitude" class="latitude form-control" value="" />
+                        <input TYPE="hidden" name="longitude" class="longitude form-control" value="" />
+                        <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                        <!-- <input type="text" placeholder="Start Location" class="map-input" name="">
+                        <input type="text" placeholder="Note for Location" class="map-input map-input-2" name=""> -->
+
+                        <!--  Remove Icon
+                        <a href="#"><i class="glyphicon glyphicon-remove"></i></a>
+                        -->
+                      </li>
                       <p>&nbsp;</p>
-                      <a   data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="color:#000; text-decoration:none; outline:none; ">
+
+                      <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="color:#000; text-decoration:none; outline:none; ">
                       <h4> Add New Location</h4>
                       </a>
-                      <li >
+
+                      <li>
                         <div class="collapse title margin-top15" id="collapseExample">
                           <input type="text" placeholder="12 Akts apt paldi " class="map-input" name="">
                           <input type="text" placeholder="Fan Repair" class="map-input map-input-2" name="">
                           <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div>
                       </li>
+
                       <li>
                         <div class="margin-top15 title">
-                          <input type="text" placeholder="End Location" class="map-input" name="">
+                          <!-- <input type="text" placeholder="End Location" class="map-input" name="">
                           <input type="text" placeholder="Note for Location" class="map-input map-input-2" name="">
-                          <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div>
-                        <input class="date-picker map-input" type="text"/>
+                          <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div> -->
+                        <!-- <input class="date-picker map-input" type="text"/> -->
+
+                        <h4>End Location : </h4>
+                        <input class="controls form-control pac-input" type="text" placeholder="Search Box">
+                        <h4> End Location Nearest Address</h4>
+                        <input id="address2" class="controls form-control" type="text" placeholder="End Location Nearest address">
+                        <h4>End Location Add Note:</h4>
+                        <textarea class="form-control" placeholder="Note for end location" ></textarea>
+                        <input TYPE="hidden" name="latitude2" class="latitude form-control" value="" />
+                        <input TYPE="hidden" name="longitude2" class="longitude form-control" value="" />
+                        <input type="hidden" name="marker_status" class="form-control" id="info"/>
                       </li>
+
                     </ul>
                     <div class="cl"></div>
                     <a role="button" class="btn btn-primary btn-1" href="#">Save New Route</a>
@@ -136,8 +438,9 @@ YUI().use(
                   </div>
                 </div>
                 <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
-                  <div class="map-box">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d58732.923427602036!2d72.6133169!3d23.0675101!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1431942143565" width="100%" height="450" frameborder="0" style="border:0"></iframe>
+                    <div class="map-box">
+                      <div id="map-canvas"></div>
+                      <!--  Here comes the map div-->
                   </div>
                 </div>
               </div>
@@ -148,43 +451,21 @@ YUI().use(
     </div>
   </div>
 </div>
-<div class="fotter">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6 col-bd-6 col-sm-6 col-xs-12">
-        <div class="fotter-nav">
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a style="border:none;" href="#">Blog</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-lg-6 col-bd-6 col-sm-6 col-xs-12">All Rights Reserved 2015</div>
-    </div>
-  </div>
-</div>
-<script src="js/jquery.min.js"></script> 
-<script class="cssdesk" src="js/jquery-ui.min.js" type="text/javascript"></script> 
-<script type="text/javascript" src="js/calendar.js"></script> 
-<script class="cssdesk" src="js/fullcalendar.min.js" type="text/javascript"></script> 
-<script>/* Javascript */
-$(function () {
-	var date = new Date();
-	var d = date.getDate();
-	var m = date.getMonth();
-	var y = date.getFullYear();
-	$('#calendar').fullCalendar({
-		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'month,agendaWeek,agendaDay'
-		},
-		editable: true
-	});
-});</script> 
-<script src="js/bootstrap.js"></script>
-</body>
-</html>
+
+<script type="text/javascript">
+    //Added by Jay Modi
+    //to load bootstrap datepicker
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            icons: {
+        time: "fa fa-clock-o",
+        date: "fa fa-calendar",
+        up: "fa fa-arrow-up",
+        down: "fa fa-arrow-down"
+    }
+        });
+    });
+</script>
+
+
+{% endblock %}
