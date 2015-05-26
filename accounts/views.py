@@ -1,5 +1,5 @@
-from django.views.generic import TemplateView, UpdateView
-from django.shortcuts import render_to_response, redirect
+from django.views.generic import TemplateView, UpdateView, View
+from django.shortcuts import render_to_response, redirect, render
 from accounts.forms import *
 from django.template import RequestContext, Context
 from django.core.mail import send_mail
@@ -161,3 +161,18 @@ class UpdateProfile(UpdateView):
             return redirect('/update-profile')
         return render_to_response(self.template_name, {'form': form, 'id': id},
                                   context_instance=RequestContext(request))
+
+
+class Add_route_prime(View):
+    template1 = "add-route.html"
+    template2 = "add-route.html"
+
+    def get(self, request):
+        active = "maps"
+        flag="maps"
+        return render(request, self.template1, locals())
+
+    def post(self, request):
+        active = "maps"
+        flag="maps"
+        return render(request, self.template2, locals())
