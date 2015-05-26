@@ -64,12 +64,12 @@ WSGI_APPLICATION = 'gpsstops.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gps_new_db',
-        'USER': 'admin',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gpsstops$gps_new_db',
+        'USER': 'gpsstops',
+        'PASSWORD': 'root',
+        'HOST': 'mysql.server',
+        'PORT': '3306',
 
     }
 }
