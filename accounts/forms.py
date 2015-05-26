@@ -52,10 +52,8 @@ class RegisterForm(forms.ModelForm):
        user.username = self.cleaned_data.get("email", False)
        user.email = self.cleaned_data.get("email", False)
        password = self.cleaned_data.get("password2", False)
-       print "pass", password
        user.is_active = False
        user.password = make_password(password)
-       print "password:", user.password
        user.save()
        proform.user = user
        proform.save()
@@ -64,7 +62,6 @@ class RegisterForm(forms.ModelForm):
 
 class ProfileUpdateForm(forms.ModelForm):
     first_name = forms.CharField(max_length=150)
-    last_name = forms.CharField(max_length=150)
     email = forms.EmailField()
 
     class Meta:
@@ -74,21 +71,25 @@ class ProfileUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super(ProfileUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs['class'] = 'form-control'
-        self.fields['last_name'].widget.attrs['class'] = 'form-control'
-        self.fields['email'].widget.attrs['class'] = 'form-control'
-        self.fields['mobile'].widget.attrs['class'] = 'form-control'
-        self.fields['skypeid'].widget.attrs['class'] = 'form-control'
-        self.fields['country'].widget.attrs['class'] = 'form-control'
+        self.fields['first_name'].widget.attrs = {'class': 'input-search', 'placeholder': 'Name*'}
+        self.fields['email'].widget.attrs = {'class': 'input-search', 'placeholder': 'Email*'}
+        self.fields['address'].widget.attrs = {'class': 'input-search', 'placeholder': 'Address*'}
+        self.fields['city'].widget.attrs = {'class': 'input-search', 'placeholder': 'City*'}
+        self.fields['state'].widget.attrs = {'class': 'input-search', 'placeholder': 'State*'}
+        self.fields['zip_code'].widget.attrs = {'class': 'input-search', 'placeholder': 'Zip code*'}
+        self.fields['country'].widget.attrs = {'class': 'input-search', 'placeholder': 'Country*'}
+        self.fields['phone_number'].widget.attrs = {'class': 'input-search', 'placeholder': 'Phone Number*'}
+        self.fields['occupation'].widget.attrs = {'class': 'input-search', 'placeholder': 'Occupation*'}
+        self.fields['company_name'].widget.attrs = {'class': 'input-search', 'placeholder': 'Company Name*'}
+
 
     def save(self,**kwargs):
-       proform = super(ProfileUpdateForm, self).save(commit = False, **kwargs)
-       user = User.objects.get(email=self.cleaned_data.get("email",False))
-       user.first_name = self.cleaned_data.get("first_name",False)
-       user.last_name = self.cleaned_data.get("last_name",False)
-       user.username = self.cleaned_data.get("email",False)
-       user.email = self.cleaned_data.get("email",False)
-       password = self.cleaned_data.get("password",False)
+       proform = super(ProfileUpdateForm, self).save(commit=False, **kwargs)
+       user = User.objects.get(email=self.cleaned_data.get("email", False))
+       user.first_name = self.cleaned_data.get("first_name", False)
+       user.last_name = self.cleaned_data.get("last_name", False)
+       user.username = self.cleaned_data.get("email", False)
+       user.email = self.cleaned_data.get("email", False)
        user.is_active = True
        user.save()
        proform.user = user
