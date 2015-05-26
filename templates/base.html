@@ -7,6 +7,8 @@
         <title>Hustle & Grind Co</title>
         <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
+        <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+        <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
     </head>
 
     <body>
@@ -28,10 +30,11 @@
 
                             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                                 <ul class="nav navbar-nav margin-top15">
-                                    <li><a href="index.html">Home</a> </li>
+                                    <li><a href="{% url 'index' %}">Home</a> </li>
                                     <li><a href="#">Download</a> </li>
                                     <li><a href="#">Supports</a> </li>
-                                    <li><a href="#">About</a></li>
+                                    <li><a href="{% url 'calender_prime' %}">Calender</a></li>
+                                    <li><a href="{% url 'add_route_prime' %}">Add route</a><li>
                                     <li><a href="#" style="border:none;">Contact</a></li>
                                 </ul>
                             </div>
@@ -52,9 +55,6 @@
             </div>
         </div>
     </div>
-
-<script src="{{ STATIC_URL }}js/jquery.min.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap.js"></script>
 
 </body>
 </html>
