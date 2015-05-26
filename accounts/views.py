@@ -1,6 +1,8 @@
+__author__ = 'Scorpion_Python'
 from django.views.generic.base import TemplateView
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from accounts.forms import *
+from django.views.generic import View
 from django.template import RequestContext, Context
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -74,4 +76,19 @@ class LoginView(TemplateView):
 
 class Calender(TemplateView):
 
-    template_name = 'calendar.html'
+    template_name = 'calendar_prime.html'
+
+
+class Add_route_prime(View):
+    template1 = "add_route.html"
+    template2 = "add_route.html"
+
+    def get(self, request):
+        active = "maps"
+        flag="maps"
+        return render(request, self.template1, locals())
+
+    def post(self, request):
+        active = "maps"
+        flag="maps"
+        return render(request, self.template2, locals())
