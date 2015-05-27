@@ -32,7 +32,7 @@ class CreateUser(APIView):
                                                  occupation=request.data['occupation'],
                                                  company_name=request.data['company_name'])
                 user_profile_data.save()
-                message = 'Please verify your email by clicking on this link ' + 'http://localhost:8000/verification/'+user_profile_data.token
+                message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
                 send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user_data.email)],
                           fail_silently=False)
@@ -77,8 +77,8 @@ class LoginUser(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        email = request.POST['email']
-        password = request.POST['password']
+        email = request.data['email']
+        password = request.data['password']
         user = authenticate(username=email, password=password)
 
         if user is not None:
