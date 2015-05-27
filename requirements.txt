@@ -3,7 +3,9 @@ dj-static==0.0.6
 Django==1.7.1
 django-countries==3.3
 djangorestframework==3.0.0
+markdown
+django-filter
 gunicorn==19.1.1
-psycopg2==2.6
 six==1.8.0
 static3==0.5.1
+MySQL-Python
