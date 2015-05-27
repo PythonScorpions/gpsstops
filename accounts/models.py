@@ -14,9 +14,9 @@ class UserProfiles(models.Model):
     state = models.CharField(max_length=50)
     zip_code = models.IntegerField(default=0)
     country = CountryField()
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-                                 message="Phone number must be entered in format: '+999999999'. Max 15 digits allowed.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=15)  # validators should be a list
+    # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+    #                              message="Phone number must be entered in format: '+999999999'. Max 15 digits allowed.")
+    phone_number = models.CharField(max_length=15)  # validators should be a list
     occupation = models.CharField(max_length=100)
     company_name = models.CharField(max_length=100)
     token = models.CharField('Token', max_length=200, blank=True, null=True)
