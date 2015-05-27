@@ -9,6 +9,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from api.serializers import *
+from rest_framework.authtoken.models import Token
+from rest_framework import parsers
+from rest_framework import renderers
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
+
+for user in User.objects.all():
+    Token.objects.get_or_create(user=user)
 
 
 class CreateUser(APIView):
@@ -90,6 +98,25 @@ class LoginUser(APIView):
                 return Response({'code': 1, 'status': 200, 'Data': 'Null',
                                  'message': 'User has not verified Email'})
         else:
+            return Response({'code': 1, 'status': 200, 'Data': 'Null',
+                             'message': 'Wrong Credentials'})
+
+class ObtainAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+
+    def post(self, request):
+        print "o"
+        try:
+            serializer = AuthTokenSerializer(data=request.data)
+            serializer.is_valid()
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'code': 0, 'status': 200, 'Data': {'user_id': request.user.id},
+                             'message': 'User is Logged In'})
+        except:
             return Response({'code': 1, 'status': 200, 'Data': 'Null',
                              'message': 'Wrong Credentials'})
 
