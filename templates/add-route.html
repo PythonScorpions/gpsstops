@@ -1,3 +1,4 @@
+<!--  Page Author : JAY MODI-->
 
 {% extends 'base.html' %}
 
@@ -14,27 +15,27 @@
 
 
 <script>
-YUI().use(
-  'aui-sortable-list',
-  function(Y) {
-    // code goes here
-  }
-);
+// YUI().use(
+//   'aui-sortable-list',
+//   function(Y) {
+//     // code goes here
+//   }
+// );
 
-YUI().use(
-  'aui-sortable-list',
-  function(Y) {
-    new Y.SortableList(
-      {
-        dropCondition: function(event) {
-          return true;
-        },
-        dropOn: 'myList',
-        nodes: '#myList li'
-      }
-    );
-  }
-);
+// YUI().use(
+//   'aui-sortable-list',
+//   function(Y) {
+//     new Y.SortableList(
+//       {
+//         dropCondition: function(event) {
+//           return true;
+//         },
+//         dropOn: 'myList',
+//         nodes: '#myList li'
+//       }
+//     );
+//   }
+// );
 </script>
 
 <style>
@@ -57,6 +58,24 @@ YUI().use(
 </style>
 
 <script>
+
+$(document).ready(function(){
+// Multiple Location add Script
+// Author: Jay Modi
+    $('.add_more_waypoint').on('click', function(){
+        // Getting last waypoint no
+        last_waypoint_no = parseInt($('.total_waypoint').val()) + 1;
+        console.log("Adding waypoint value-->"+last_waypoint_no);
+        var myhtml= "<li class='title'><h4>Waypoint No"+ last_waypoint_no+" : </h4><input class='controls form-control pac-input' type='text' placeholder='Search Box'><h4> End Location Nearest Address</h4><input class='address"+last_waypoint_no+"' class='controls form-control' type='text' placeholder='End Location Nearest address'><h4>End Location Add Note:</h4><textarea class='form-control' class='location_note_"+last_waypoint_no+"' placeholder='Note for end location' ></textarea><input TYPE='hidden' name='latitude"+last_waypoint_no+"' class='latitude"+last_waypoint_no+" form-control' value /><input TYPE='hidden' name='longitude"+last_waypoint_no+"' class='longitude"+last_waypoint_no+" form-control' value /><input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/></li>";
+        // appending new waypoint html
+        $('.add_waypoint_container').append(myhtml);
+        // adding new waypoint
+        $('.total_waypoint').val(last_waypoint_no);
+    });
+});
+
+
+
 var map;
 var markers = [];
 
@@ -65,38 +84,38 @@ var markers = [];
 var geocoder = new google.maps.Geocoder();
 
 function geocodePosition(pos,box_no) {
-geocoder.geocode({
-latLng: pos
-}, function(responses) {
-if (responses && responses.length > 0) {
-    if(box_no == '1'){
-        updateMarkerAddress1(responses[0].formatted_address);
-    }
-    else{
-        updateMarkerAddress2(responses[0].formatted_address);
-    }
+    geocoder.geocode({
+    latLng: pos
+    }, function(responses) {
+    if (responses && responses.length > 0) {
+        if(box_no == '1'){
+            updateMarkerAddress1(responses[0].formatted_address);
+        }
+        else{
+            updateMarkerAddress2(responses[0].formatted_address);
+        }
 
-} else {
-    if(box_no == '1'){
-        updateMarkerAddress1('Cannot determine address at this location.');
+    } else {
+        if(box_no == '1'){
+            updateMarkerAddress1('Cannot determine address at this location.');
+        }
+        else{
+            updateMarkerAddress2('Cannot determine address at this location.');
+        }
     }
-    else{
-        updateMarkerAddress2('Cannot determine address at this location.');
-    }
-}
-});
+    });
 }
 
 function updateMarkerPosition(latLng) {
-var str =  latLng.lat() +" "+ latLng.lng();
-$('#info').val(str);
+    var str =  latLng.lat() +" "+ latLng.lng();
+    $('#info').val(str);
 }
 
 function updateMarkerAddress1(str) {
-$('#address1').val(str);
+    $('#address1').val(str);
 }
 function updateMarkerAddress2(str) {
-$('#address2').val(str);
+    $('#address2').val(str);
 }
 // drag end
 var mj;
@@ -107,142 +126,142 @@ var rendererOptions = {
 };
 
 function initialize() {
-directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-var chicago = new google.maps.LatLng(41.850033, -87.6500523);
-var mapOptions = {
-  zoom: 6,
-  center: chicago
-}
+    directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+    var mapOptions = {
+      zoom: 6,
+      center: chicago
+    }
 
-map = new google.maps.Map(document.getElementById('map-canvas'), {
-mapTypeId: google.maps.MapTypeId.ROADMAP,
-zoom: 6,
-center: chicago
-});
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    zoom: 6,
+    center: chicago
+    });
 
-//   var defaultBounds = new google.maps.LatLngBounds(
-//   new google.maps.LatLng(-33.8902, 151.1759),
-//   new google.maps.LatLng(-33.8474, 151.2631));
-//   map.fitBounds(defaultBounds);
-//   map.setZoom(10);
+    //   var defaultBounds = new google.maps.LatLngBounds(
+    //   new google.maps.LatLng(-33.8902, 151.1759),
+    //   new google.maps.LatLng(-33.8474, 151.2631));
+    //   map.fitBounds(defaultBounds);
+    //   map.setZoom(10);
 
-// direction service code
-directionsDisplay.setMap(map);
-// google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
-//   //   computeTotalDistance(directionsDisplay.getDirections());
-//   directionsDisplay.setMap(map);
-//   calcRoute();
-//   });
+    // direction service code
+    directionsDisplay.setMap(map);
+    // google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+    //   //   computeTotalDistance(directionsDisplay.getDirections());
+    //   directionsDisplay.setMap(map);
+    //   calcRoute();
+    //   });
 
-// search box defined here
-var input1 = $('.pac-input')[0];
-var input2 = $('.pac-input')[1];
-// map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-var searchBox1 = new google.maps.places.SearchBox((input1));
-var searchBox2 = new google.maps.places.SearchBox((input2));
+    // search box defined here
+    var input1 = $('.pac-input')[0];
+    var input2 = $('.pac-input')[1];
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var searchBox1 = new google.maps.places.SearchBox((input1));
+    var searchBox2 = new google.maps.places.SearchBox((input2));
 
-// search function start here
-google.maps.event.addListener(searchBox1, 'places_changed', function() {
-  console.log("searchbox 1");
-var places = searchBox1.getPlaces();
-if (places.length == 0) {
-  return;
-}
-for (var i = 0, marker; marker = markers[i]; i++) {
-  marker.setMap(null);
-}
-// For each place, get the icon, place name, and location.
-var bounds = new google.maps.LatLngBounds();
-for (var i = 0, place; place = places[i]; i++) {
-  // Create a marker for each place.
-   marker = new google.maps.Marker({
-    map: map,
-    title: place.name,
-    position: place.geometry.location,
-    draggable: true
-  });
-$(".latitude").val(place.geometry.location.lat());
-$(".longitude").val(place.geometry.location.lng());
-updateMarkerPosition(marker.getPosition());
-geocodePosition(marker.getPosition(),'1');
+    // search function start here
+    google.maps.event.addListener(searchBox1, 'places_changed', function() {
+          console.log("searchbox 1");
+        var places = searchBox1.getPlaces();
+        if (places.length == 0) {
+          return;
+        }
+        for (var i = 0, marker; marker = markers[i]; i++) {
+          marker.setMap(null);
+        }
+        // For each place, get the icon, place name, and location.
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0, place; place = places[i]; i++) {
+          // Create a marker for each place.
+           marker = new google.maps.Marker({
+            map: map,
+            title: place.name,
+            position: place.geometry.location,
+            draggable: true
+          });
+        $(".latitude").val(place.geometry.location.lat());
+        $(".longitude").val(place.geometry.location.lng());
+        updateMarkerPosition(marker.getPosition());
+        geocodePosition(marker.getPosition(),'1');
 
-google.maps.event.addListener(marker, 'dragend', function() {
-geocodePosition(marker.getPosition(),'1');
-$(".latitude").val(marker.getPosition().lat());
-$(".longitude").val(marker.getPosition().lat());
-});
-markers.push(marker);
-bounds.extend(place.geometry.location);
-}
-if($('#address2').val().length > 0 && $('#address2').val() != 'undefined')
-{
-    console.log("searchbox 1 make route");
-    setTimeout(function() {
-        calcRoute();
-    }, 500);
-}
-else{
-    map.fitBounds(bounds);
-    map.setZoom(9);
-}
-});
+        google.maps.event.addListener(marker, 'dragend', function() {
+            geocodePosition(marker.getPosition(),'1');
+            $(".latitude").val(marker.getPosition().lat());
+            $(".longitude").val(marker.getPosition().lat());
+        });
+        markers.push(marker);
+        bounds.extend(place.geometry.location);
+        }
+        if($('#address2').val().length > 0 && $('#address2').val() != 'undefined')
+        {
+            console.log("searchbox 1 make route");
+            setTimeout(function() {
+                calcRoute();
+            }, 500);
+        }
+        else{
+            map.fitBounds(bounds);
+            map.setZoom(9);
+        }
+    });
 
-// google.maps.event.addListener(map, 'bounds_changed', function() {
-//     var bounds = map.getBounds();
-//     searchBox1.setBounds(bounds);
-//     // map.setZoom(9);
-//   });
+    // google.maps.event.addListener(map, 'bounds_changed', function() {
+    //     var bounds = map.getBounds();
+    //     searchBox1.setBounds(bounds);
+    //     // map.setZoom(9);
+    //   });
 
 
-google.maps.event.addListener(searchBox2, 'places_changed', function() {
-console.log("searchbox 2");
-var places1 = searchBox2.getPlaces();
-if (places1.length == 0) {
-return;
-}
-for (var i = 0, marker; marker = markers[i]; i++) {
-marker.setMap(null);
-}
-// For each place, get the icon, place name, and location.
-var bounds = new google.maps.LatLngBounds();
-for (var i = 0, place; place = places1[i]; i++) {
-// Create a marker for each place.
-marker = new google.maps.Marker({
-      map: map,
-      title: place.name,
-      position: place.geometry.location,
-      draggable: true
-});
-$(".latitude2").val(place.geometry.location.lat());
-$(".longitude2").val(place.geometry.location.lng());
-updateMarkerPosition(marker.getPosition());
-geocodePosition(marker.getPosition(),'2');
+    google.maps.event.addListener(searchBox2, 'places_changed', function() {
+        console.log("searchbox 2");
+        var places1 = searchBox2.getPlaces();
+        if (places1.length == 0) {
+        return;
+        }
+        for (var i = 0, marker; marker = markers[i]; i++) {
+        marker.setMap(null);
+        }
+        // For each place, get the icon, place name, and location.
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0, place; place = places1[i]; i++) {
+        // Create a marker for each place.
+        marker = new google.maps.Marker({
+              map: map,
+              title: place.name,
+              position: place.geometry.location,
+              draggable: true
+        });
+        $(".latitude2").val(place.geometry.location.lat());
+        $(".longitude2").val(place.geometry.location.lng());
+        updateMarkerPosition(marker.getPosition());
+        geocodePosition(marker.getPosition(),'2');
 
-google.maps.event.addListener(marker, 'dragend', function() {
-  geocodePosition(marker.getPosition(),'2');
-  $(".latitude2").val(marker.getPosition().lat());
-  $(".longitude2").val(marker.getPosition().lat());
-});
-markers.push(marker);
-bounds.extend(place.geometry.location);
-}
-if($('#address1').val().length > 0 && $('#address1').val() != 'undefined')
-{
-    console.log("searchbox 2 make route");
-    setTimeout(function() {
-        calcRoute();
-    }, 500);
-}
-else{
-    map.fitBounds(bounds);
-    map.setZoom(9);
-}
-});
-//   google.maps.event.addListener(map, 'bounds_changed', function() {
-//   var bounds = map.getBounds();
-//   searchBox2.setBounds(bounds);
-//   map.setZoom(10);
-// });
+        google.maps.event.addListener(marker, 'dragend', function() {
+          geocodePosition(marker.getPosition(),'2');
+          $(".latitude2").val(marker.getPosition().lat());
+          $(".longitude2").val(marker.getPosition().lat());
+        });
+        markers.push(marker);
+        bounds.extend(place.geometry.location);
+        }
+        if($('#address1').val().length > 0 && $('#address1').val() != 'undefined')
+        {
+            console.log("searchbox 2 make route");
+            setTimeout(function() {
+                calcRoute();
+            }, 500);
+        }
+        else{
+            map.fitBounds(bounds);
+            map.setZoom(9);
+        }
+    });
+    //   google.maps.event.addListener(map, 'bounds_changed', function() {
+    //   var bounds = map.getBounds();
+    //   searchBox2.setBounds(bounds);
+    //   map.setZoom(10);
+    // });
 
 }
 //initial function close here
@@ -389,7 +408,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                         <h4> Nearest Address</h4>
                         <input id="address1" class="controls form-control" type="text" placeholder="Start location Address">
                         <h4>start location Note:</h4>
-                        <textarea class="form-control" placeholder="Note for start location" ></textarea>
+                        <textarea class="form-control" id="start_location_note" placeholder="Note for start location" ></textarea>
                         <input TYPE="hidden" name="latitude" class="latitude form-control" value="" />
                         <input TYPE="hidden" name="longitude" class="longitude form-control" value="" />
                         <input type="hidden" name="marker_status" class="form-control" id="info"/>
@@ -399,12 +418,18 @@ google.maps.event.addDomListener(window, 'load', initialize);
                         <!--  Remove Icon
                         <a href="#"><i class="glyphicon glyphicon-remove"></i></a>
                         -->
-                      </li>
-                      <p>&nbsp;</p>
+                    </li>
 
-                      <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="color:#000; text-decoration:none; outline:none; ">
+                      <!-- <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="color:#000; text-decoration:none; outline:none; ">
                       <h4> Add New Location</h4>
-                      </a>
+                  </a> -->
+
+                    <li class="add_waypoint_container">
+                        <input type="hidden" value="0" name="total_waypoint" class="total_waypoint"> </input>
+                        <a role="button" class="btn btn-primary btn-1 add_more_waypoint" style="cursor:pointer;">Add More Location</a>
+                    </li>
+
+
 
                       <li>
                         <div class="collapse title margin-top15" id="collapseExample">
@@ -413,19 +438,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
                           <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div>
                       </li>
 
-                      <li>
+
                         <div class="margin-top15 title">
                           <!-- <input type="text" placeholder="End Location" class="map-input" name="">
                           <input type="text" placeholder="Note for Location" class="map-input map-input-2" name="">
                           <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div> -->
                         <!-- <input class="date-picker map-input" type="text"/> -->
-
+                        <li>
                         <h4>End Location : </h4>
                         <input class="controls form-control pac-input" type="text" placeholder="Search Box">
                         <h4> End Location Nearest Address</h4>
                         <input id="address2" class="controls form-control" type="text" placeholder="End Location Nearest address">
                         <h4>End Location Add Note:</h4>
-                        <textarea class="form-control" placeholder="Note for end location" ></textarea>
+                        <textarea class="form-control" id="end_location_note" placeholder="Note for end location" ></textarea>
                         <input TYPE="hidden" name="latitude2" class="latitude form-control" value="" />
                         <input TYPE="hidden" name="longitude2" class="longitude form-control" value="" />
                         <input type="hidden" name="marker_status" class="form-control" id="info"/>
