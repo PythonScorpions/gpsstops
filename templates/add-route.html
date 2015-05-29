@@ -55,9 +55,28 @@
   }
 
   .trip_loopn{margin-top: 10px; margin-bottom:10px;}
+
+  .title{
+      margin-bottom:10px;
+  }
+  .title input,textarea{
+      margin-top:10px;
+  }
+  .title h4{
+      margin-top:10px;
+  }
 </style>
 
 <script>
+
+var map;
+var markers = [];
+var autocomplete = [];
+
+var autocompleteOptions = {
+    //componentRestrictions: {country: "az"}
+};
+
 
 $(document).ready(function(){
 // Multiple Location add Script
@@ -69,29 +88,32 @@ $(document).ready(function(){
         var myhtml= "<li class='title'><h4>Waypoint No"+ last_waypoint_no+" : </h4><input class='controls form-control pac-input' type='text' placeholder='Search Box'><h4> Waypoint "+last_waypoint_no+"  Nearest Address</h4><input class='controls form-control address"+last_waypoint_no+"' type='text' placeholder='Waypoint "+last_waypoint_no+" Nearest address'><h4>Waypoint "+last_waypoint_no+" Note:</h4><textarea class='form-control' class='location_note_"+last_waypoint_no+"' placeholder='Note for Waypoint "+last_waypoint_no+"' ></textarea><input TYPE='hidden' name='latitude"+last_waypoint_no+"' class='latitude"+last_waypoint_no+" form-control' value /><input TYPE='hidden' name='longitude"+last_waypoint_no+"' class='longitude"+last_waypoint_no+" form-control' value /><input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/><input name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input></li>";
         // appending new waypoint html
         $('.add_waypoint_container').append(myhtml);
+        var newInput = [];
+        var newEl = $('.pac-input')[last_waypoint_no];
+        newInput.push(newEl);
+        setupAutocomplete(autocomplete, newInput, 0);
         // adding new waypoint
         $('.total_waypoint').val(last_waypoint_no);
     });
 
-    $(document).on('input', '.pac-input', function(event) {
-        // Here is the problem If you can figure out
-        var way_point_no_curret = $(this).parent().find('.my_waypoint_no').val();
-        var input_current = $('.pac-input')[way_point_no_curret];
-        var searchBox_current = new google.maps.places.SearchBox(input_current);
-        // search function start here
-        google.maps.event.addListener(searchBox_current, 'places_changed', function() {
-            console.log("Got some success");
-        });
-        // I had put this prevent method
-        event.preventDefault();
-    });
 });
 
+function setupAutocomplete(autocomplete, inputs, i) {
+    console.log('setupAutocomplete...');
 
+        // autocomplete[i] = new google.maps.places.Autocomplete(inputs[i], autocompleteOptions);
+        // Saved My DAY
+        autocomplete.push(new google.maps.places.Autocomplete(inputs[i], autocompleteOptions));
+        var idx = autocomplete.length - 1;
+        //autocomplete[i].bindTo('bounds', map);
+        autocomplete[idx].bindTo('bounds', map);
 
+        google.maps.event.addListener(autocomplete[idx], 'place_changed', function() {
+            console.log("yeyyyy");
+        });
 
-var map;
-var markers = [];
+    }
+
 
 // drag make possible
 
@@ -400,18 +422,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     <div>&nbsp;</div>
                     <div class="cl"></div>
                     <ul id="myList">
-
-                        <style>
-                        .title{
-                            margin-bottom:10px;
-                        }
-                        .title input,textarea{
-                            margin-top:10px;
-                        }
-                        .title h4{
-                            margin-top:10px;
-                        }
-                        </style>
                       <li class="title">
                         <h4>Trip Title  : </h4>
                         <input type="text" class="form-control" name="trip_title" value="" placeholder="Trip Title"/>
