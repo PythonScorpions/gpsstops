@@ -74,6 +74,7 @@ $(document).ready(function(){
     });
 
     $(document).on('input', '.pac-input', function(event) {
+        // Here is the problem If you can figure out
         var way_point_no_curret = $(this).parent().find('.my_waypoint_no').val();
         var input_current = $('.pac-input')[way_point_no_curret];
         var searchBox_current = new google.maps.places.SearchBox(input_current);
@@ -81,6 +82,8 @@ $(document).ready(function(){
         google.maps.event.addListener(searchBox_current, 'places_changed', function() {
             console.log("Got some success");
         });
+        // I had put this prevent method
+        event.preventDefault();
     });
 });
 
