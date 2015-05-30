@@ -85,7 +85,7 @@ $(document).ready(function(){
         // Getting last waypoint no
         last_waypoint_no = parseInt($('.total_waypoint').val()) + 1;
         console.log("Adding waypoint value-->"+last_waypoint_no);
-        var myhtml= "<li class='title'><h4>Waypoint No"+ last_waypoint_no+" : </h4><input class='controls form-control pac-input' type='text' placeholder='Search Box'><h4> Waypoint "+last_waypoint_no+"  Nearest Address</h4><input class='controls form-control address"+last_waypoint_no+"' type='text' placeholder='Waypoint "+last_waypoint_no+" Nearest address'><h4>Waypoint "+last_waypoint_no+" Note:</h4><textarea class='form-control' class='location_note_"+last_waypoint_no+"' placeholder='Note for Waypoint "+last_waypoint_no+"' ></textarea><input TYPE='hidden' name='latitude"+last_waypoint_no+"' class='latitude"+last_waypoint_no+" form-control' value /><input TYPE='hidden' name='longitude"+last_waypoint_no+"' class='longitude"+last_waypoint_no+" form-control' value /><input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/><input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input></li>";
+        var myhtml= "<li class='title'><h4>Waypoint No"+ last_waypoint_no+" : </h4><input class='controls form-control pac-input' type='text' placeholder='Search Box' name='search_address"+ last_waypoint_no+"'><h4> Waypoint "+last_waypoint_no+"  Nearest Address</h4><input class='controls form-control address"+last_waypoint_no+"' type='text' placeholder='Waypoint "+last_waypoint_no+" Nearest address' name='near_address"+ last_waypoint_no+"'><h4>Waypoint "+last_waypoint_no+" Note:</h4><input class='form-control' class='location_note_"+last_waypoint_no+"' placeholder='Note for Waypoint "+last_waypoint_no+"' name='note_waypoint"+ last_waypoint_no+"'></input><input TYPE='hidden' name='latitude"+last_waypoint_no+"' class='latitude"+last_waypoint_no+" form-control' value /><input TYPE='hidden' name='longitude"+last_waypoint_no+"' class='longitude"+last_waypoint_no+" form-control' value /><input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/><input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input></li>";
         // appending new waypoint html
         $('.add_waypoint_container').append(myhtml);
         var newInput = [];
@@ -364,7 +364,9 @@ function calcRoute() {
           console.log("Done");
           var route = response.routes[0];
           $('.total_distance').html(route.legs[0].distance.text);
+          $('.total_distance').eq(1).val(route.legs[0].distance.text);
           $('.total_hours').html(route.legs[0].duration.text);
+          $('.total_hours').eq(1).val(route.legs[0].duration.text);
           console.log(route.legs[0].distance.text);
           console.log(route.legs[0].duration.text);
         //   var summaryPanel = document.getElementById('directions_panel');
@@ -447,6 +449,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
               <div class="row">
                 <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
                   <div class="left-map">
+                      <!-- form start -->
+                      <form name="create_route_form" action="{% url 'create_route' %}" method="POST">
+                          {% csrf_token %}
                     <h3>Route</h3>
                     <a href="#" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                     <div>&nbsp;</div>
@@ -455,6 +460,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                       <li class="title">
                         <h4>Trip Title  : </h4>
                         <input type="text" class="form-control" name="trip_title" value="" placeholder="Trip Title"/>
+                        <h4>Trip Date  : </h4>
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" name="trip_datetime" placeholder="Trip date"/>
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
                           <!--  map-input -->
                         <!-- <h4>Trip Date  : </h4> -->
                         <!-- <div class='input-group date' id='datetimepicker1'>
@@ -464,11 +476,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
                             </span>
                         </div> -->
                         <h4>Start location : </h4>
-                        <input class="controls form-control pac-input" type="text" placeholder="Search Box">
+                        <input class="controls form-control pac-input" type="text" placeholder="Search Box" name="start_search_address">
                         <h4> Nearest Address</h4>
-                        <input id="address1" class="controls form-control" type="text" placeholder="Start location Address">
+                        <input id="address1" class="controls form-control" type="text" placeholder="Start location Address" name="start_near_address">
                         <h4>start location Note:</h4>
-                        <textarea class="form-control" id="start_location_note" placeholder="Note for start location" ></textarea>
+                        <input class="form-control" id="start_location_note" placeholder="Note for start location" name="start_note_location"></input>
                         <input TYPE="hidden" name="latitude_first" class="latitude_first form-control" value="" />
                         <input TYPE="hidden" name="longitude_first" class="longitude_first form-control" value="" />
                         <input type="hidden" name="marker_status" class="form-control" id="info"/>
@@ -506,11 +518,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
                         <!-- <input class="date-picker map-input" type="text"/> -->
                         <li>
                         <h4>End Location : </h4>
-                        <input class="controls form-control pac-input" type="text" placeholder="Search Box">
+                        <input class="controls form-control pac-input" type="text" placeholder="Search Box" name="end_search_address">
                         <h4> End Location Nearest Address</h4>
-                        <input id="address2" class="controls form-control" type="text" placeholder="End Location Nearest address">
+                        <input id="address2" class="controls form-control" type="text" placeholder="End Location Nearest address" name="end_near_address">
                         <h4>End Location Add Note:</h4>
-                        <textarea class="form-control" id="end_location_note" placeholder="Note for end location" ></textarea>
+                        <input class="form-control" id="end_location_note" placeholder="Note for end location" name="end_note_location"></input>
                         <input TYPE="hidden" name="latitude_last" class="latitude_last form-control" value="" />
                         <input TYPE="hidden" name="longitude_last" class="longitude_last form-control" value="" />
                         <input type="hidden" name="marker_status" class="form-control" id="info"/>
@@ -519,12 +531,16 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     </ul>
                     <div class="title">
                         <h4>Total distance:<h4 class="total_distance"> </h4> </h4>
+                        <input type="text" name="total_distance" class="form-control total_distance" />
                         <h4>Total hours: <h4 class="total_hours"> </h4></h4>
+                        <input type="text" name="total_hours" class="form-control total_hours" />
                     </div>
                     <div class="cl"></div>
-                    <a role="button" class="btn btn-primary btn-1" href="#">Save New Route</a>
+                    <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route"></input>
                     <div>&nbsp;</div>
                   </div>
+              </form>
+                  <!-- form end -->
                 </div>
                 <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
                     <div class="map-box">
