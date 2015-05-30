@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'accounts',
     'rest_framework',
     'rest_framework.authtoken',
+    'maps'
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7  # One-week activation window; you may, of course, use a different value.
@@ -73,7 +74,6 @@ DATABASES = {
         'PASSWORD': 'root',
         'HOST': 'mysql.server',
         'PORT': '3306',
-
     }
 }
 
