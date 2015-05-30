@@ -335,7 +335,13 @@ function calcRoute() {
     var end = $('#address2').val();
     console.log("Start-->"+start  + " "+ "end-->"+end);
     console.log("Enter into dragon");
-    var waypts = [];
+    var way_points_arr = [];
+    for(var i=1; i<=parseInt($('.total_waypoint').val());i++){
+        way_points_arr.push({
+            location:$('.address'+i).val(),
+            stopover:true});
+    }
+    console.log(way_points_arr);
     // var checkboxArray = document.getElementById('waypoints');
     // for (var i = 0; i < checkboxArray.length; i++) {
     //   if (checkboxArray.options[i].selected == true) {
@@ -348,7 +354,7 @@ function calcRoute() {
     var request = {
       origin: start,
       destination: end,
-      //waypoints: waypts,
+      waypoints: way_points_arr,
       optimizeWaypoints: true,
       travelMode: google.maps.TravelMode.DRIVING
     };
