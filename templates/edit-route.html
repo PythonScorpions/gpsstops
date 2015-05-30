@@ -1,0 +1,614 @@
+<!--  Page Author : JAY MODI-->
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "logo_account.html" %}
+
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+<script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/src/js/bootstrap-datetimepicker.js"></script>
+<link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<!-- <script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script> -->
+
+
+<script>
+// YUI().use(
+//   'aui-sortable-list',
+//   function(Y) {
+//     // code goes here
+//   }
+// );
+
+// YUI().use(
+//   'aui-sortable-list',
+//   function(Y) {
+//     new Y.SortableList(
+//       {
+//         dropCondition: function(event) {
+//           return true;
+//         },
+//         dropOn: 'myList',
+//         nodes: '#myList li'
+//       }
+//     );
+//   }
+// );
+</script>
+
+<style>
+    .map-box{
+        background: #FFF !important;
+        padding: 25px;
+        height:600px;
+    }
+    #map-canvas {
+        width:100%;
+        height: 550px;
+        float: left;
+    }
+
+  #target {
+    width: 345px;
+  }
+
+  .trip_loopn{margin-top: 10px; margin-bottom:10px;}
+
+  .title{
+      margin-bottom:10px;
+  }
+  .title input,textarea{
+      margin-top:10px;
+  }
+  .title h4{
+      margin-top:10px;
+  }
+</style>
+
+<script>
+
+var map;
+var markers = [];
+var autocomplete = [];
+var autocompleteOptions = {
+    //componentRestrictions: {country: "az"}
+};
+waypoints = [];
+
+
+$(document).ready(function(){
+// Multiple Location add Script
+// Author: Jay Modi
+    $('.add_more_waypoint').on('click', function(){
+        // Getting last waypoint no
+        last_waypoint_no = parseInt($('.total_waypoint').val()) + 1;
+        console.log("Adding waypoint value-->"+last_waypoint_no);
+        var myhtml= "<li class='title'><h4>Waypoint No"+ last_waypoint_no+" : </h4><input class='controls form-control pac-input' type='text' placeholder='Search Box' name='search_address"+ last_waypoint_no+"'><h4> Waypoint "+last_waypoint_no+"  Nearest Address</h4><input class='controls form-control address"+last_waypoint_no+"' type='text' placeholder='Waypoint "+last_waypoint_no+" Nearest address' name='near_address"+ last_waypoint_no+"'><h4>Waypoint "+last_waypoint_no+" Note:</h4><input class='form-control' class='location_note_"+last_waypoint_no+"' placeholder='Note for Waypoint "+last_waypoint_no+"' name='note_waypoint"+ last_waypoint_no+"'></input><input TYPE='hidden' name='latitude"+last_waypoint_no+"' class='latitude"+last_waypoint_no+" form-control' value /><input TYPE='hidden' name='longitude"+last_waypoint_no+"' class='longitude"+last_waypoint_no+" form-control' value /><input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/><input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input></li>";
+        // appending new waypoint html
+        $('.add_waypoint_container').append(myhtml);
+        var newInput = [];
+        var newEl = $('.pac-input')[last_waypoint_no];
+        newInput.push(newEl);
+        setupAutocomplete(autocomplete, newInput, 0, last_waypoint_no);
+        // adding new waypoint
+        $('.total_waypoint').val(last_waypoint_no);
+    });
+
+});
+
+function update_way_addressfun(latlng_data, way_no){
+    $('.latitude'+way_no).val(latlng_data.lat());
+    $('.longitude'+way_no).val(latlng_data.lng());
+    geocoder.geocode({
+    latLng: latlng_data
+    }, function(responses) {
+        if (responses && responses.length > 0) {
+            current_location = responses[0].formatted_address;
+            // waypoints.push(current_location);
+            update_way_address(current_location, way_no)
+        }
+    });
+}
+
+function update_way_address(str, way_no) {
+    console.log(str+"<>"+way_no);
+    $('.address'+way_no).val(str);
+}
+
+function setupAutocomplete(autocomplete, inputs, i, last_waypoint_no) {
+    console.log('setupAutocomplete...');
+
+        // autocomplete[i] = new google.maps.places.Autocomplete(inputs[i], autocompleteOptions);
+        // Saved My DAY
+        autocomplete.push(new google.maps.places.Autocomplete(inputs[i], autocompleteOptions));
+        var idx = autocomplete.length - 1;
+        //autocomplete[i].bindTo('bounds', map);
+        autocomplete[idx].bindTo('bounds', map);
+
+        google.maps.event.addListener(autocomplete[idx], 'place_changed', function() {
+            console.log(last_waypoint_no, "<--- Waypoint ");
+            var place_n = autocomplete[idx].getPlace();
+            // This will return the nearest address and add as waypoint
+            update_way_addressfun(place_n.geometry.location, last_waypoint_no);
+            if($('#address1').val().length > 0 && $('#address2').val().length >0)
+            {
+                console.log("searchbox waypoint "+last_waypoint_no+"  make route");
+                setTimeout(function() {
+                    calcRoute();
+                }, 500);
+            }
+        });
+    }
+
+
+// drag make possible
+
+var geocoder = new google.maps.Geocoder();
+
+function geocodePosition(pos,box_no) {
+    geocoder.geocode({
+    latLng: pos
+    }, function(responses) {
+    if (responses && responses.length > 0) {
+        if(box_no == '1'){
+            updateMarkerAddress1(responses[0].formatted_address);
+        }
+        else{
+            updateMarkerAddress2(responses[0].formatted_address);
+        }
+
+    } else {
+        if(box_no == '1'){
+            updateMarkerAddress1('Cannot determine address at this location.');
+        }
+        else{
+            updateMarkerAddress2('Cannot determine address at this location.');
+        }
+    }
+    });
+}
+
+function updateMarkerPosition(latLng) {
+    var str =  latLng.lat() +" "+ latLng.lng();
+    $('#info').val(str);
+}
+
+function updateMarkerAddress1(str) {
+    $('#address1').val(str);
+}
+function updateMarkerAddress2(str) {
+    $('#address2').val(str);
+}
+// drag end
+var mj;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var rendererOptions = {
+  draggable: true
+};
+
+function initialize() {
+    directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+    var mapOptions = {
+      zoom: 6,
+      center: chicago
+    }
+
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    zoom: 6,
+    center: chicago
+    });
+
+    //   var defaultBounds = new google.maps.LatLngBounds(
+    //   new google.maps.LatLng(-33.8902, 151.1759),
+    //   new google.maps.LatLng(-33.8474, 151.2631));
+    //   map.fitBounds(defaultBounds);
+    //   map.setZoom(10);
+
+    // direction service code
+    directionsDisplay.setMap(map);
+    // to load route from data
+    calcRoute();
+    // google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+    //   //   computeTotalDistance(directionsDisplay.getDirections());
+    //   directionsDisplay.setMap(map);
+    //   calcRoute();
+    //   });
+
+    // Dynamic waypoints seach box enabling code starts here
+
+    // Dynamic waypoints seach box enabling code ends here
+
+
+    // search box defined here
+    var input_first = $('.pac-input')[0];
+    var input_last = $('.pac-input')[1];
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var searchBox_first = new google.maps.places.SearchBox((input_first));
+    var searchBox_last = new google.maps.places.SearchBox((input_last));
+
+    // search function start here
+    google.maps.event.addListener(searchBox_first, 'places_changed', function() {
+          console.log("searchbox first");
+        var places = searchBox_first.getPlaces();
+        if (places.length == 0) {
+          return;
+        }
+        for (var i = 0, marker; marker = markers[i]; i++) {
+          marker.setMap(null);
+        }
+        // For each place, get the icon, place name, and location.
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0, place; place = places[i]; i++) {
+              // Create a marker for each place.
+               marker = new google.maps.Marker({
+                map: map,
+                title: place.name,
+                position: place.geometry.location,
+                draggable: true
+              });
+            $(".latitude_first").val(place.geometry.location.lat());
+            $(".longitude_first").val(place.geometry.location.lng());
+            updateMarkerPosition(marker.getPosition());
+            geocodePosition(marker.getPosition(),'1');
+
+            google.maps.event.addListener(marker, 'dragend', function() {
+                geocodePosition(marker.getPosition(),'1');
+                $(".latitude_first").val(marker.getPosition().lat());
+                $(".longitude_first").val(marker.getPosition().lat());
+            });
+            markers.push(marker);
+            bounds.extend(place.geometry.location);
+        }
+        if($('#address2').val().length > 0 && $('#address2').val() != 'undefined')
+        {
+            console.log("searchbox last make route");
+            setTimeout(function() {
+                calcRoute();
+            }, 500);
+        }
+        else{
+            map.fitBounds(bounds);
+            map.setZoom(9);
+        }
+    });
+
+    // google.maps.event.addListener(map, 'bounds_changed', function() {
+    //     var bounds = map.getBounds();
+    //     searchBox1.setBounds(bounds);
+    //     // map.setZoom(9);
+    //   });
+
+
+    google.maps.event.addListener(searchBox_last, 'places_changed', function() {
+        console.log("searchbox last");
+        var places1 = searchBox_last.getPlaces();
+        if (places1.length == 0) {
+        return;
+        }
+        for (var i = 0, marker; marker = markers[i]; i++) {
+        marker.setMap(null);
+        }
+        // For each place, get the icon, place name, and location.
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0, place; place = places1[i]; i++) {
+        // Create a marker for each place.
+        marker = new google.maps.Marker({
+              map: map,
+              title: place.name,
+              position: place.geometry.location,
+              draggable: true
+        });
+        $(".latitude_last").val(place.geometry.location.lat());
+        $(".longitude_last").val(place.geometry.location.lng());
+        updateMarkerPosition(marker.getPosition());
+        geocodePosition(marker.getPosition(),'2');
+
+        google.maps.event.addListener(marker, 'dragend', function() {
+          geocodePosition(marker.getPosition(),'2');
+          $(".latitude_last").val(marker.getPosition().lat());
+          $(".longitude_last").val(marker.getPosition().lat());
+        });
+        markers.push(marker);
+        bounds.extend(place.geometry.location);
+        }
+        if($('#address1').val().length > 0 && $('#address1').val() != 'undefined')
+        {
+            console.log("searchbox last make route");
+            setTimeout(function() {
+                calcRoute();
+            }, 500);
+        }
+        else{
+            map.fitBounds(bounds);
+            map.setZoom(9);
+        }
+    });
+    //   google.maps.event.addListener(map, 'bounds_changed', function() {
+    //   var bounds = map.getBounds();
+    //   searchBox2.setBounds(bounds);
+    //   map.setZoom(10);
+    // });
+
+}
+//initial function close here
+
+
+// calculate route function
+function calcRoute() {
+    var start = $('#address1').val();
+    var end = $('#address2').val();
+    console.log("Start-->"+start  + " "+ "end-->"+end);
+    console.log("Enter into dragon");
+    var way_points_arr = [];
+    for(var i=1; i<=parseInt($('.total_waypoint').val());i++){
+        way_points_arr.push({
+            // rearest address is used to calculate route
+            location:$('.address'+i).val(),
+            stopover:true});
+    }
+    console.log(way_points_arr);
+
+    var request = {
+      origin: start,
+      destination: end,
+      waypoints: way_points_arr,
+      optimizeWaypoints: true,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay.setDirections(response);
+          console.log("Done");
+          var route = response.routes[0];
+          $('.total_distance').html(route.legs[0].distance.text);
+          $('.total_distance').eq(1).val(route.legs[0].distance.text);
+          $('.total_hours').html(route.legs[0].duration.text);
+          $('.total_hours').eq(1).val(route.legs[0].duration.text);
+          console.log(route.legs[0].distance.text);
+          console.log(route.legs[0].duration.text);
+        //   var summaryPanel = document.getElementById('directions_panel');
+        //   summaryPanel.innerHTML = '';
+          // For each route, display summary information.
+        //   for (var i = 0; i < route.legs.length; i++) {
+        //     var routeSegment = i + 1;
+        //     summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment + '</b><br>';
+        //     summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+        //     summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+        //     summaryPanel.innerHTML += route.legs[i].distance.text + '<br>';
+        //     summaryPanel.innerHTML += route.legs[i].duration.text + '<br>';
+        //   }
+        }
+    });
+}
+
+//to compute total distance function
+function computeTotalDistance(result) {
+var total = 0;
+var myroute = result.routes[0];
+for (var i = 0; i < myroute.legs.length; i++) {
+total += myroute.legs[i].distance.value;
+}
+total = total / 1000.0;
+document.getElementById('total').innerHTML = total + ' km';
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+
+<!-- <div class="container">
+  <div class="row">
+    <div class="col-lg-6 col-sm-3 col-md-4 col-xs-12">
+      <div class="logo"><a href="index.html"><img width="155" height="88" alt="" src="images/logo.jpg"></a></div>
+    </div>
+    My account dropdown
+    <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
+      <div class="dropdown">
+        <button aria-expanded="true" data-toggle="dropdown" id="dropdownMenu1" type="button" class="btn my-account btn-default dropdown-toggle"> <i class="glyphicon glyphicon-user"></i> My Account <span class="caret"></span> </button>
+        <ul aria-labelledby="dropdownMenu1" role="menu" class="dropdown-menu">
+          <li role="presentation"><a href="my-account.html" tabindex="-1" role="menuitem">
+            <h4>John Smith</h4>
+            <p>View Profile</p>
+            </a>
+            <hr style="margin:5px 0;">
+          </li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Log Out</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Account Settings</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Change Password</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Another action</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Sync with mobile app Options</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Payment Options</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Payment History</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Set default calendar view</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Set language</a></li>
+          <li role="presentation"><a href="#" tabindex="-1" role="menuitem">Email notifications</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="contan-eria">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div role="tabpanel">
+          <ul role="tablist" class="nav nav-tabs text-center">
+            <li role="presentation" class=""><a href="{% url 'calender_prime' %}" class="right-tab">
+                <i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
+            <li role="presentation" class="active"><a href="{% url 'add_route_prime' %}" class="right-tab"  aria-expanded="true">
+                <i class="glyphicon glyphicon-map-marker"></i> Route Map</a></li>
+          </ul>
+          <div class="tab-content tab-content-2">
+            <div role="tabpanel" class="tab-pane active " id="profile">
+              <div class="row">
+                <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
+                  <div class="left-map">
+                      <!-- form start -->
+                      <form name="create_route_form" action="{% url 'create_route' %}" method="POST">
+                          {% csrf_token %}
+                    <h3>Route</h3>
+                    <a href="#" class="btn btn-primary margin-top15" role="button">Add New Route</a>
+                    <div>&nbsp;</div>
+                    <div class="cl"></div>
+                    <ul id="myList">
+                      <li class="title">
+
+                        <h4>Trip Title  : </h4>
+                        <input type="text" class="form-control" name="trip_title" value="{{ route_obj.trip_title }}" placeholder="Trip Title"/>
+                        <h4>Trip Date  : </h4>
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" name="trip_datetime" placeholder="Trip date" value="{{ route_obj.trip_datetime }}"/>
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                          <!--  map-input -->
+                        <!-- <h4>Trip Date  : </h4> -->
+                        <!-- <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" name="route_date" placeholder="Trip date"/>
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div> -->
+
+                        {% with location_obj|first as data %}
+                        <h4>Start location : </h4>
+                        <input class="controls form-control pac-input" type="text" value="{{ data.location_address }}" placeholder="Search Box" name="start_search_address">
+                        <h4> Nearest Address</h4>
+                        <input id="address1" class="controls form-control" type="text" value="{{ data.location_near_address }}" placeholder="Start location Address" name="start_near_address">
+                        <h4>start location Note:</h4>
+                        <input class="form-control" id="start_location_note" value="{{ data.location_note }}"placeholder="Note for start location" name="start_note_location"></input>
+                        <input TYPE="hidden" name="latitude_first" class="latitude_first form-control" value="{{ data.location_lat }}" />
+                        <input TYPE="hidden" name="longitude_first" class="longitude_first form-control" value="{{ data.location_long }}" />
+                        <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                        {% endwith %}
+
+                        <!-- <input type="text" placeholder="Start Location" class="map-input" name="">
+                        <input type="text" placeholder="Note for Location" class="map-input map-input-2" name=""> -->
+
+                        <!--  Remove Icon
+                        <a href="#"><i class="glyphicon glyphicon-remove"></i></a>
+                        -->
+                    </li>
+
+                      <!-- <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="color:#000; text-decoration:none; outline:none; ">
+                      <h4> Add New Location</h4>
+                  </a> -->
+
+                    <li class="add_waypoint_container">
+                        <input type="hidden" name="total_waypoint" class="total_waypoint" value="{{ total_way_point }}"> </input>
+                        <a role="button" class="btn btn-primary btn-1 add_more_waypoint" style="cursor:pointer;">Add More Location</a>
+
+                        <!-- multiple waypoint start -->
+                        {% for way_point in location_obj %}
+                        {% if way_point.location_number not in start_end  %}
+                        <li class="title">
+                            <h4>Waypoint No{{ way_point.location_number }} : </h4>
+                            <input class="controls form-control pac-input" type="text" value="{{ way_point.location_address }}" placeholder="Search Box" name="search_address{{ way_point.location_number }}" autocomplete="off">
+                            <h4> Waypoint {{ way_point.location_number }}  Nearest Address</h4>
+                            <input class="controls form-control address{{ way_point.location_number }}" value="{{ way_point.location_near_address }}" type="text" placeholder="Waypoint {{ way_point.location_number }} Nearest address" name="near_address{{ way_point.location_number }}">
+                            <h4>Waypoint {{ way_point.location_number }} Note:</h4>
+                            <input class="form-control" placeholder="Note for Waypoint {{ way_point.location_number }}" value="{{ way_point.location_note }}" name="note_waypoint{{ way_point.location_number }}">
+                            <input type="hidden" name="latitude{{ way_point.location_number }}" class="latitude{{ way_point.location_number }} form-control" value="{{ way_point.location_lat }}">
+                            <input type="hidden" name="longitude{{ way_point.location_number }}" class="longitude{{ way_point.location_number }} form-control" value="{{ way_point.location_lng }}">
+                            <input type="hidden" name="marker_status{{ way_point.location_number }}" class="form-control" id="info">
+                            <input type="hidden" name="my_waypoint_no" class="my_waypoint_no" value="1">
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        <!-- multiple waypoint end-->
+
+                    </li>
+
+
+
+
+                      <li>
+                        <div class="collapse title margin-top15" id="collapseExample">
+                          <input type="text" placeholder="12 Akts apt paldi " class="map-input" name="">
+                          <input type="text" placeholder="Fan Repair" class="map-input map-input-2" name="">
+                          <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div>
+                      </li>
+
+
+                        <div class="margin-top15 title">
+                          <!-- <input type="text" placeholder="End Location" class="map-input" name="">
+                          <input type="text" placeholder="Note for Location" class="map-input map-input-2" name="">
+                          <a href="#"><i class="glyphicon glyphicon-remove"></i></a> </div> -->
+                        <!-- <input class="date-picker map-input" type="text"/> -->
+                        <li>
+
+                        <h4>End Location : </h4>
+                        {% for obj in location_obj %}
+                        {% if obj.location_number == 22 %}
+                        <input class="controls form-control pac-input" type="text" value="{{ obj.location_address }}" placeholder="Search Box" name="end_search_address">
+                        <h4> End Location Nearest Address</h4>
+                        <input id="address2" class="controls form-control" type="text"
+                        value="{{ obj.location_near_address }}" placeholder="End Location Nearest address" name="end_near_address">
+                        <h4>End Location Add Note:</h4>
+                        <input class="form-control" id="end_location_note" placeholder="Note for end location"
+                        value="{{ obj.location_note }}" name="end_note_location"></input>
+                        <input TYPE="hidden" name="latitude_last" class="latitude_last form-control"
+                        value="{{ obj.location_lat }}" />
+                        <input TYPE="hidden" name="longitude_last" class="longitude_last form-control"
+                        value="{{ obj.location_long }}" />
+                        <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                        {% endif %}
+                        {% endfor %}
+                      </li>
+
+                    </ul>
+                    <div class="title">
+                        <h4>Total distance:<h4 class="total_distance">{{ route_obj.total_distance }} KM</h4> </h4>
+                        <input type="text" name="total_distance" class="form-control total_distance" value="{{ route_obj.total_distance }}"/>
+                        <h4>Total time: <h4 class="total_hours"> {{ route_obj.total_time }}</h4></h4>
+                        <input type="text" name="total_hours" class="form-control total_hours" value="{{ route_obj.total_time }}"/>
+                    </div>
+                    <div class="cl"></div>
+                    <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route"></input>
+                    <div>&nbsp;</div>
+                  </div>
+              </form>
+                  <!-- form end -->
+                </div>
+                <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
+                    <div class="map-box">
+                      <div id="map-canvas"></div>
+                      <!--  Here comes the map div-->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    //Added by Jay Modi
+    //to load bootstrap datepicker
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            icons: {
+        time: "fa fa-clock-o",
+        date: "fa fa-calendar",
+        up: "fa fa-arrow-up",
+        down: "fa fa-arrow-down"
+    }
+        });
+    });
+</script>
+
+
+{% endblock %}
