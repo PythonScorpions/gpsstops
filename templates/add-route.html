@@ -11,7 +11,7 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
 <script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/src/js/bootstrap-datetimepicker.js"></script>
 <link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-<script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
+<!-- <script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script> -->
 
 
 <script>
@@ -72,10 +72,10 @@
 var map;
 var markers = [];
 var autocomplete = [];
-
 var autocompleteOptions = {
     //componentRestrictions: {country: "az"}
 };
+waypoints = [];
 
 
 $(document).ready(function(){
@@ -91,14 +91,33 @@ $(document).ready(function(){
         var newInput = [];
         var newEl = $('.pac-input')[last_waypoint_no];
         newInput.push(newEl);
-        setupAutocomplete(autocomplete, newInput, 0);
+        setupAutocomplete(autocomplete, newInput, 0, last_waypoint_no);
         // adding new waypoint
         $('.total_waypoint').val(last_waypoint_no);
     });
 
 });
 
-function setupAutocomplete(autocomplete, inputs, i) {
+function update_way_addressfun(latlng_data, way_no){
+    $('.latitude'+way_no).val(latlng_data.lat());
+    $('.longitude'+way_no).val(latlng_data.lng());
+    geocoder.geocode({
+    latLng: latlng_data
+    }, function(responses) {
+        if (responses && responses.length > 0) {
+            current_location = responses[0].formatted_address;
+            // waypoints.push(current_location);
+            update_way_address(current_location, way_no)
+        }
+    });
+}
+
+function update_way_address(str, way_no) {
+    console.log(str+"<>"+way_no);
+    $('.address'+way_no).val(str);
+}
+
+function setupAutocomplete(autocomplete, inputs, i, last_waypoint_no) {
     console.log('setupAutocomplete...');
 
         // autocomplete[i] = new google.maps.places.Autocomplete(inputs[i], autocompleteOptions);
@@ -109,9 +128,11 @@ function setupAutocomplete(autocomplete, inputs, i) {
         autocomplete[idx].bindTo('bounds', map);
 
         google.maps.event.addListener(autocomplete[idx], 'place_changed', function() {
-            console.log("yeyyyy");
+            console.log(last_waypoint_no, "<--- Waypoint ");
+            var place_n = autocomplete[idx].getPlace();
+            // This will return the nearest address and add as waypoint
+            update_way_addressfun(place_n.geometry.location, last_waypoint_no);
         });
-
     }
 
 
