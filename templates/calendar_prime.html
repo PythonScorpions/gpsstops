@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
@@ -6,79 +5,120 @@
 {% include "logo_account.html" %}
 
 <div class="contan-eria">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div role="tabpanel">
-          <ul role="tablist" class="nav nav-tabs text-center">
-            <li role="presentation" class="active"><a href="calendar.html" class="right-tab"><i class="glyphicon glyphicon-calendar"></i> Calendar </a></li>
-            <li role="presentation" class=""><a href="{% url 'add_route_prime' %}" class="right-tab"  aria-expanded="true"><i class="glyphicon glyphicon-map-marker"></i> Route Map </a></li>
-          </ul>
-          <div class="tab-content tab-content-2">
-            <div role="tabpanel" class="tab-pane active" id="home">
-              <div id="myModal" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none; ">
-                <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
-                  <h4 style="  margin: 0 0 15px;">Route Title</h4>
-                  <form role="form">
-                    <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Start location name">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div role="tabpanel">
+
+                    <ul role="tablist" class="nav nav-tabs text-center">
+                        <li role="presentation" class="active">
+                            <a href="{% url 'calender_prime' %}" class="right-tab">
+                                <i class="glyphicon glyphicon-calendar"></i> Calendar
+                            </a>
+                        </li>
+                        <li role="presentation" class="">
+                            <a href="{% url 'add_route_prime' %}" class="right-tab"  aria-expanded="true">
+                                <i class="glyphicon glyphicon-map-marker"></i> Route Map
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content tab-content-2">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div id="myModal" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                 aria-hidden="true" style="display: none; ">
+                                <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
+                                    <h4 style="  margin: 0 0 15px;">Route Title</h4>
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Start location name">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="End location name">
+                                        </div>
+                                        <div class="form-group">
+                                            <a href="add-route2.html" class="btn btn-primary">Find Route</a></div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <a href="{% url 'add_route_prime' %}" class="btn btn-primary">Add New Route</a>
+                            <div class="calender">
+                                <div class="drag">
+                                    <a data-toggle="modal" href="#myModal" >
+                                        <i class="glyphicon glyphicon-map-marker"></i>
+                                    </a>
+                                </div>
+                                <div id="myModal2" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                     aria-hidden="true" style="display: none; ">
+                                    <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
+                                        <h4 style="  margin: 0 0 15px;">Route Title</h4>
+                                            <form role="form" class="pre-scrollable">
+                                                <div class="title">
+                                                    <a href="#">
+                                                        <h5>Rout Title............ </h5>
+                                                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                                                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                                                    </a>
+                                                </div>
+                                                <div class="title">
+                                                    <a href="#">
+                                                        <h5>Rout Title............ </h5>
+                                                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                                                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                                                    </a>
+                                                </div>
+                                                <div class="title">
+                                                    <a href="#">
+                                                        <h5>Rout Title............ </h5>
+                                                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
+                                                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                <div class="drag-day">
+                                    <a data-toggle="modal" href="#myModal2" ><i class="glyphicon glyphicon-map-marker"></i></a>
+                                </div>
+                                <div id="calendar" class="fc"> </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                      <input type="text" class="form-control" placeholder="End location name">
-                    </div>
-                    <div class="form-group"> <a href="add-route2.html" class="btn btn-primary">Find Route</a></div>
-                  </form>
                 </div>
-              </div>
-              <a href="add-route.html" class="btn btn-primary">Add New Route</a>
-              <div class="calender">
-                <div class="drag"> <a data-toggle="modal" href="#myModal" ><i class="glyphicon glyphicon-map-marker"></i></a> </div>
-                <div id="myModal2" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none; ">
-                  <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
-                    <h4 style="  margin: 0 0 15px;">Route Title</h4>
-                    <form role="form" class="pre-scrollable">
-                      <div class="title"> <a href="#">
-                        <h5>Rout Title............ </h5>
-                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                        </a> </div>
-                      <div class="title"> <a href="#">
-                        <h5>Rout Title............ </h5>
-                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                        </a> </div>
-                      <div class="title"> <a href="#">
-                        <h5>Rout Title............ </h5>
-                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                        </a> </div>
-                      <div class="title"> <a href="#">
-                        <h5>Rout Title............ </h5>
-                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                        </a> </div>
-                      <div class="title"> <a href="#">
-                        <h5>Rout Title............ </h5>
-                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                        </a> </div>
-                      <div class="title"> <a href="#">
-                        <h5>Rout Title............ </h5>
-                        <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                        <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                        </a> </div>
-                    </form>
-                  </div>
-                </div>
-                <div class="drag-day"> <a data-toggle="modal" href="#myModal2" ><i class="glyphicon glyphicon-map-marker"></i></a> </div>
-                <div id="calendar" class="fc"> </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
+
+
+<script>/* Javascript */
+$(function () {
+	var date = new Date();
+	var d = date.getDate();
+	var m = date.getMonth();
+	var y = date.getFullYear();
+	$('#calendar').fullCalendar({
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,agendaWeek,agendaDay'
+		},
+        events: [
+					{
+						title: 'yes',
+						start: new Date(y, m, 1)
+					}
+                ],
+        eventRender: function(event, element)
+        {
+            element.css('background-image', 'url(static/images/map.jpg)');
+            element.css('background-repeat', 'no-repeat');
+            element.css('text-align: center');
+        },
+
+		editable: true
+	});
+});</script>
 
 {% endblock %}
