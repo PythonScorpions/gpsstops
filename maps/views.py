@@ -21,7 +21,6 @@ class Create_Route(View):
         trip_datetime = datetime.datetime.strptime(str(request.POST['trip_datetime']), "%m/%d/%Y %I:%M %p")
         print trip_title
         print type(trip_datetime),"-----------------",trip_datetime
-        raw_input("wait here")
         total_time = request.POST['total_hours']
         if '.' in request.POST['total_distance']:
             total_distance = float(request.POST['total_distance'][:-3])
@@ -151,3 +150,14 @@ class Edit_Route(View):
         active = "maps"
         flag="maps"
         return render(request, self.template2, locals())
+
+
+class Routes(View):
+    template1 = "routes.html"
+
+    def get(self, request):
+        routes = Route.objects.filter(user=request.user)
+
+        active = "maps"
+        flag = "maps"
+        return render(request, self.template1, locals())
