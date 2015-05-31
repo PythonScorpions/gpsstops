@@ -1,181 +1,68 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Global</title>
-<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-<link href="css/fullcalendar.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-function MM_jumpMenu(targ,selObj,restore){ //v3.0
-  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
-  if (restore) selObj.selectedIndex=0;
-}
-</script>
-</head>
-<body>
-<div class="menu">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-        <nav class="navbar navbar-default" role="navigation">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-            <a class="navbar-brand visible-xs" href="#">MEMU</a> </div>
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav margin-top15">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="#">Download</a></li>
-              <li><a href="#">Supports</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#" style="border:none;">Contact</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="cl"></div>
-<div class="container">
-  <div class="row">
-    <div class="col-lg-6 col-sm-3 col-md-4 col-xs-12">
-      <div class="logo"><a href="index.html"><img width="155" height="88" alt="" src="images/logo.jpg"></a></div>
-    </div>
-    <div class="col-lg-6 col-sm-9 col-md-8 col-xs-12">
-      <div class="dropdown">
-        <button class="btn my-account btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true"> <i class="glyphicon glyphicon-user"></i> My Account <span class="caret"></span> </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="my-account.html">
-            <h4>John Smith</h4>
-            <p>View Profile</p>
-            </a>
-            <hr style="margin:5px 0;" />
-          </li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Log Out</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Account Settings</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change Password</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sync with mobile app Options</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment Options</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment History</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set default calendar view</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set language</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Email notifications</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "logo_account.html" %}
+
+{% load location_title_tags %}    
+    
 <div class="contan-eria">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div role="tabpanel">
-          <ul role="tablist" class="nav nav-tabs text-center">
-            <li role="presentation" class=""><a href="calendar.html" class="right-tab"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
-            <li role="presentation" class="active"><a href="add-route1.html" class="right-tab"  aria-expanded="true"><i class="glyphicon glyphicon-map-marker"></i> Route Map</a></li>
-          </ul>
-          <div class="tab-content tab-content-2">
-            <div role="tabpanel" class="tab-pane active" id="profile">
-              <div class="row">
-                <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
-                  <div class="left-map left-map2">
-                    <h3> Route </h3>
-                    <a role="button" class="btn btn-primary btn-1" href="add-route.html" style="margin: 10px 0px;">Add New Route</a>
-                    <div class="cl"></div>
-                    <div class="row">
-                      <div class="col-lg-12">
-                        <div class="">
-                          <div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div>
-                          <div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div><div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div><div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div><div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div><div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div><div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div><div class="title"> <a href="#">
-                            <h5>Rout Title............ </h5>
-                            <p>Location: Paldi, Vasna, Vejalpur, Prahaladnagar </p>
-                            <p><span>Date 10th May 2015 | Distance: 25 Kms. Time: 2 hrs </span></p>
-                            </a> </div>
-                          
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div role="tabpanel">
+                    <ul role="tablist" class="nav nav-tabs text-center">
+                        <li role="presentation" class="">
+                            <a href="{% url 'calender_prime' %}" class="right-tab">
+                                <i class="glyphicon glyphicon-calendar"></i> Calendar
+                            </a>
+                        </li>
+                        <li role="presentation" class="active">
+                            <a href="{% url 'add_route_prime' %}" class="right-tab"  aria-expanded="true">
+                                <i class="glyphicon glyphicon-map-marker"></i> Route Map
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content tab-content-2">
+                        <div role="tabpanel" class="tab-pane active" id="profile">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
+                                    <div class="left-map left-map2">
+                                        <h3> Route </h3>
+                                            <a role="button" class="btn btn-primary btn-1" href="{% url 'add_route_prime' %}"
+                                               style="margin: 10px 0px;">Add New Route
+                                            </a>
+                                        <div class="cl"></div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="">
+                                                    {% for route in routes %}
+                                                        <div class="title">
+                                                            <a href="{% url 'edit-route' route.id %}">
+                                                                <h5>{{ route.trip_title }} </h5>
+                                                                <p>Location: {% for location in route.route_locations.all %}{% retrieve_title location.location_address %}, {% endfor %} </p>
+                                                                <p><span>Date: {{ route.trip_datetime }} | Distance: {{ route.total_distance }} Kms. Time: {{ route.total_time }} </span></p>
+                                                            </a>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
+                                    <div class="map-box">
+                                        <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d58732.923427602036!2d72.6133169!3d23.0675101!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1431942143565" width="100%" height="450" frameborder="0" style="border:0"></iframe>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
                 </div>
-                <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
-                  <div class="map-box">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d58732.923427602036!2d72.6133169!3d23.0675101!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1431942143565" width="100%" height="450" frameborder="0" style="border:0"></iframe>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
-<div class="fotter">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6 col-bd-6 col-sm-6 col-xs-12">
-        <div class="fotter-nav">
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a style="border:none;" href="#">Blog</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-lg-6 col-bd-6 col-sm-6 col-xs-12">All Rights Reserved 2015</div>
-    </div>
-  </div>
-</div>
-<script src="js/jquery.min.js"></script> 
-<script class="cssdesk" src="js/jquery-ui.min.js" type="text/javascript"></script> 
-<script class="cssdesk" src="js/fullcalendar.min.js" type="text/javascript"></script> 
-<script>/* Javascript */
-$(function () {
-	var date = new Date();
-	var d = date.getDate();
-	var m = date.getMonth();
-	var y = date.getFullYear();
-	$('#calendar').fullCalendar({
-		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'month,agendaWeek,agendaDay'
-		},
-		editable: true
-	});
-});</script> 
-<script src="js/bootstrap.js"></script>
-</body>
-</html>
+
+{% endblock %}
