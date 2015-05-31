@@ -15,7 +15,7 @@ class Route(models.Model):
 
 
 class Location(models.Model):
-    route = models.ForeignKey(Route)
+    route = models.ForeignKey(Route, related_name='route_locations')
     location_address = models.CharField(max_length=200, blank=True, null=True)
     location_near_address = models.CharField(max_length=200, blank=True, null=True)
     location_lat = models.DecimalField(max_digits=19, decimal_places=15,blank=True, null=True)
