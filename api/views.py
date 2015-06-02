@@ -29,26 +29,26 @@ class CreateUser(APIView):
         if User.objects.filter(email=request.data['email']):
             return Response({'code': 1, 'status': 200, 'message': 'Email Already Exist'})
         else:
-            try:
-                user_data = User(email=request.data['email'], username=request.data['email'],)
-                user_data.first_name = request.data['name']
-                user_data.password = make_password(request.data['password'])
-                user_data.is_active = False
-                user_data.save()
-                user_profile_data = UserProfiles(user=user_data, address=request.data['address'],
-                                                 city=request.data['city'], state=request.data['state'],
-                                                 zip_code=request.data['zip_code'], country=request.data['country'],
-                                                 phone_number=request.data['phone_number'],
-                                                 occupation=request.data['occupation'],
-                                                 company_name=request.data['company_name'])
-                user_profile_data.save()
-                message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
+            # try:
+            user_data = User(email=request.data['email'], username=request.data['email'],)
+            user_data.first_name = request.data['name']
+            user_data.password = make_password(request.data['password'])
+            user_data.is_active = False
+            user_data.save()
+            user_profile_data = UserProfiles(user=user_data, address=request.data['address'],
+                                             city=request.data['city'], state=request.data['state'],
+                                             zip_code=request.data['zip_code'], country=request.data['country'],
+                                             phone_number=request.data['phone_number'],
+                                             occupation=request.data['occupation'],
+                                             company_name=request.data['company_name'])
+            user_profile_data.save()
+            message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
-                send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user_data.email)],
-                          fail_silently=False)
-                return Response({'code': 0, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
-            except:
-                return Response({'code': 1, 'status': 200, 'message': 'All fields are mandatory'})
+            send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user_data.email)],
+                      fail_silently=False)
+            return Response({'code': 0, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
+            # except:
+            #     return Response({'code': 1, 'status': 200, 'message': 'All fields are mandatory'})
 
 
 class UpdateUser(APIView):
