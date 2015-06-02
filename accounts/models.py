@@ -18,9 +18,9 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 class UserProfiles(models.Model):
 
     user = models.OneToOneField(User, related_name='user_profiles')
-    address = models.CharField(max_length=150)
-    city = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
+    address = models.CharField(max_length=300)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
     zip_code = models.IntegerField(default=0)
     country = CountryField()
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
