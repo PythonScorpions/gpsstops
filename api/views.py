@@ -120,10 +120,10 @@ class ObtainAuthToken(APIView):
             serializer.is_valid()
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
-            return Response({'code': 0, 'status': 200, 'Data': {'user_id': user.id},
+            return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
                              'message': 'User is Logged In'})
         except:
-            return Response({'code': 1, 'status': 200, 'Data': 'Null',
+            return Response({'code': 0, 'status': 200, 'Data': 'Null',
                              'message': 'Wrong Credentials'})
 
 
