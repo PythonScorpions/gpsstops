@@ -29,7 +29,7 @@ class CreateUser(APIView):
     def post(self, request, *args, **kwargs):
 
         if User.objects.filter(email=request.data['email']):
-            return Response({'code': 1, 'status': 200, 'message': 'Email Already Exist'})
+            return Response({'code': 0, 'status': 200, 'message': 'Email Already Exist'})
         else:
             try:
                 user_data = User(email=request.data['email'], username=request.data['email'],)
@@ -50,9 +50,9 @@ class CreateUser(APIView):
 
                 send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user_data.email)],
                           fail_silently=False)
-                return Response({'code': 0, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
+                return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
-                return Response({'code': 1, 'status': 200, 'message': 'All fields are mandatory'})
+                return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
 
 
 class UpdateUser(APIView):
@@ -63,7 +63,7 @@ class UpdateUser(APIView):
         user_id = self.kwargs['pk']
 
         if not User.objects.filter(id=int(user_id)):
-            return Response({'code': 1, 'status': 200, 'message': 'User does not Exist'})
+            return Response({'code': 0, 'status': 200, 'message': 'User does not Exist'})
         else:
             try:
                 user_data = User.objects.get(id=int(user_id))
@@ -82,9 +82,9 @@ class UpdateUser(APIView):
 
                 user_profile_data.save()
 
-                return Response({'code': 0, 'status': 200, 'Data': 'Null', 'message': 'User has been updated'})
+                return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been updated'})
             except:
-                return Response({'code': 1, 'status': 200, 'message': 'All fields are mandatory'})
+                return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
 
 
 class LoginUser(APIView):
@@ -98,13 +98,13 @@ class LoginUser(APIView):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return Response({'code': 0, 'status': 200, 'Data': {'user_id': request.user.id},
+                return Response({'code': 1, 'status': 200, 'Data': {'user_id': request.user.id},
                                  'message': 'User is Logged In'})
             else:
-                return Response({'code': 1, 'status': 200, 'Data': 'Null',
+                return Response({'code': 0, 'status': 200, 'Data': 'Null',
                                  'message': 'User has not verified Email'})
         else:
-            return Response({'code': 1, 'status': 200, 'Data': 'Null',
+            return Response({'code': 0, 'status': 200, 'Data': 'Null',
                              'message': 'Wrong Credentials'})
 
 class ObtainAuthToken(APIView):
@@ -120,7 +120,7 @@ class ObtainAuthToken(APIView):
             serializer.is_valid()
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
-            return Response({'code': 0, 'status': 200, 'Data': {'user_id': request.user.id},
+            return Response({'code': 0, 'status': 200, 'Data': {'user_id': user.id},
                              'message': 'User is Logged In'})
         except:
             return Response({'code': 1, 'status': 200, 'Data': 'Null',
@@ -140,9 +140,9 @@ class CurrentUser(APIView):
             final_data = dict(serializer.data.items() + profile_serializer.data.items())
             final_data['name'] = user_data.first_name
             final_data['user_id'] = user_data.id
-            return Response({'code': 0, 'status': 200, 'Data': final_data, 'message': 'current user details'})
+            return Response({'code': 1, 'status': 200, 'Data': final_data, 'message': 'current user details'})
         except:
-            return Response({'code': 1, 'status': 200, 'message': 'User does not exist'})
+            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
 
 
 class CountryList(APIView):
@@ -168,7 +168,7 @@ class ForgotPassword(APIView):
             c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
             send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'scorpionspython@gmail.com',
                       [email.email], fail_silently=False)
-            return Response({'code': 0, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
+            return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
 
         else:
-            return Response({'code': 1, 'status': 200, 'message': 'User does not exist'})
+            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
