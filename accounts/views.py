@@ -8,13 +8,30 @@ from django.contrib.auth import authenticate, login, logout
 from django.template import loader
 from django.contrib.sites.models import Site
 from gpsstops import settings
+from maps.models import *
+import datetime
 
 
-class IndexView(TemplateView):
+class IndexView(View):
     template_name = 'index.html'
 
-    def dispatch(self, *args, **kwargs):
-        return super(IndexView, self).dispatch(*args, **kwargs)
+    def get(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated():
+            today = datetime.date.today()
+            today_routes = Route.objects.filter(user=request.user)
+            final_routes = False
+            for route in today_routes:
+                if route.trip_datetime.day == today.day and route.trip_datetime.year == today.year and route.trip_datetime.month == today.month:
+                    final_routes = True
+                    break
+
+            if final_routes:
+                url_to_direct = '/maps/routes'
+            else:
+                url_to_direct = '/route/add'
+
+        return render(request, self.template_name, locals())
 
 
 def register(request):
@@ -72,7 +89,8 @@ class LoginView(TemplateView):
                     messages.success(request, "Your account is not activated yet, please check your email")
             else:
                 messages.success(request, "Invalid Email or Password")
-        return render_to_response(self.template_name, context_instance=RequestContext(request),)
+
+        return render_to_response(self.template_name, locals(), context_instance=RequestContext(request))
 
 
 def user_logout(request):
@@ -83,6 +101,24 @@ def user_logout(request):
 class Calender(TemplateView):
 
     template_name = 'calendar_prime.html'
+
+    def get(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated():
+            today = datetime.date.today()
+            today_routes = Route.objects.filter(user=request.user)
+            final_routes = False
+            for route in today_routes:
+                if route.trip_datetime.day == today.day and route.trip_datetime.year == today.year and route.trip_datetime.month == today.month:
+                    final_routes = True
+                    break
+
+            if final_routes:
+                url_to_direct = '/maps/routes'
+            else:
+                url_to_direct = '/route/add'
+
+        return render(request, self.template_name, locals())
 
 
 class ForgotPassword(TemplateView):
@@ -168,11 +204,21 @@ class Add_route_prime(View):
     template2 = "add-route.html"
 
     def get(self, request):
+
+        if request.user.is_authenticated():
+            today = datetime.date.today()
+            today_routes = Route.objects.filter(user=request.user)
+            final_routes = False
+            for route in today_routes:
+                if route.trip_datetime.day == today.day and route.trip_datetime.year == today.year and route.trip_datetime.month == today.month:
+                    final_routes = True
+                    break
+
+            if final_routes:
+                url_to_direct = '/maps/routes'
+            else:
+                url_to_direct = '/route/add'
+
         active = "maps"
         flag="maps"
         return render(request, self.template1, locals())
-
-    def post(self, request):
-        active = "maps"
-        flag="maps"
-        return render(request, self.template2, locals())
