@@ -7,9 +7,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.template import loader
 from django.contrib.sites.models import Site
-from gpsstops import settings
 from maps.models import *
 import datetime
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class IndexView(View):
@@ -99,9 +100,9 @@ def user_logout(request):
 
 
 class Calender(TemplateView):
-
     template_name = 'calendar_prime.html'
 
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
 
         if request.user.is_authenticated():
@@ -164,6 +165,7 @@ class UpdateProfile(UpdateView):
     template_name = 'my-account.html'
     form_class = ProfileUpdateForm
 
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=request.user)
         profile = UserProfiles.objects.get(user=user)
@@ -176,6 +178,7 @@ class UpdateProfile(UpdateView):
         return render_to_response(self.template_name, {'form': form, 'id': id},
                                   context_instance=RequestContext(request),)
 
+    @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         user = User.objects.get(username=request.user)
         profile = UserProfiles.objects.get(user=user)
@@ -203,6 +206,7 @@ class Add_route_prime(View):
     template1 = "add-route.html"
     template2 = "add-route.html"
 
+    @method_decorator(login_required)
     def get(self, request):
 
         if request.user.is_authenticated():
