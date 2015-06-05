@@ -4,18 +4,21 @@ from django.shortcuts import render_to_response, redirect, render
 from maps.models import *
 import datetime
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-# Create your views here.
 
 class Create_Route(View):
     template1 = "add-route.html"
     template2 = "add-route.html"
 
+    @method_decorator(login_required)
     def get(self, request):
         active = "maps"
         flag="maps"
         return render(request, self.template1, locals())
 
+    @method_decorator(login_required)
     def post(self, request):
         print "came in POST"
         trip_title = request.POST['trip_title']
@@ -78,6 +81,7 @@ class Edit_Route(View):
     template1 = "edit-route.html"
     template2 = "add-route.html"
 
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
         print "came in to get"
         id = int(self.kwargs['id'])
@@ -98,6 +102,7 @@ class Edit_Route(View):
 
         return render(request, self.template1, locals())
 
+    @method_decorator(login_required)
     def post(self, request, id):
         print "came in POST"
         trip_title = request.POST['trip_title']
@@ -165,6 +170,7 @@ class Edit_Route(View):
 class Routes(View):
     template1 = "routes.html"
 
+    @method_decorator(login_required)
     def get(self, request):
         today = datetime.date.today()
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=today)
