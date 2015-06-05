@@ -43,8 +43,6 @@ INSTALLED_APPS = (
     'maps'
 )
 
-ACCOUNT_ACTIVATION_DAYS = 7  # One-week activation window; you may, of course, use a different value.
-LOGIN_REDIRECT_URL = '/rango/'  # The page you want users to arrive at after they successful log in
 LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are not logged in
 
 MIDDLEWARE_CLASSES = (
