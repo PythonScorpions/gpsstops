@@ -7,12 +7,6 @@
 {% load location_title_tags %}
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-{#<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>#}
-{#<script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/src/js/bootstrap-datetimepicker.js"></script>#}
-{#<link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/build/css/bootstrap-datetimepicker.css" rel="stylesheet">#}
-<!-- <script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script> -->
-
-
 
 <script>
 $(function() {
@@ -55,8 +49,7 @@ function changeIds() {
         var lat_common = $(this).find(".lat_common");
         var lng_common = $(this).find(".lng_common");
         delete_a = $(this).find(".delete_waypoint");
-{#        console.log(address_common);#}
-{#        console.log(near_address_common);#}
+
         if (typeof(near_address_common[0]) != 'undefined'){
             if(l==2 && last_waypoint_no > 0){
                 l=3;
@@ -253,6 +246,7 @@ $(document).ready(function(){
         var newEl = $('.pac-input')[last_waypoint_no];
         console.log(newEl);
         newInput.push(newEl, "<--newEl");
+
         setupAutocomplete(autocomplete, newInput, 0, last_waypoint_no);
         // adding new waypoint
         $('.total_waypoint').val(last_waypoint_no);
@@ -261,6 +255,7 @@ $(document).ready(function(){
 });
 
 function update_way_addressfun(latlng_data, way_no){
+    console.log("to change");
     $('.latitude'+way_no).val(latlng_data.lat());
     $('.longitude'+way_no).val(latlng_data.lng());
     geocoder.geocode({
@@ -288,7 +283,7 @@ function setupAutocomplete(autocomplete, inputs, i, last_waypoint_no) {
     var idx = autocomplete.length - 1;
     //autocomplete[i].bindTo('bounds', map);
     autocomplete[idx].bindTo('bounds', map);
-    console.log(autocomplete[idx]);
+    console.log(autocomplete[idx], '-000000000000000000000');
     google.maps.event.addListener(autocomplete[idx], 'place_changed', function() {
         console.log(last_waypoint_no, "<--- Waypoint ");
         var place_n = autocomplete[idx].getPlace();
@@ -337,6 +332,7 @@ function updateMarkerPosition(latLng) {
 }
 
 function updateMarkerAddress1(str) {
+    console.log("------------------------------------------");
     $('#address1').val(str);
 }
 
@@ -368,8 +364,19 @@ function initialize() {
     calcRoute();
 
     // search box defined here
+    var current_classes = $('.pac-input').length;
+    console.log(current_classes);
+
+    for(p=0; p<current_classes;p++) {
+        if (p != 0 && p != current_classes - 1) {
+            var alreadyInput = [];
+            alreadyInput.push($('.pac-input')[p]);
+            setupAutocomplete(autocomplete, alreadyInput, 0, p);
+        }
+    }
+
     var input_first = $('.pac-input')[0];
-    var input_last = $('.pac-input')[1];
+    var input_last = $('.pac-input')[current_classes-1];
     // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     var searchBox_first = new google.maps.places.SearchBox((input_first));
     var searchBox_last = new google.maps.places.SearchBox((input_last));

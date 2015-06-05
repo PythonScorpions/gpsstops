@@ -286,7 +286,6 @@ function setupAutocomplete(autocomplete, inputs, i, last_waypoint_no) {
     var idx = autocomplete.length - 1;
     //autocomplete[i].bindTo('bounds', map);
     autocomplete[idx].bindTo('bounds', map);
-    console.log(autocomplete[idx]);
     google.maps.event.addListener(autocomplete[idx], 'place_changed', function() {
         console.log(last_waypoint_no, "<--- Waypoint ");
         var place_n = autocomplete[idx].getPlace();
