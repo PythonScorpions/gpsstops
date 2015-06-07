@@ -1,3 +1,4 @@
+import datetime
 from rest_framework import authentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,6 +18,7 @@ from django.template import loader
 from django.template import RequestContext, Context
 import string
 import random
+from maps.models import *
 
 
 for user in User.objects.all():
@@ -156,7 +158,6 @@ class CountryList(APIView):
 
 class ForgotPassword(APIView):
 
-    # create a new user
     def post(self, request, *args, **kwargs):
 
         user_email = request.data['email']
@@ -172,3 +173,119 @@ class ForgotPassword(APIView):
 
         else:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+
+
+class CreateRouteApi(APIView):
+
+    @staticmethod
+    def post(request):
+
+        trip_title = request.data['trip_title']
+        trip_datetime = datetime.datetime.strptime(str(request.data['trip_datetime']), "%Y/%m/%d %H:%M")
+        print trip_title
+        print type(trip_datetime), "-----------------", trip_datetime
+        total_time = request.data['total_hours']
+        if '.' in request.data['total_distance']:
+            total_distance = float(request.data['total_distance'][:-3])
+        else:
+            total_distance = float(int(request.data['total_distance'][:-3]))
+        try:
+            user_obj = User.objects.get(id=int(request.data['user_id']))
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+
+        try:
+            route_obj = Route(user=user_obj, trip_title=trip_title, trip_datetime=trip_datetime,
+                              total_distance=total_distance, total_time=total_time)
+            route_obj.save()
+            print type(request.data['location'])
+            print len(request.data['location'])
+            for idx, loc in enumerate(request.data['location']):
+
+                loc_obj = Location(route=route_obj, location_address=loc['location_name'],
+                                   location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
+                                   location_long=loc['longitude'], location_note=loc['note'])
+                if idx == 0:
+                    loc_obj.location_number = 11
+                    loc_obj.save()
+                elif idx == len(request.data['location'])-1:
+                    loc_obj.location_number = 22
+                    loc_obj.save()
+                else:
+                    loc_obj.location_number = idx
+                    loc_obj.save()
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'Something went wrong'})
+            route_obj.delete()
+
+        return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been created'})
+
+
+class RouteListApi(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = int(self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+        routes = Route.objects.filter(user__id=user_id)
+        serializer = RouteSerializer(routes, many=True)
+
+        return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'All routes Data'})
+
+
+class EditRouteApi(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            route_id = int(self.kwargs['pk'])
+            route_obj = Route.objects.get(id=route_id)
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'Route does not exist'})
+        route_serializer = RouteSerializer(route_obj)
+        return Response({'code': 1, 'status': 200, 'Data': route_serializer.data, 'message': 'All routes Data'})
+
+    def post(self, request, *args, **kwargs):
+        try:
+            route_id = int(self.kwargs['pk'])
+            route_obj = Route.objects.get(id=route_id)
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'Route does not exist'})
+
+        trip_title = request.data['trip_title']
+        trip_datetime = datetime.datetime.strptime(str(request.data['trip_datetime']), "%Y/%m/%d %H:%M")
+        print trip_title
+        print type(trip_datetime), "-----------------", trip_datetime
+        total_time = request.data['total_hours']
+        if '.' in request.data['total_distance']:
+            total_distance = float(request.data['total_distance'][:-3])
+        else:
+            total_distance = float(int(request.data['total_distance'][:-3]))
+
+        route_obj.trip_title = trip_title
+        route_obj.trip_datetime = trip_datetime
+        route_obj.total_distance = total_distance
+        route_obj.total_time = total_time
+        try:
+            route_obj.save()
+
+            Location.objects.filter(route=route_obj).delete()
+
+            for idx, loc in enumerate(request.data['location']):
+
+                loc_obj = Location(route=route_obj, location_address=loc['location_name'],
+                                   location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
+                                   location_long=loc['longitude'], location_note=loc['note'])
+                if idx == 0:
+                    loc_obj.location_number = 11
+                    loc_obj.save()
+                elif idx == len(request.data['location'])-1:
+                    loc_obj.location_number = 22
+                    loc_obj.save()
+                else:
+                    loc_obj.location_number = idx
+                    loc_obj.save()
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'Something went wrong'})
+
+        return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been updated'})

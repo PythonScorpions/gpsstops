@@ -9,4 +9,7 @@ urlpatterns = patterns("api.views",
                        url(r'current_user_details/(?P<pk>[a-zA-Z0-9]+)', CurrentUser.as_view(), name='current-user'),
                        url(r'country_list', CountryList.as_view(), name='country-list'),
                        url(r'forgot_password', ForgotPassword.as_view(), name='country-list'),
+                       url(r'create_route', CreateRouteApi.as_view(), name='create-route-api'),
+                       url(r'route_list/(?P<pk>[a-zA-Z0-9]+)', RouteListApi.as_view(), name='route-list-api'),
+                       url(r'edit_route/(?P<pk>[a-zA-Z0-9]+)', EditRouteApi.as_view(), name='edit-route-api'),
                        )
