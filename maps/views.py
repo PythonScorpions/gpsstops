@@ -5,6 +5,7 @@ from maps.models import *
 import datetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 
@@ -172,9 +173,20 @@ class Routes(View):
 
     @method_decorator(login_required)
     def get(self, request):
-        today = datetime.date.today()
-        routes = Route.objects.filter(user=request.user, trip_datetime__startswith=today)
+        date_selected = datetime.date.today()
+        routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
         print routes
         active = "maps"
         flag = "maps"
+        return render(request, self.template1, locals())
+
+    @method_decorator(login_required)
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        day_selected = int(request.POST['day'])
+        month_selected = int(request.POST['month'])
+        year_selected = int(request.POST['year'])
+        date_selected = datetime.date(year_selected, month_selected, day_selected)
+        print date_selected
+        routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
         return render(request, self.template1, locals())

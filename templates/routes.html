@@ -13,6 +13,11 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div role="tabpanel">
                     <ul role="tablist" class="nav nav-tabs text-center">
+                        <li role="presentation" style="left: -200px;">
+                            <img class="previous_date" src="{{ STATIC_URL }}images/less_then.png" style="height: 28px;">
+                            {{ date_selected }}
+                            <img class="next_date" src="{{ STATIC_URL }}images/greater_then.png" style="height: 28px;">
+                        </li>
                         <li role="presentation" class="">
                             <a href="{% url 'calender_prime' %}" class="right-tab">
                                 <i class="glyphicon glyphicon-calendar"></i> Calendar
@@ -64,5 +69,68 @@
         </div>
     </div>
 </div>
+
+<script>
+
+$(function() {
+
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var todayDate = new Date("{{ date_selected.isoformat }}");
+    console.log(todayDate);
+
+    function post(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+             }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    $('.previous_date').click(function () {
+        todayDate.setDate(todayDate.getDate()-1);
+        post('/maps/routes', {"day":todayDate.getDate(),"month":todayDate.getMonth()+1,"year":todayDate.getFullYear(),
+            'csrfmiddlewaretoken':getCookie('csrftoken')});
+
+    });
+    $('.next_date').click(function () {
+        todayDate.setDate(todayDate.getDate()+1);
+        post('/maps/routes', {"day":todayDate.getDate(),"month":todayDate.getMonth()+1,"year":todayDate.getFullYear(),
+            'csrfmiddlewaretoken':getCookie('csrftoken')});
+    });
+});
+
+</script>
 
 {% endblock %}
