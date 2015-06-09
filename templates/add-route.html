@@ -13,6 +13,10 @@
 
 
 <script>
+
+var start_lat;
+var start_long;
+
 $(function() {
     $("#myList").sortable({
         axis : 'y',
@@ -351,16 +355,38 @@ var rendererOptions = {
 
 function initialize() {
     directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+    var startPos;
+    var chicago;
+    var geoSuccess = function(position) {
+        startPos = position;
+        start_lat = startPos.coords.latitude;
+        console.log(start_lat);
+        start_long = startPos.coords.longitude;
+        chicago = new google.maps.LatLng(start_lat, start_long);
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 6,
+            center: chicago
+        });
+        var marker = new google.maps.Marker({
+            position: chicago,
+            map: map,
+        });
+        markers.push(marker);
 
-    map = new google.maps.Map(document.getElementById('map-canvas'), {
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        zoom: 6,
-        center: chicago
-    });
+        directionsDisplay.setMap(map);
+    };
+    var geoError = function(position){
+        chicago = new google.maps.LatLng(41.850033, -87.6500523);
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 6,
+            center: chicago
+        });
+        directionsDisplay.setMap(map);
+    };
 
-    // direction service code
-    directionsDisplay.setMap(map);
+    navigator.geolocation.getCurrentPosition(geoSuccess);
 
     // search box defined here
     var input_first = $('.pac-input')[0];
