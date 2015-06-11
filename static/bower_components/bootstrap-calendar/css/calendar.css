@@ -263,7 +263,7 @@
   font-weight: bolder;
 }
 #cal-day-box .cal-day-hour:nth-child(odd) {
-  background-color: #fafafa;
+  /*background-color: #fafafa;*/
 }
 #cal-day-box #cal-day-panel {
   position: relative;

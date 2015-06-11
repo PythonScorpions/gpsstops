@@ -449,6 +449,7 @@ if(!String.prototype.formatNum) {
 		data.hours = (parseInt(time_end[0]) - parseInt(time_start[0])) * time_split_hour;
 		var lines = data.hours * time_split_count - parseInt(time_start[1]) / time_split;
 		var ms_per_line = (60000 * time_split);
+        console.log(ms_per_line);
 
 		var start = new Date(this.options.position.start.getTime());
 		start.setHours(time_start[0]);
@@ -456,7 +457,6 @@ if(!String.prototype.formatNum) {
 		var end = new Date(this.options.position.start.getTime());
 		end.setHours(time_end[0]);
 		end.setMinutes(time_end[1]);
-
 		data.all_day = [];
 		data.by_hour = [];
 		data.after_time = [];
@@ -465,8 +465,67 @@ if(!String.prototype.formatNum) {
 			var s = new Date(parseInt(e.start));
 			var f = new Date(parseInt(e.end));
 
+            console.log(s);
+            console.log(f);
+
+            if(s.getDate() != f.getDate()){
+                if(s.getDate() != start.getDate()){
+                    console.log("yes going here");
+                    e.total_upmargin = 0;
+                    var temp_date = start;
+                    temp_date.setHours(0);
+                    console.log(temp_date);
+                    var diff_height_mins = ((f.getTime()- temp_date.getTime())/(1000*60) % 60);
+                    var diff_height_hours = ((f.getTime()- temp_date.getTime())/(1000*60*60) % 24);
+                    console.log(diff_height_hours);
+                    console.log(diff_height_mins);
+                    var height_temp = (Math.floor(diff_height_hours)*60) + diff_height_mins;
+                    if((height_temp/2)+ e.total_upmargin > 720){
+                        e.height_block = 720 - e.total_upmargin;
+                    }
+                    else{
+                        e.height_block = height_temp / 2;
+                    }
+                    console.log(e.total_upmargin);
+                    console.log(e.height_block);
+
+                }
+                else{
+                    var diff_minutes_2 = ((f.getTime()- s.getTime())/(1000*60) % 60);
+                    var diff_hours_2 = ((f.getTime()- s.getTime())/(1000*60*60) % 24);
+                    var total_up_2 = (s.getHours()*60) + s.getMinutes();
+                    e.total_upmargin = total_up_2 / 2;
+                    console.log(e.total_upmargin);
+                    var height_block_2 = (Math.floor(diff_hours_2)*60) + diff_minutes_2;
+                    if((height_block_2/2)+ e.total_upmargin > 720){
+                        e.height_block = 720 - e.total_upmargin;
+                    }
+                    else{
+                        e.height_block = height_block_2 / 2;
+                    }
+                }
+
+            }
+            else{
+                var diff_minutes = ((f.getTime()- s.getTime())/(1000*60) % 60);
+                var diff_hours = ((f.getTime()- s.getTime())/(1000*60*60) % 24);
+                var total_up = (s.getHours()*60) + s.getMinutes();
+                e.total_upmargin = total_up / 2;
+                console.log(e.total_upmargin);
+                var height_block = (Math.floor(diff_hours)*60) + diff_minutes;
+                if((height_block/2)+ e.total_upmargin > 720){
+                    e.height_block = 720 - e.total_upmargin;
+                }
+                else{
+                    e.height_block = height_block / 2;
+                }
+            }
+
 			e.start_hour = s.getHours().toString().formatNum(2) + ':' + s.getMinutes().toString().formatNum(2);
 			e.end_hour = f.getHours().toString().formatNum(2) + ':' + f.getMinutes().toString().formatNum(2);
+
+            //console.log(e.start_hour);
+            //console.log(e.end_hour);
 
 			if(e.start < start.getTime()) {
 				warn(1);
@@ -483,18 +542,18 @@ if(!String.prototype.formatNum) {
 				return;
 			}
 
-			if(e.end < start.getTime()) {
-				data.before_time.push(e);
-				return;
-			}
-
-			if(e.start > end.getTime()) {
-				data.after_time.push(e);
-				return;
-			}
+			//if(e.end < start.getTime()) {
+			//	data.before_time.push(e);
+			//	return;
+			//}
+            //
+			//if(e.start > end.getTime()) {
+			//	data.after_time.push(e);
+			//	return;
+			//}
 
 			var event_start = start.getTime() - e.start;
-
+            console.log(event_start);
 			if(event_start >= 0) {
 				e.top = 0;
 			} else {
