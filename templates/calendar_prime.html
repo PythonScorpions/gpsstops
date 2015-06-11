@@ -44,11 +44,11 @@
 
                             <a href="{% url 'add_route_prime' %}" class="btn btn-primary">Add New Route</a>
                             <div class="calender">
-                                <div class="drag">
-                                    <a data-toggle="modal" href="#myModal" >
-                                        <i class="glyphicon glyphicon-map-marker"></i>
-                                    </a>
-                                </div>
+{#                                <div class="drag">#}
+{#                                    <a data-toggle="modal" href="#myModal" >#}
+{#                                        <i class="glyphicon glyphicon-map-marker"></i>#}
+{#                                    </a>#}
+{#                                </div>#}
                                 <div id="myModal2" class="modal " tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                                      aria-hidden="true" style="display: none; ">
                                     <div class="modal-body" style="width:340px; margin:0 auto; background:#FFF; padding:20px; height:auto; margin-top:15%;">
@@ -78,9 +78,9 @@
                                             </form>
                                         </div>
                                     </div>
-                                <div class="drag-day">
-                                    <a data-toggle="modal" href="#myModal2" ><i class="glyphicon glyphicon-map-marker"></i></a>
-                                </div>
+{#                                <div class="drag-day">#}
+{#                                    <a data-toggle="modal" href="#myModal2" ><i class="glyphicon glyphicon-map-marker"></i></a>#}
+{#                                </div>#}
                                 <div id="calendar" class="fc"> </div>
                             </div>
                         </div>
@@ -102,14 +102,51 @@ $(function () {
 		header: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'month,agendaWeek,agendaDay'
+			right: 'month,agendaDay'
 		},
         events: [
 					{
 						title: 'yes',
-						start: new Date(y, m, 1)
+						start: new Date(y, m, 2, 8, 22),
+						end: new Date(y, m, 2, 11, 22)
+					},
+					{
+						title: 'no',
+						start: new Date(y, m, 2, 10, 22),
+						end: new Date(y, m, 2, 15, 22)
+					},
+					{
+						title: 'yesf',
+						start: new Date(y, m, 1, 13, 22),
+						end: new Date(y, m, 1, 14, 22)
+					},
+					{
+						title: 'nod',
+						start: new Date(y, m, 1, 15, 22),
+						end: new Date(y, m, 1, 18, 22)
+					},
+					{
+						title: 'yesw',
+						start: new Date(y, m, 1, 7, 22),
+						end: new Date(y, m, 1, 11, 22)
+					},
+					{
+						title: 'noer',
+						start: new Date(y, m, 1, 10, 22),
+						end: new Date(y, m, 1, 15, 22)
+					},
+					{
+						title: 'yesssw',
+						start: new Date(y, m, 1, 3, 22),
+						end: new Date(y, m, 1, 17, 22)
+					},
+					{
+						title: 'nwwo',
+						start: new Date(y, m, 1, 22, 22),
+						end: new Date(y, m, 1, 23, 22)
 					}
                 ],
+
         eventRender: function(event, element)
         {
             element.css('background-image', 'url(static/images/map.jpg)');
@@ -117,7 +154,8 @@ $(function () {
             element.css('text-align: center');
         },
 
-		editable: true
+		editable: true,
+		allDayDefault: false
 	});
 });</script>
 
