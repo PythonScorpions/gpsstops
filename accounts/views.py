@@ -100,7 +100,7 @@ def user_logout(request):
 
 
 class Calender(TemplateView):
-    template_name = 'calendar_prime.html'
+    template_name = 'calendar_phase.html'
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
