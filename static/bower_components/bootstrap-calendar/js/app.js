@@ -8,7 +8,7 @@ Date.prototype.yyyymmdd = function() {
 (function($) {
 
     var current_date = new Date();
-    var date_str = current_date.yyyymmdd()
+    var date_str = current_date.yyyymmdd();
 	"use strict";
 
 	var options = {

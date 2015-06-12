@@ -580,10 +580,23 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     <div class="tab-content tab-content-2">
                         <div role="tabpanel" class="tab-pane active " id="profile">
                             <div class="row">
+                                <ul role="tablist" class="nav nav-tabs ">
+                                    <li role="presentation" class="active" style="margin-left: 15px;">
+                                        <a href="{% url 'calender_prime' %}" style="font-size: 18px;" class="right-tab">
+                                            Manual View
+                                        </a>
+                                    </li>
+                                    <li role="presentation" class="">
+                                        <a href="{{ url_to_direct }}" class="right-tab" style="font-size: 18px;
+                                         padding-left: 26px !important; padding-right: 26px !important;"
+                                        aria-expanded="true">Optimized View
+                                        </a>
+                                    </li>
+                                </ul>
                                 <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
                                     <div class="left-map">
                                         <!-- form start -->
-                                        <form name="create_route_form" action="{% url 'create_route' %}" method="POST">
+                                        <form class="manual_view" name="create_route_form" action="{% url 'create_route' %}" method="POST">
                                         {% csrf_token %}
                                             <h3>Route</h3>
                                             <a href="#" class="btn btn-primary margin-top15" role="button">Add New Route</a>
@@ -651,6 +664,66 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
                                         </form>
                                         <!-- form end -->
+
+
+                                        <div class="optimized_view" style="display: none">
+                                            <h3>Route</h3>
+                                            <div>&nbsp;</div>
+                                            <div class="cl"></div>
+                                            <div class="title">
+                                            <input type="text" class="form-control" name="trip_title" value=""
+                                                           placeholder="Trip Title" required="true"/>
+                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
+                                                        placeholder="Trip Date Time"/>
+                                            </div>
+                                            <div>&nbsp;</div>
+
+                                            <ul id="myList">
+                                                <li class="title loc">
+
+                                                    <input class="controls form-control pac-input address_common" type="text"
+                                                           placeholder="Start Location" name="start_search_address"
+                                                           style="display: initial; width: 267px;" required="true">
+                                                    <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
+                                                           type="text" placeholder="Start Nearest Address" name="start_near_address">
+                                                    <input class="form-control note_common" id="start_location_note" required="true"
+                                                           placeholder="Note for location" name="start_note_location">
+                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"
+                                                           value="" />
+                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
+                                                           value="" />
+                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+
+                                                </li>
+
+                                                <li class="title loc">
+                                                    <input class="controls form-control pac-input address_common" type="text"
+                                                           placeholder="End Location" name="end_search_address"
+                                                           style="display: initial; width: 267px;" required="true">
+                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"
+                                                           placeholder="End Nearest address" name="end_near_address">
+                                                    <input class="form-control note_common" id="end_location_note" required="true"
+                                                           placeholder="Note for location" name="end_note_location">
+                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
+                                                           value="" />
+                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
+                                                           value="" />
+                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                </li>
+                                            </ul>
+
+                                            <div class="title">
+                                                <input type="text" name="total_distance" class="map-input total_distance"
+                                                        placeholder="Total Distance"/>
+                                                <input type="text" name="total_hours" class="map-input total_hours"
+                                                        placeholder="Total Hours"/>
+                                            </div>
+
+                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
+
+                                        </div>
+
+
                                     </div>
                                 </div>
 
