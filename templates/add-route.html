@@ -589,9 +589,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             <a href="#" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
                                             <div class="cl"></div>
+                                            <div class="title">
                                             <input type="text" class="form-control" name="trip_title" value=""
                                                            placeholder="Trip Title" required="true"/>
+                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
+                                                        placeholder="Trip Date Time"/>
+                                            </div>
                                             <div>&nbsp;</div>
+
                                             <ul id="myList">
                                                 <li class="title loc">
 
@@ -636,9 +641,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             </ul>
 
                                             <div class="title">
-                                                <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Trip Date Time"/>
-
                                                 <input type="text" name="total_distance" class="map-input total_distance"
                                                         placeholder="Total Distance"/>
                                                 <input type="text" name="total_hours" class="map-input total_hours"
