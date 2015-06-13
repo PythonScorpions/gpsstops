@@ -55,7 +55,11 @@ class CreateUser(APIView):
                           fail_silently=False)
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
-                return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
+                try:
+                    user_data.delete()
+                    return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
+                except:
+                    return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
 
 
 class UpdateUser(APIView):
