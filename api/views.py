@@ -327,3 +327,15 @@ class Events(APIView):
             events.append(temp)
 
         return Response({'success': 1, 'result': events})
+
+
+class DeleteRouteApi(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            route_id = int(self.kwargs['pk'])
+            route_obj = Route.objects.get(id=route_id)
+            route_obj.delete()
+            return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been deleted'})
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'Route with this id does not exist'})

@@ -12,5 +12,6 @@ urlpatterns = patterns("api.views",
                        url(r'create_route', CreateRouteApi.as_view(), name='create-route-api'),
                        url(r'route_list/(?P<pk>[a-zA-Z0-9]+)', RouteListApi.as_view(), name='route-list-api'),
                        url(r'edit_route/(?P<pk>[a-zA-Z0-9]+)', EditRouteApi.as_view(), name='edit-route-api'),
+                       url(r'delete_route/(?P<pk>[a-zA-Z0-9]+)', DeleteRouteApi.as_view(), name='delete-route-api'),
                        url(r'events', Events.as_view(), name='events-api'),
                        )
