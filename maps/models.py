@@ -13,6 +13,9 @@ class Route(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __unicode(self):
+        return u'%s' % self.trip_title
+
 
 class Location(models.Model):
     route = models.ForeignKey(Route, related_name='route_locations')
@@ -22,3 +25,6 @@ class Location(models.Model):
     location_long = models.DecimalField(max_digits=19, decimal_places=15,blank=True, null=True)
     location_note = models.CharField(max_length=200, blank=True, null=True)
     location_number = models.IntegerField(default=0)
+
+    def __unicode(self):
+        return u'%s' % self.route
