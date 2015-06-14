@@ -313,45 +313,45 @@ var rendererOptions = {
 function initialize() {
     directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 
-    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
-
-    map = new google.maps.Map(document.getElementById('map-canvas'), {
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        zoom: 6,
-        center: chicago
-    });
-
-    directionsDisplay.setMap(map);
-
-{#    var geoSuccess = function(position) {#}
-{#        startPos = position;#}
-{#        start_lat = startPos.coords.latitude;#}
-{#        start_long = startPos.coords.longitude;#}
-{#        current_location = new google.maps.LatLng(start_lat, start_long);#}
-{#        map = new google.maps.Map(document.getElementById('map-canvas'), {#}
-{#            mapTypeId: google.maps.MapTypeId.ROADMAP,#}
-{#            zoom: 6,#}
-{#            center: current_location#}
-{#        });#}
-{#        var marker = new google.maps.Marker({#}
-{#            position: current_location,#}
-{#            map: map#}
-{#        });#}
-{#        markers.push(marker);#}
+{#    var chicago = new google.maps.LatLng(41.850033, -87.6500523);#}
 {##}
-{#        directionsDisplay.setMap(map);#}
-{#    };#}
-{#    var geoError = function(position){#}
-{#        current_location = new google.maps.LatLng(41.850033, -87.6500523);#}
-{#        map = new google.maps.Map(document.getElementById('map-canvas'), {#}
-{#            mapTypeId: google.maps.MapTypeId.ROADMAP,#}
-{#            zoom: 6,#}
-{#            center: current_location#}
-{#        });#}
-{#        directionsDisplay.setMap(map);#}
-{#    };#}
+{#    map = new google.maps.Map(document.getElementById('map-canvas'), {#}
+{#        mapTypeId: google.maps.MapTypeId.ROADMAP,#}
+{#        zoom: 6,#}
+{#        center: chicago#}
+{#    });#}
 {##}
-{#    navigator.geolocation.getCurrentPosition(geoSuccess);#}
+{#    directionsDisplay.setMap(map);#}
+
+    var geoSuccess = function(position) {
+        startPos = position;
+        start_lat = startPos.coords.latitude;
+        start_long = startPos.coords.longitude;
+        current_location = new google.maps.LatLng(start_lat, start_long);
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 6,
+            center: current_location
+        });
+        var marker = new google.maps.Marker({
+            position: current_location,
+            map: map
+        });
+        markers.push(marker);
+
+        directionsDisplay.setMap(map);
+    };
+    var geoError = function(position){
+        current_location = new google.maps.LatLng(41.850033, -87.6500523);
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 6,
+            center: current_location
+        });
+        directionsDisplay.setMap(map);
+    };
+
+    navigator.geolocation.getCurrentPosition(geoSuccess);
 
     // search box defined here
     input_first = $('.pac-input')[0];
