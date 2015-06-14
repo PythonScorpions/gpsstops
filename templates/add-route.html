@@ -1,157 +1,6 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
 {% include "logo_account.html" %}
-
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-{#<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>#}
-{#<script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/src/js/bootstrap-datetimepicker.js"></script>#}
-{#<link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/d004434a5ff76e7b97c8b07c01f34ca69e635d97/build/css/bootstrap-datetimepicker.css" rel="stylesheet">#}
-<!-- <script src="http://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script> -->
-
-
-
-<script>
-
-var start_lat;
-var start_long;
-
-$(function() {
-    $("#myList").sortable({
-        axis : 'y',
-        items : '.title',
-        start: function () {
-            console.log("yes it is started");
-            $(this).find("li:not(.title)").each(function () {
-                $(this).data("fixedIndex", $(this).index());
-            });
-        },
-        change: function () {
-            console.log("yes it is changed");
-            $(this).find("li:not(.title)").each(function () {
-                $(this).detach().insertAfter($("#myList li:eq(" + ($(this).data("fixedIndex")-1) + ")"));
-            });
-
-            setTimeout(function() {
-                changeIds();
-            }, 1000);
-            setTimeout(function() {
-               calcRoute();
-            }, 1000);
-
-
-        }
-    });
-});
-
-function changeIds() {
-    var l =1;
-    $('.loc').each(function(i, obj) {
-{#        console.log(i);#}
-{#        console.log(obj);#}
-        var near_address_common = $(this).find(".near_address_common");
-        var address_common = $(this).find(".address_common");
-        var note_common = $(this).find(".note_common");
-        console.log(note_common);
-        var lat_common = $(this).find(".lat_common");
-        var lng_common = $(this).find(".lng_common");
-        delete_a = $(this).find(".delete_waypoint");
-{#        console.log(address_common);#}
-{#        console.log(near_address_common);#}
-        if (typeof(near_address_common[0]) != 'undefined'){
-            if(l==2 && last_waypoint_no > 0){
-                l=3;
-            }
-            if(l == last_waypoint_no+3 && last_waypoint_no > 0){
-                l = 2
-            }
-            new_id = 'address'+l;
-            near_address_common.attr('id', new_id);
-            l += 1;
-        }
-
-
-        if(i==0){
-            console.log("first");
-            prefix = "way_loc";
-            classes = obj.className.split(" ").filter(function(c) {
-                return c.lastIndexOf(prefix, 0) !== 0;
-            });
-            obj.className = $.trim(classes.join(" "));
-            address_common.attr('placeholder', 'Start Location');
-            address_common.attr('name', 'start_search_address');
-            near_address_common.attr('name', 'start_near_address');
-            note_common.attr('name', 'start_note_location');
-            lat_common.attr('name', 'latitude_first');
-            lng_common.attr('name', 'longitude_first');
-            $(delete_a).remove();
-        }
-        else{
-            if(last_waypoint_no == 0){
-                console.log("second");
-                prefix = "way_loc";
-                classes = obj.className.split(" ").filter(function(c) {
-                    return c.lastIndexOf(prefix, 0) !== 0;
-                });
-                obj.className = $.trim(classes.join(" "));
-                address_common.attr('placeholder', 'End Location');
-                address_common.attr('name', 'end_search_address');
-                near_address_common.attr('name', 'end_near_address');
-                note_common.attr('name', 'end_note_location');
-                lat_common.attr('name', 'latitude_last');
-                lng_common.attr('name', 'longitude_last');
-                $(delete_a).remove();
-            }
-            else{
-                if(last_waypoint_no+1 == i){
-                    console.log("third");
-                    prefix = "way_loc";
-                    classes = obj.className.split(" ").filter(function(c) {
-                        return c.lastIndexOf(prefix, 0) !== 0;
-                    });
-                    obj.className = $.trim(classes.join(" "));
-                    address_common.attr('placeholder', 'End Location');
-                    address_common.attr('name', 'end_search_address');
-                    near_address_common.attr('name', 'end_near_address');
-                    note_common.attr('name', 'end_note_location');
-                    lat_common.attr('name', 'latitude_last');
-                    lng_common.attr('name', 'longitude_last');
-                    $(delete_a).remove();
-                }
-                else{
-                    console.log("last");
-                    prefix = "way_loc";
-                    classes = obj.className.split(" ").filter(function(c) {
-                        return c.lastIndexOf(prefix, 0) !== 0;
-                    });
-                    obj.className = $.trim(classes.join(" "));
-
-                    way_li_class = 'way_loc_'+i;
-                    $(obj).addClass(way_li_class);
-                    waypoint_placeholder = 'Waypoint '+ i +' Location';
-                    address_common.attr('placeholder', waypoint_placeholder);
-                    way_point_add_name = 'search_address'+i;
-                    way_point_near_name = 'near_address'+i;
-                    way_point_note = 'note_waypoint'+i;
-                    way_point_lat = 'latitude'+i;
-                    way_point_lng = 'longitude'+i;
-                    address_common.attr('name', way_point_add_name);
-                    near_address_common.attr('name', way_point_near_name);
-                    note_common.attr('name', way_point_note);
-                    lat_common.attr('name', way_point_lat);
-                    lng_common.attr('name', way_point_lng);
-                    $(delete_a).remove();
-                    address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a>");
-                }
-            }
-        }
-
-
-    });
-}
-
-</script>
 
 <style>
     .map-box{
@@ -164,45 +13,155 @@ function changeIds() {
         height: 550px;
         float: left;
     }
-
-    #target {
-        width: 345px;
-    }
-
-    .trip_loopn{
-        margin-top: 10px;
-        margin-bottom:10px;
-    }
-
     .title{
         margin-bottom:10px;
     }
-
     .title input,textarea{
         margin-top:10px;
     }
-
     .title h4{
         margin-top:10px;
     }
-
 </style>
 
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script>
+
+var start_lat;
+var start_long;
+var input_first;
+var input_last;
+var searchBox_first;
+var searchBox_last;
+
+$(function() {
+    $("#myList").sortable({
+        axis : 'y',
+        items : '.title',
+        start: function () {
+            // To keep Add more waypoint button fixed
+            $(this).find("li:not(.title)").each(function () {
+                $(this).data("fixedIndex", $(this).index());
+            });
+        },
+        change: function () {
+            // To keep Add more waypoint button fixed
+            $(this).find("li:not(.title)").each(function () {
+                $(this).detach().insertAfter($("#myList li:eq(" + ($(this).data("fixedIndex")-1) + ")"));
+            });
+
+            setTimeout(function() {
+                changeIds();
+            }, 1000);
+            setTimeout(function() {
+               calcRoute();
+            }, 1000);
+        }
+    });
+});
+
+function changeIds() {
+
+    $('.loc').each(function(i, obj) {
+        var near_address_common = $(this).find(".near_address_common");
+        var address_common = $(this).find(".address_common");
+        var note_common = $(this).find(".note_common");
+        var lat_common = $(this).find(".lat_common");
+        var lng_common = $(this).find(".lng_common");
+        var delete_a = $(this).find(".delete_waypoint");
+
+        var prefix = "way_loc";
+        var classes = obj.className.split(" ").filter(function(c) {
+            return c.lastIndexOf(prefix, 0) !== 0;
+        });
+        obj.className = $.trim(classes.join(" "));
+
+        if(i==0){
+            address_common.attr('placeholder', 'Start Location');
+            address_common.attr('name', 'start_search_address');
+            near_address_common.attr('name', 'start_near_address');
+            note_common.attr('name', 'start_note_location');
+            lat_common.attr('name', 'latitude_first');
+            lat_common.attr('id', 'latitude_first');
+            lng_common.attr('name', 'longitude_first');
+            lng_common.attr('id', 'longitude_first');
+            near_address_common.attr('id', 'address1');
+            $(delete_a).remove();
+        }
+        else{
+            if(last_waypoint_no == 0){
+                address_common.attr('placeholder', 'End Location');
+                address_common.attr('name', 'end_search_address');
+                near_address_common.attr('name', 'end_near_address');
+                note_common.attr('name', 'end_note_location');
+                lat_common.attr('name', 'latitude_last');
+                lat_common.attr('id', 'latitude_last');
+                lng_common.attr('name', 'longitude_last');
+                lng_common.attr('id', 'longitude_last');
+                near_address_common.attr('id', 'address2');
+                $(delete_a).remove();
+            }
+            else{
+                if(last_waypoint_no+1 == i){
+                    address_common.attr('placeholder', 'End Location');
+                    address_common.attr('name', 'end_search_address');
+                    near_address_common.attr('name', 'end_near_address');
+                    note_common.attr('name', 'end_note_location');
+                    lat_common.attr('name', 'latitude_last');
+                    lat_common.attr('id', 'latitude_last');
+                    lng_common.attr('name', 'longitude_last');
+                    lng_common.attr('id', 'longitude_last');
+                    near_address_common.attr('id', 'address2');
+                    $(delete_a).remove();
+                }
+                else{
+                    var way_li_class = 'way_loc_'+i;
+                    $(obj).addClass(way_li_class);
+                    address_common.attr('placeholder', 'Waypoint '+ i +' Location');
+                    address_common.attr('name', 'search_address'+i);
+                    near_address_common.attr('name', 'near_address'+i);
+                    note_common.attr('name', 'note_waypoint'+i);
+                    lat_common.attr('name', 'latitude'+i);
+                    lat_common.attr('id', 'latitude'+i);
+                    lng_common.attr('name', 'longitude'+i);
+                    lng_common.attr('id', 'longitude'+i);
+                    near_address_common.attr('id', 'address'+(i+2));
+                    $(delete_a).remove();
+                    address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a>");
+                }
+            }
+        }
+    });
+
+    var current_classes = $('.pac-input').length;
+    for(var r=0;r<autocomplete.length;++r){
+        google.maps.event.clearListeners(autocomplete[r], 'place_changed');
+    }
+    autocomplete = [];
+    console.log(autocomplete);
+    for(var k=0; k<current_classes;k++) {
+        if (k != 0 && k != current_classes - 1) {
+            alreadyInput = [];
+            alreadyInput.push($('.pac-input')[k]);
+            setupAutocomplete(autocomplete, alreadyInput, 0, k);
+        }
+    }
+    input_first = $('.pac-input')[0];
+    input_last = $('.pac-input')[current_classes-1];
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    searchBox_first = new google.maps.places.SearchBox((input_first));
+    searchBox_last = new google.maps.places.SearchBox((input_last));
+}
 
 var map;
 var markers = [];
 var autocomplete = [];
-var autocompleteOptions = {
-    //componentRestrictions: {country: "az"}
-};
-waypoints = [];
+var autocompleteOptions = {};
+var waypoints = [];
 var last_waypoint_no = 0;
 
 $(document).on("click",".delete_waypoint", function() {
-    delete_id = $(this).attr('id');
-    way_local_delete = '.way_loc_'+delete_id;
-    $(way_local_delete).remove();
+    $('.way_loc_'+$(this).attr('id')).remove();
     last_waypoint_no -= 1;
     $('.total_waypoint').val(last_waypoint_no);
 
@@ -225,11 +184,11 @@ $(document).ready(function(){
         }
     });
 
-// Multiple Location add Script
+    // Multiple Location add Script
     $('.add_more_waypoint').on('click', function(){
         // Getting last waypoint no
         last_waypoint_no = parseInt($('.total_waypoint').val()) + 1;
-        waypoint_id = last_waypoint_no + 2;
+        var waypoint_id = last_waypoint_no + 2;
         console.log("Adding waypoint value-->"+last_waypoint_no);
         var myhtml= "<li class='title loc way_loc_"+last_waypoint_no+"'><input class='controls form-control pac-input address_common' type='text' " +
                 "placeholder='Waypoint "+ last_waypoint_no+" Location' name='search_address"+ last_waypoint_no+"' required='true'" +
@@ -238,8 +197,8 @@ $(document).ready(function(){
                 "placeholder='Waypoint "+last_waypoint_no+" Nearest address' name='near_address"+ last_waypoint_no+"'>" +
                 "<input class='form-control note_common location_note_"+last_waypoint_no+"' " +
                 "placeholder='Note for Location' required='true' name='note_waypoint"+ last_waypoint_no+"'/ >" +
-                "<input TYPE='hidden' name='latitude"+last_waypoint_no+"' class='lat_common latitude"+last_waypoint_no+" form-control' value />" +
-                "<input TYPE='hidden' name='longitude"+last_waypoint_no+"' class='lng_common longitude"+last_waypoint_no+" form-control' value />" +
+                "<input TYPE='hidden' name='latitude"+last_waypoint_no+"' id='latitude"+last_waypoint_no+"' class='lat_common latitude"+last_waypoint_no+" form-control' value />" +
+                "<input TYPE='hidden' name='longitude"+last_waypoint_no+"' id='longitude"+last_waypoint_no+"' class='lng_common longitude"+last_waypoint_no+" form-control' value />" +
                 "<input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/>" +
                 "<input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input></li>";
         // appending new waypoint html
@@ -247,24 +206,22 @@ $(document).ready(function(){
             $('.add_waypoint_container').after(myhtml);
         }
         else{
-            current_way_loc = '.way_loc_'+parseInt(last_waypoint_no-1);
+            var current_way_loc = '.way_loc_'+parseInt(last_waypoint_no-1);
             $(current_way_loc).after(myhtml);
         }
 
         var newInput = [];
         var newEl = $('.pac-input')[last_waypoint_no];
-        console.log(newEl);
         newInput.push(newEl);
         setupAutocomplete(autocomplete, newInput, 0, last_waypoint_no);
-        // adding new waypoint
         $('.total_waypoint').val(last_waypoint_no);
     });
 
 });
 
 function update_way_addressfun(latlng_data, way_no){
-    $('.latitude'+way_no).val(latlng_data.lat());
-    $('.longitude'+way_no).val(latlng_data.lng());
+    $('#latitude'+way_no).val(latlng_data.lat());
+    $('#longitude'+way_no).val(latlng_data.lng());
     geocoder.geocode({
         latLng: latlng_data
     }, function(responses) {
@@ -278,21 +235,21 @@ function update_way_addressfun(latlng_data, way_no){
 
 function update_way_address(str, way_no) {
     console.log(str+"<>"+way_no);
-    $('.address'+way_no).val(str);
+    $('#address'+(way_no+2)).val(str);
 }
 
 function setupAutocomplete(autocomplete, inputs, i, last_waypoint_no) {
-    console.log('setupAutocomplete...');
-
-    // autocomplete[i] = new google.maps.places.Autocomplete(inputs[i], autocompleteOptions);
-
+    console.log(autocomplete);
     autocomplete.push(new google.maps.places.Autocomplete(inputs[i], autocompleteOptions));
     var idx = autocomplete.length - 1;
     //autocomplete[i].bindTo('bounds', map);
     autocomplete[idx].bindTo('bounds', map);
     google.maps.event.addListener(autocomplete[idx], 'place_changed', function() {
         console.log(last_waypoint_no, "<--- Waypoint ");
+
+        console.log(idx);
         var place_n = autocomplete[idx].getPlace();
+        console.log(place_n);
         // This will return the nearest address and add as waypoint
         update_way_addressfun(place_n.geometry.location, last_waypoint_no);
         if($('#address1').val().length > 0 && $('#address2').val().length >0)
@@ -300,7 +257,7 @@ function setupAutocomplete(autocomplete, inputs, i, last_waypoint_no) {
             console.log("searchbox waypoint "+last_waypoint_no+"  make route");
             setTimeout(function() {
                 calcRoute();
-            }, 500);
+            }, 1000);
         }
     });
 }
@@ -345,9 +302,9 @@ function updateMarkerAddress2(str) {
     $('#address2').val(str);
 }
 
-// drag end
-var mj;
 var directionsDisplay;
+var startPos;
+var current_location;
 var directionsService = new google.maps.DirectionsService();
 var rendererOptions = {
     draggable: true
@@ -355,45 +312,53 @@ var rendererOptions = {
 
 function initialize() {
     directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-    var startPos;
-    var chicago;
-    var geoSuccess = function(position) {
-        startPos = position;
-        start_lat = startPos.coords.latitude;
-        console.log(start_lat);
-        start_long = startPos.coords.longitude;
-        chicago = new google.maps.LatLng(start_lat, start_long);
-        map = new google.maps.Map(document.getElementById('map-canvas'), {
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            zoom: 6,
-            center: chicago
-        });
-        var marker = new google.maps.Marker({
-            position: chicago,
-            map: map,
-        });
-        markers.push(marker);
 
-        directionsDisplay.setMap(map);
-    };
-    var geoError = function(position){
-        chicago = new google.maps.LatLng(41.850033, -87.6500523);
-        map = new google.maps.Map(document.getElementById('map-canvas'), {
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            zoom: 6,
-            center: chicago
-        });
-        directionsDisplay.setMap(map);
-    };
+    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
 
-    navigator.geolocation.getCurrentPosition(geoSuccess);
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 6,
+        center: chicago
+    });
+
+    directionsDisplay.setMap(map);
+
+{#    var geoSuccess = function(position) {#}
+{#        startPos = position;#}
+{#        start_lat = startPos.coords.latitude;#}
+{#        start_long = startPos.coords.longitude;#}
+{#        current_location = new google.maps.LatLng(start_lat, start_long);#}
+{#        map = new google.maps.Map(document.getElementById('map-canvas'), {#}
+{#            mapTypeId: google.maps.MapTypeId.ROADMAP,#}
+{#            zoom: 6,#}
+{#            center: current_location#}
+{#        });#}
+{#        var marker = new google.maps.Marker({#}
+{#            position: current_location,#}
+{#            map: map#}
+{#        });#}
+{#        markers.push(marker);#}
+{##}
+{#        directionsDisplay.setMap(map);#}
+{#    };#}
+{#    var geoError = function(position){#}
+{#        current_location = new google.maps.LatLng(41.850033, -87.6500523);#}
+{#        map = new google.maps.Map(document.getElementById('map-canvas'), {#}
+{#            mapTypeId: google.maps.MapTypeId.ROADMAP,#}
+{#            zoom: 6,#}
+{#            center: current_location#}
+{#        });#}
+{#        directionsDisplay.setMap(map);#}
+{#    };#}
+{##}
+{#    navigator.geolocation.getCurrentPosition(geoSuccess);#}
 
     // search box defined here
-    var input_first = $('.pac-input')[0];
-    var input_last = $('.pac-input')[1];
+    input_first = $('.pac-input')[0];
+    input_last = $('.pac-input')[1];
     // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    var searchBox_first = new google.maps.places.SearchBox((input_first));
-    var searchBox_last = new google.maps.places.SearchBox((input_last));
+    searchBox_first = new google.maps.places.SearchBox((input_first));
+    searchBox_last = new google.maps.places.SearchBox((input_last));
 
     // search function start here
     google.maps.event.addListener(searchBox_first, 'places_changed', function() {
@@ -415,15 +380,15 @@ function initialize() {
                 position: place.geometry.location,
                 draggable: true
             });
-            $(".latitude_first").val(place.geometry.location.lat());
-            $(".longitude_first").val(place.geometry.location.lng());
+            $("#latitude_first").val(place.geometry.location.lat());
+            $("#longitude_first").val(place.geometry.location.lng());
             updateMarkerPosition(marker.getPosition());
             geocodePosition(marker.getPosition(),'1');
 
             google.maps.event.addListener(marker, 'dragend', function() {
                 geocodePosition(marker.getPosition(),'1');
-                $(".latitude_first").val(marker.getPosition().lat());
-                $(".longitude_first").val(marker.getPosition().lat());
+                $("#latitude_first").val(marker.getPosition().lat());
+                $("#longitude_first").val(marker.getPosition().lat());
             });
             markers.push(marker);
             bounds.extend(place.geometry.location);
@@ -434,7 +399,7 @@ function initialize() {
             console.log("searchbox last make route");
             setTimeout(function() {
                 calcRoute();
-            }, 500);
+            }, 1000);
         }
         else{
             map.fitBounds(bounds);
@@ -462,15 +427,15 @@ function initialize() {
                 position: place.geometry.location,
                 draggable: true
             });
-            $(".latitude_last").val(place.geometry.location.lat());
-            $(".longitude_last").val(place.geometry.location.lng());
+            $("#latitude_last").val(place.geometry.location.lat());
+            $("#longitude_last").val(place.geometry.location.lng());
             updateMarkerPosition(marker.getPosition());
             geocodePosition(marker.getPosition(),'2');
 
             google.maps.event.addListener(marker, 'dragend', function() {
                 geocodePosition(marker.getPosition(),'2');
-                $(".latitude_last").val(marker.getPosition().lat());
-                $(".longitude_last").val(marker.getPosition().lat());
+                $("#latitude_last").val(marker.getPosition().lat());
+                $("#longitude_last").val(marker.getPosition().lat());
             });
             markers.push(marker);
             bounds.extend(place.geometry.location);
@@ -492,10 +457,12 @@ function initialize() {
 }
 //initial function close here
 
-
 // calculate route function
 function calcRoute() {
-    console.log("yes it is entering");
+    for (var i = 0, marker; marker = markers[i]; i++) {
+        marker.setMap(null);
+    }
+    console.log("yes it is entering on calcroute");
     var start = $('#address1').val();
     var end = $('#address2').val();
 
@@ -504,10 +471,10 @@ function calcRoute() {
 
     var way_points_arr = [];
     total_waypoints_temp = parseInt($('.total_waypoint').val()) +2;
-    for(var i=3; i<=total_waypoints_temp;i++){
-        if($('#address'+i).val() != ''){
+    for(var p=3; p<=total_waypoints_temp;p++){
+        if($('#address'+p).val() != ''){
             way_points_arr.push({
-            location:$('#address'+i).val(),
+            location:$('#address'+p).val(),
             stopover:true});
         }
     }
@@ -517,7 +484,7 @@ function calcRoute() {
         origin: start,
         destination: end,
         waypoints: way_points_arr,
-        optimizeWaypoints: true,
+{#        optimizeWaypoints: true,#}
         travelMode: google.maps.TravelMode.DRIVING
     };
 
@@ -556,6 +523,7 @@ function calcRoute() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
 </script>
 
 <div class="contan-eria">
@@ -599,7 +567,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                         <form class="manual_view" name="create_route_form" action="{% url 'create_route' %}" method="POST">
                                         {% csrf_token %}
                                             <h3>Route</h3>
-                                            <a href="#" class="btn btn-primary margin-top15" role="button">Add New Route</a>
+                                            <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
                                             <div class="cl"></div>
                                             <div class="title">
@@ -620,10 +588,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                            type="text" placeholder="Start Nearest Address" name="start_near_address">
                                                     <input class="form-control note_common" id="start_location_note" required="true"
                                                            placeholder="Note for location" name="start_note_location">
-                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"
-                                                           value="" />
-                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
-                                                           value="" />
+                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control
+                                                    lat_common" id="latitude_first" value="" />
+                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control
+                                                    lng_common" id="longitude_first" value="" />
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
 
                                                 </li>
@@ -641,14 +609,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="End Location" name="end_search_address"
                                                            style="display: initial; width: 267px;" required="true">
-                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"
-                                                           placeholder="End Nearest address" name="end_near_address">
+                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common"
+                                                           type="text" placeholder="End Nearest address" name="end_near_address">
                                                     <input class="form-control note_common" id="end_location_note" required="true"
                                                            placeholder="Note for location" name="end_note_location">
-                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
-                                                           value="" />
-                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
-                                                           value="" />
+                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control
+                                                    lat_common" id="latitude_last" value="" />
+                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control
+                                                    lng_common" id="longitude_last" value="" />
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
                                                 </li>
                                             </ul>
@@ -665,64 +633,62 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                         </form>
                                         <!-- form end -->
 
-
-                                        <div class="optimized_view" style="display: none">
-                                            <h3>Route</h3>
-                                            <div>&nbsp;</div>
-                                            <div class="cl"></div>
-                                            <div class="title">
-                                            <input type="text" class="form-control" name="trip_title" value=""
-                                                           placeholder="Trip Title" required="true"/>
-                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Trip Date Time"/>
-                                            </div>
-                                            <div>&nbsp;</div>
-
-                                            <ul id="myList">
-                                                <li class="title loc">
-
-                                                    <input class="controls form-control pac-input address_common" type="text"
-                                                           placeholder="Start Location" name="start_search_address"
-                                                           style="display: initial; width: 267px;" required="true">
-                                                    <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
-                                                           type="text" placeholder="Start Nearest Address" name="start_near_address">
-                                                    <input class="form-control note_common" id="start_location_note" required="true"
-                                                           placeholder="Note for location" name="start_note_location">
-                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"
-                                                           value="" />
-                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
-                                                           value="" />
-                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
-
-                                                </li>
-
-                                                <li class="title loc">
-                                                    <input class="controls form-control pac-input address_common" type="text"
-                                                           placeholder="End Location" name="end_search_address"
-                                                           style="display: initial; width: 267px;" required="true">
-                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"
-                                                           placeholder="End Nearest address" name="end_near_address">
-                                                    <input class="form-control note_common" id="end_location_note" required="true"
-                                                           placeholder="Note for location" name="end_note_location">
-                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
-                                                           value="" />
-                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
-                                                           value="" />
-                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
-                                                </li>
-                                            </ul>
-
-                                            <div class="title">
-                                                <input type="text" name="total_distance" class="map-input total_distance"
-                                                        placeholder="Total Distance"/>
-                                                <input type="text" name="total_hours" class="map-input total_hours"
-                                                        placeholder="Total Hours"/>
-                                            </div>
-
-                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
-
-                                        </div>
-
+{#                                        <div class="optimized_view" style="display: none">#}
+{#                                            <h3>Route</h3>#}
+{#                                            <div>&nbsp;</div>#}
+{#                                            <div class="cl"></div>#}
+{#                                            <div class="title">#}
+{#                                            <input type="text" class="form-control" name="trip_title" value=""#}
+{#                                                           placeholder="Trip Title" required="true"/>#}
+{#                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"#}
+{#                                                        placeholder="Trip Date Time"/>#}
+{#                                            </div>#}
+{#                                            <div>&nbsp;</div>#}
+{##}
+{#                                            <ul id="myList">#}
+{#                                                <li class="title loc">#}
+{##}
+{#                                                    <input class="controls form-control pac-input address_common" type="text"#}
+{#                                                           placeholder="Start Location" name="start_search_address"#}
+{#                                                           style="display: initial; width: 267px;" required="true">#}
+{#                                                    <input TYPE="hidden" id="address1" class="controls form-control near_address_common"#}
+{#                                                           type="text" placeholder="Start Nearest Address" name="start_near_address">#}
+{#                                                    <input class="form-control note_common" id="start_location_note" required="true"#}
+{#                                                           placeholder="Note for location" name="start_note_location">#}
+{#                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"#}
+{#                                                           value="" />#}
+{#                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"#}
+{#                                                           value="" />#}
+{#                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>#}
+{##}
+{#                                                </li>#}
+{##}
+{#                                                <li class="title loc">#}
+{#                                                    <input class="controls form-control pac-input address_common" type="text"#}
+{#                                                           placeholder="End Location" name="end_search_address"#}
+{#                                                           style="display: initial; width: 267px;" required="true">#}
+{#                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"#}
+{#                                                           placeholder="End Nearest address" name="end_near_address">#}
+{#                                                    <input class="form-control note_common" id="end_location_note" required="true"#}
+{#                                                           placeholder="Note for location" name="end_note_location">#}
+{#                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"#}
+{#                                                           value="" />#}
+{#                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"#}
+{#                                                           value="" />#}
+{#                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>#}
+{#                                                </li>#}
+{#                                            </ul>#}
+{##}
+{#                                            <div class="title">#}
+{#                                                <input type="text" name="total_distance" class="map-input total_distance"#}
+{#                                                        placeholder="Total Distance"/>#}
+{#                                                <input type="text" name="total_hours" class="map-input total_hours"#}
+{#                                                        placeholder="Total Hours"/>#}
+{#                                            </div>#}
+{##}
+{#                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">#}
+{##}
+{#                                        </div>#}
 
                                     </div>
                                 </div>
@@ -743,18 +709,16 @@ google.maps.event.addDomListener(window, 'load', initialize);
 </div>
 
 <script type="text/javascript">
-jQuery.browser = {};
-(function () {
-    jQuery.browser.msie = false;
-    jQuery.browser.version = 0;
-    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
-        jQuery.browser.msie = true;
-        jQuery.browser.version = RegExp.$1;
-    }
-})();
-     $(function(){
-         $("#datepicker").datetimepicker();
-     });
+    jQuery.browser = {};
+    (function () {
+        jQuery.browser.msie = false;
+        jQuery.browser.version = 0;
+        if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+            jQuery.browser.msie = true;
+            jQuery.browser.version = RegExp.$1;
+        }
+        $("#datepicker").datetimepicker();
+    })();
 </script>
 
 {% endblock %}

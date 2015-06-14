@@ -1,14 +1,33 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
 {% include "logo_account.html" %}
-
 {% load location_title_tags %}
 
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<style>
+    .map-box{
+        background: #FFF !important;
+        padding: 25px;
+        height:600px;
+    }
+    #map-canvas {
+        width:100%;
+        height: 550px;
+        float: left;
+    }
+    .title{
+        margin-bottom:10px;
+    }
+    .title input,textarea{
+        margin-top:10px;
+    }
+    .title h4{
+        margin-top:10px;
+    }
+</style>
 
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script>
+
 $(function() {
     $("#myList").sortable({
         axis : 'y',
@@ -38,148 +57,70 @@ $(function() {
 });
 
 function changeIds() {
-    var l =1;
+
     $('.loc').each(function(i, obj) {
-{#        console.log(i);#}
-{#        console.log(obj);#}
         var near_address_common = $(this).find(".near_address_common");
         var address_common = $(this).find(".address_common");
         var note_common = $(this).find(".note_common");
-        console.log(note_common);
         var lat_common = $(this).find(".lat_common");
         var lng_common = $(this).find(".lng_common");
-        delete_a = $(this).find(".delete_waypoint");
+        var delete_a = $(this).find(".delete_waypoint");
 
-        if (typeof(near_address_common[0]) != 'undefined'){
-            if(l==2 && last_waypoint_no > 0){
-                l=3;
-            }
-            if(l == last_waypoint_no+3 && last_waypoint_no > 0){
-                l = 2
-            }
-            new_id = 'address'+l;
-            near_address_common.attr('id', new_id);
-            l += 1;
-        }
-
+        var prefix = "way_loc";
+        var classes = obj.className.split(" ").filter(function(c) {
+            return c.lastIndexOf(prefix, 0) !== 0;
+        });
+        obj.className = $.trim(classes.join(" "));
 
         if(i==0){
-            console.log("first");
-            prefix = "way_loc";
-            classes = obj.className.split(" ").filter(function(c) {
-                return c.lastIndexOf(prefix, 0) !== 0;
-            });
-            obj.className = $.trim(classes.join(" "));
             address_common.attr('placeholder', 'Start Location');
             address_common.attr('name', 'start_search_address');
             near_address_common.attr('name', 'start_near_address');
             note_common.attr('name', 'start_note_location');
             lat_common.attr('name', 'latitude_first');
             lng_common.attr('name', 'longitude_first');
+            near_address_common.attr('id', 'address1');
             $(delete_a).remove();
         }
         else{
             if(last_waypoint_no == 0){
-                console.log("second");
-                prefix = "way_loc";
-                classes = obj.className.split(" ").filter(function(c) {
-                    return c.lastIndexOf(prefix, 0) !== 0;
-                });
-                obj.className = $.trim(classes.join(" "));
                 address_common.attr('placeholder', 'End Location');
                 address_common.attr('name', 'end_search_address');
                 near_address_common.attr('name', 'end_near_address');
                 note_common.attr('name', 'end_note_location');
                 lat_common.attr('name', 'latitude_last');
                 lng_common.attr('name', 'longitude_last');
+                near_address_common.attr('id', 'address2');
                 $(delete_a).remove();
             }
             else{
                 if(last_waypoint_no+1 == i){
-                    console.log("third");
-                    prefix = "way_loc";
-                    classes = obj.className.split(" ").filter(function(c) {
-                        return c.lastIndexOf(prefix, 0) !== 0;
-                    });
-                    obj.className = $.trim(classes.join(" "));
                     address_common.attr('placeholder', 'End Location');
                     address_common.attr('name', 'end_search_address');
                     near_address_common.attr('name', 'end_near_address');
                     note_common.attr('name', 'end_note_location');
                     lat_common.attr('name', 'latitude_last');
                     lng_common.attr('name', 'longitude_last');
+                    near_address_common.attr('id', 'address2');
                     $(delete_a).remove();
                 }
                 else{
-                    console.log("last");
-                    prefix = "way_loc";
-                    classes = obj.className.split(" ").filter(function(c) {
-                        return c.lastIndexOf(prefix, 0) !== 0;
-                    });
-                    obj.className = $.trim(classes.join(" "));
-
-                    way_li_class = 'way_loc_'+i;
+                    var way_li_class = 'way_loc_'+i;
                     $(obj).addClass(way_li_class);
-                    waypoint_placeholder = 'Waypoint '+ i +' Location';
-                    address_common.attr('placeholder', waypoint_placeholder);
-                    way_point_add_name = 'search_address'+i;
-                    way_point_near_name = 'near_address'+i;
-                    way_point_note = 'note_waypoint'+i;
-                    way_point_lat = 'latitude'+i;
-                    way_point_lng = 'longitude'+i;
-                    address_common.attr('name', way_point_add_name);
-                    near_address_common.attr('name', way_point_near_name);
-                    note_common.attr('name', way_point_note);
-                    lat_common.attr('name', way_point_lat);
-                    lng_common.attr('name', way_point_lng);
+                    address_common.attr('placeholder', 'Waypoint '+ i +' Location');
+                    address_common.attr('name', 'search_address'+i);
+                    near_address_common.attr('name', 'near_address'+i);
+                    note_common.attr('name', 'note_waypoint'+i);
+                    lat_common.attr('name', 'latitude'+i);
+                    lng_common.attr('name', 'longitude'+i);
+                    near_address_common.attr('id', 'address'+(i+2));
                     $(delete_a).remove();
                     address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a>");
                 }
             }
         }
-
-
     });
 }
-
-</script>
-
-<style>
-    .map-box{
-        background: #FFF !important;
-        padding: 25px;
-        height:600px;
-    }
-    #map-canvas {
-        width:100%;
-        height: 550px;
-        float: left;
-    }
-
-    #target {
-        width: 345px;
-    }
-
-    .trip_loopn{
-        margin-top: 10px;
-        margin-bottom:10px;
-    }
-
-    .title{
-        margin-bottom:10px;
-    }
-
-    .title input,textarea{
-        margin-top:10px;
-    }
-
-    .title h4{
-        margin-top:10px;
-    }
-
-</style>
-
-<script>
 
 var map;
 var markers = [];
@@ -503,7 +444,7 @@ function calcRoute() {
         origin: start,
         destination: end,
         waypoints: way_points_arr,
-        optimizeWaypoints: true,
+{#        optimizeWaypoints: true,#}
         travelMode: google.maps.TravelMode.DRIVING
     };
 
