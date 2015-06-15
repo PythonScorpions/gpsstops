@@ -27,10 +27,16 @@ class Create_Route(View):
         print trip_title
         print type(trip_datetime), "-----------------", trip_datetime
         total_time = request.POST['total_hours']
+        total_time_opt = request.POST['opt_hours']
         if '.' in request.POST['total_distance']:
             total_distance = float(request.POST['total_distance'][:-3])
         else:
             total_distance = float(int(request.POST['total_distance'][:-3]))
+
+        if '.' in request.POST['opt_distance']:
+            total_distance_opt = float(request.POST['opt_distance'][:-3])
+        else:
+            total_distance_opt = float(int(request.POST['opt_distance'][:-3]))
 
         start_search_address = request.POST['start_search_address']
         start_near_address = request.POST['start_near_address']
@@ -44,7 +50,8 @@ class Create_Route(View):
         latitude_last = request.POST['latitude_last']
         longitude_last = request.POST['longitude_last']
         route_obj = Route(user=request.user, trip_title=trip_title, trip_datetime=trip_datetime,
-                          total_distance=total_distance, total_time=total_time)
+                          total_distance=total_distance, total_time=total_time,
+                          optimized_total_distance=total_distance_opt, optimized_total_time=total_time_opt)
         route_obj.save()
 
         total_waypoint = int(request.POST['total_waypoint'])
@@ -52,6 +59,9 @@ class Create_Route(View):
         Location(route=route_obj, location_address=start_search_address, location_near_address=start_near_address,
                  location_lat=latitude_first, location_long=longitude_first, location_note=start_note_location,
                  location_number=11).save()
+        OptimizedLocation(route=route_obj, location_address=start_search_address, location_near_address=start_near_address,
+                          location_lat=latitude_first, location_long=longitude_first, location_note=start_note_location,
+                          location_number=11).save()
 
         for i in xrange(1, total_waypoint+1):
             search_add_n = "search_address"+str(i)
@@ -68,13 +78,31 @@ class Create_Route(View):
             Location(route=route_obj, location_address=search_address, location_near_address=near_address,
                      location_lat=lat_data, location_long=lng_data, location_note=note, location_number=i).save()
 
+        for k in xrange(1, total_waypoint+1):
+            order = "order"+str(k-1)
+            order_no = int(request.POST[order])+1
+            # near_opt = "opt_near_address"+str(k)
+            # latitude_opt = "opt_latitude"+str(i)
+            # longitude_opt = "opt_longitude"+str(i)
+            # near_opt_address = request.POST[near_opt]
+            # latitude_opt_address = request.POST[latitude_opt]
+            # longitude_opt_address = request.POST[longitude_opt]
+            manual_loc_obj = Location.objects.get(location_number=order_no)
+            # search_add_opt = manual_loc_obj.location_address
+            # note_opt = manual_loc_obj.location_note
+
+            OptimizedLocation(route=route_obj, location_address=manual_loc_obj.location_address,
+                              location_near_address=manual_loc_obj.location_near_address,
+                              location_lat=manual_loc_obj.location_lat, location_long=manual_loc_obj.location_long,
+                              location_note=manual_loc_obj.location_note, location_number=k).save()
+
         Location(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
                  location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
                  location_number=22).save()
+        OptimizedLocation(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
+                          location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
+                          location_number=22).save()
 
-        # trip_title = request.POST['trip_title']
-        active = "maps"
-        flag = "maps"
         return HttpResponseRedirect('/maps/routes')
 
 
