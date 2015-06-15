@@ -476,6 +476,7 @@ function optimized_view(){
 
 // calculate route function
 function calcRoute() {
+    $('.optimized_view').empty();
     for (var i = 0, marker; marker = markers[i]; i++) {
         marker.setMap(null);
     }
@@ -501,6 +502,14 @@ function calcRoute() {
         origin: start,
         destination: end,
         waypoints: way_points_arr,
+{#        optimizeWaypoints: true,#}
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    var request2 = {
+        origin: start,
+        destination: end,
+        waypoints: way_points_arr,
         optimizeWaypoints: true,
         travelMode: google.maps.TravelMode.DRIVING
     };
@@ -516,6 +525,40 @@ function calcRoute() {
         if (seconds < 10) {seconds = "0"+seconds;}
         return hours+' hrs '+minutes+' mins';
     };
+
+    directionsService.route(request2, function(response2, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            console.log(response2);
+            var optimized_routes = response2.routes[0].legs;
+            var optimized_waypoints_order = response2.routes[0].waypoint_order;
+            console.log(optimized_routes);
+            var total_distance_opt = 0;
+            var total_duration_opt = 0;
+            for (var o = 0; o < optimized_routes.length; o++) {
+                total_distance_opt += optimized_routes[o].distance.value;
+                total_duration_opt += optimized_routes[o].duration.value;
+            }
+            total_distance_opt = (total_distance_opt / 1000.0).toFixed();
+            var total_distance_opt_int = total_distance_opt.toString() + ' km';
+            var total_duration_opt_format = total_duration_opt.toString().toHHMMSS();
+            for(var e=0;e<optimized_waypoints_order.length;++e){
+                console.log(optimized_waypoints_order[e]);
+                $('.optimized_view').append("<input TYPE='hidden' name='order"+e+"' value='"+optimized_waypoints_order[e]+"'>");
+{#                $('.optimized_view').append("<input TYPE='hidden' value='"+ optimized_routes[e].start_address +"'" +#}
+{#                " name='opt_near_address"+ e +"'><input TYPE='hidden' name='opt_latitude"+e+"' " +#}
+{#                "value='"+optimized_routes[e].start_location.A+"' />" +#}
+{#                "<input TYPE='hidden' name='opt_longitude"+e+"' value='"+optimized_routes[e].start_location.F+"' />");#}
+{#                if(e==optimized_routes.length-1){#}
+{#                    $('.optimized_view').append("<input TYPE='hidden' value='"+ optimized_routes[e].end_address +"'" +#}
+{#                    " name='opt_near_address"+ optimized_routes.length +"'><input TYPE='hidden' name='opt_latitude"+optimized_routes.length+"' " +#}
+{#                    "value='"+optimized_routes[e].end_location.A+"' />" +#}
+{#                    "<input TYPE='hidden' name='opt_longitude"+optimized_routes.length+"' value='"+optimized_routes[e].end_location.F+"' />");#}
+{#                }#}
+            }
+            $('.optimized_view').append("<input type='text' name='opt_distance' value='"+total_distance_opt_int+"'/>" +
+            "<input type='text' name='opt_hours' value='"+total_duration_opt_format+"'/>");
+        }
+    });
 
     directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
@@ -646,75 +689,76 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             </div>
 
                                             <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
-
-
-
-                                        <div class="optimized_view" style="display: none">
-                                            <h3>Route</h3>
-                                            <div>&nbsp;</div>
-                                            <div class="cl"></div>
-                                            <div class="title">
-                                            <input type="text" class="form-control" name="optimized_trip_title" value=""
-                                                           placeholder="Trip Title" required="true"/>
-                                            <input type="text" required="true" name="optimized_trip_datetime" class="form-control"
-                                                        placeholder="Trip Date Time"/>
+                                            <div class="optimized_view" style="display: none">
                                             </div>
-                                            <div>&nbsp;</div>
-
-                                            <ul id="opt_myList">
-                                                <li class="opt_title opt_loc">
-
-                                                    <input class="controls form-control opt_pac-input opt_address_common" type="text"
-                                                           placeholder="Start Location" name="opt_start_search_address"
-                                                           style="display: initial; width: 267px;" required="true">
-                                                    <input TYPE="hidden" id="opt_address1" class="controls form-control opt_near_address_common"
-                                                           type="text" placeholder="Start Nearest Address" name="opt_start_near_address">
-                                                    <input class="form-control note_common" id="opt_start_location_note" required="true"
-                                                           placeholder="Note for location" name="opt_start_note_location">
-                                                    <input TYPE="hidden" name="opt_latitude_first" class="opt_latitude_first form-control
-                                                    opt_lat_common" value="" />
-                                                    <input TYPE="hidden" name="opt_longitude_first" class="opt_longitude_first form-control opt_lng_common"
-                                                           value="" />
-                                                    <input type="hidden" name="marker_status" class="form-control" id="opt_info"/>
-
-                                                </li>
-
-                                                <li class="opt_add_waypoint_container" style="display: none;">
-                                                    <a role="button" class="btn btn-primary add_more_waypoint"
-                                                       style="cursor:pointer;">
-                                                        Add More Location
-                                                    </a>
-                                                    <div>&nbsp;</div>
-                                                </li>
-
-                                                <li class="opt_title opt_loc">
-                                                    <input class="controls form-control opt_pac-input address_common" type="text"
-                                                           placeholder="End Location" name="opt_end_search_address"
-                                                           style="display: initial; width: 267px;" required="true">
-                                                    <input TYPE="hidden" id="opt_address2" class="controls form-cotrol opt_near_address_common" type="text"
-                                                           placeholder="End Nearest address" name="opt_end_near_address">
-                                                    <input class="form-control opt_note_common" id="opt_end_location_note" required="true"
-                                                           placeholder="Note for location" name="opt_end_note_location">
-                                                    <input TYPE="hidden" name="opt_latitude_last" class="opt_latitude_last form-control opt_lat_common"
-                                                           value="" />
-                                                    <input TYPE="hidden" name="opt_longitude_last" class="opt_longitude_last form-control opt_lng_common"
-                                                           value="" />
-                                                    <input type="hidden" name="marker_status" class="form-control" id="opt_info"/>
-                                                </li>
-                                            </ul>
-
-                                            <div class="title">
-                                                <input type="text" name="opt_total_distance" class="map-input opt_total_distance"
-                                                        placeholder="Total Distance"/>
-                                                <input type="text" name="opt_total_hours" class="map-input opt_total_hours"
-                                                        placeholder="Total Hours"/>
-                                            </div>
-
-                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
-
-                                        </div>
                                         </form>
                                         <!-- form end -->
+
+{#                                        <div class="optimized_view" style="display: none">#}
+{#                                            <h3>Route</h3>#}
+{#                                            <div>&nbsp;</div>#}
+{#                                            <div class="cl"></div>#}
+{#                                            <div class="title">#}
+{#                                            <input type="text" class="form-control" name="optimized_trip_title" value=""#}
+{#                                                           placeholder="Trip Title" required="true"/>#}
+{#                                            <input type="text" required="true" name="optimized_trip_datetime" class="form-control"#}
+{#                                                        placeholder="Trip Date Time"/>#}
+{#                                            </div>#}
+{#                                            <div>&nbsp;</div>#}
+{##}
+{#                                            <ul id="opt_myList">#}
+{#                                                <li class="opt_title opt_loc">#}
+{##}
+{#                                                    <input class="controls form-control opt_pac-input opt_address_common" type="text"#}
+{#                                                           placeholder="Start Location" name="opt_start_search_address"#}
+{#                                                           style="display: initial; width: 267px;" required="true">#}
+{#                                                    <input TYPE="hidden" id="opt_address1" class="controls form-control opt_near_address_common"#}
+{#                                                           type="text" placeholder="Start Nearest Address" name="opt_start_near_address">#}
+{#                                                    <input class="form-control note_common" id="opt_start_location_note" required="true"#}
+{#                                                           placeholder="Note for location" name="opt_start_note_location">#}
+{#                                                    <input TYPE="hidden" name="opt_latitude_first" class="opt_latitude_first form-control#}
+{#                                                    opt_lat_common" value="" />#}
+{#                                                    <input TYPE="hidden" name="opt_longitude_first" class="opt_longitude_first form-control opt_lng_common"#}
+{#                                                           value="" />#}
+{#                                                    <input type="hidden" name="marker_status" class="form-control" id="opt_info"/>#}
+{##}
+{#                                                </li>#}
+{##}
+{#                                                <li class="opt_add_waypoint_container" style="display: none;">#}
+{#                                                    <a role="button" class="btn btn-primary add_more_waypoint"#}
+{#                                                       style="cursor:pointer;">#}
+{#                                                        Add More Location#}
+{#                                                    </a>#}
+{#                                                    <div>&nbsp;</div>#}
+{#                                                </li>#}
+{##}
+{#                                                <li class="opt_title opt_loc">#}
+{#                                                    <input class="controls form-control opt_pac-input address_common" type="text"#}
+{#                                                           placeholder="End Location" name="opt_end_search_address"#}
+{#                                                           style="display: initial; width: 267px;" required="true">#}
+{#                                                    <input TYPE="hidden" id="opt_address2" class="controls form-cotrol opt_near_address_common" type="text"#}
+{#                                                           placeholder="End Nearest address" name="opt_end_near_address">#}
+{#                                                    <input class="form-control opt_note_common" id="opt_end_location_note" required="true"#}
+{#                                                           placeholder="Note for location" name="opt_end_note_location">#}
+{#                                                    <input TYPE="hidden" name="opt_latitude_last" class="opt_latitude_last form-control opt_lat_common"#}
+{#                                                           value="" />#}
+{#                                                    <input TYPE="hidden" name="opt_longitude_last" class="opt_longitude_last form-control opt_lng_common"#}
+{#                                                           value="" />#}
+{#                                                    <input type="hidden" name="marker_status" class="form-control" id="opt_info"/>#}
+{#                                                </li>#}
+{#                                            </ul>#}
+{##}
+{#                                            <div class="title">#}
+{#                                                <input type="text" name="opt_total_distance" class="map-input opt_total_distance"#}
+{#                                                        placeholder="Total Distance"/>#}
+{#                                                <input type="text" name="opt_total_hours" class="map-input opt_total_hours"#}
+{#                                                        placeholder="Total Hours"/>#}
+{#                                            </div>#}
+{##}
+{#                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">#}
+{##}
+{#                                        </div>#}
+
 
                                     </div>
                                 </div>
