@@ -455,6 +455,23 @@ function initialize() {
     });
 
 }
+
+function manual_view(){
+    console.log("manual view");
+    $("#manual_li").addClass('active');
+    $("#optimized_li").removeClass('active');
+    $("#manual_a").removeAttr('href');
+    $("#optimized_a").attr('href', 'javascript:optimized_view()');
+}
+
+function optimized_view(){
+    console.log("optimized view");
+    $("#manual_li").removeClass('active');
+    $("#optimized_li").addClass('active');
+    $("#optimized_a").removeAttr('href');
+    $("#manual_a").attr('href', 'javascript:manual_view()');
+}
+
 //initial function close here
 
 // calculate route function
@@ -484,7 +501,7 @@ function calcRoute() {
         origin: start,
         destination: end,
         waypoints: way_points_arr,
-{#        optimizeWaypoints: true,#}
+        optimizeWaypoints: true,
         travelMode: google.maps.TravelMode.DRIVING
     };
 
@@ -549,13 +566,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                         <div role="tabpanel" class="tab-pane active " id="profile">
                             <div class="row">
                                 <ul role="tablist" class="nav nav-tabs ">
-                                    <li role="presentation" class="active" style="margin-left: 15px;">
-                                        <a href="{% url 'calender_prime' %}" style="font-size: 18px;" class="right-tab">
+                                    <li id="manual_li" role="presentation" class="active" style="margin-left: 15px;">
+                                        <a id="manual_a" style="font-size: 18px;" class="right-tab">
                                             Manual View
                                         </a>
                                     </li>
-                                    <li role="presentation" class="">
-                                        <a href="{{ url_to_direct }}" class="right-tab" style="font-size: 18px;
+                                    <li id="optimized_li" role="presentation" class="">
+                                        <a href="javascript:optimized_view()" id="optimized_a" class="right-tab" style="font-size: 18px;
                                          padding-left: 26px !important; padding-right: 26px !important;"
                                         aria-expanded="true">Optimized View
                                         </a>
@@ -630,65 +647,74 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
                                             <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
 
+
+
+                                        <div class="optimized_view" style="display: none">
+                                            <h3>Route</h3>
+                                            <div>&nbsp;</div>
+                                            <div class="cl"></div>
+                                            <div class="title">
+                                            <input type="text" class="form-control" name="optimized_trip_title" value=""
+                                                           placeholder="Trip Title" required="true"/>
+                                            <input type="text" required="true" name="optimized_trip_datetime" class="form-control"
+                                                        placeholder="Trip Date Time"/>
+                                            </div>
+                                            <div>&nbsp;</div>
+
+                                            <ul id="opt_myList">
+                                                <li class="opt_title opt_loc">
+
+                                                    <input class="controls form-control opt_pac-input opt_address_common" type="text"
+                                                           placeholder="Start Location" name="opt_start_search_address"
+                                                           style="display: initial; width: 267px;" required="true">
+                                                    <input TYPE="hidden" id="opt_address1" class="controls form-control opt_near_address_common"
+                                                           type="text" placeholder="Start Nearest Address" name="opt_start_near_address">
+                                                    <input class="form-control note_common" id="opt_start_location_note" required="true"
+                                                           placeholder="Note for location" name="opt_start_note_location">
+                                                    <input TYPE="hidden" name="opt_latitude_first" class="opt_latitude_first form-control
+                                                    opt_lat_common" value="" />
+                                                    <input TYPE="hidden" name="opt_longitude_first" class="opt_longitude_first form-control opt_lng_common"
+                                                           value="" />
+                                                    <input type="hidden" name="marker_status" class="form-control" id="opt_info"/>
+
+                                                </li>
+
+                                                <li class="opt_add_waypoint_container" style="display: none;">
+                                                    <a role="button" class="btn btn-primary add_more_waypoint"
+                                                       style="cursor:pointer;">
+                                                        Add More Location
+                                                    </a>
+                                                    <div>&nbsp;</div>
+                                                </li>
+
+                                                <li class="opt_title opt_loc">
+                                                    <input class="controls form-control opt_pac-input address_common" type="text"
+                                                           placeholder="End Location" name="opt_end_search_address"
+                                                           style="display: initial; width: 267px;" required="true">
+                                                    <input TYPE="hidden" id="opt_address2" class="controls form-cotrol opt_near_address_common" type="text"
+                                                           placeholder="End Nearest address" name="opt_end_near_address">
+                                                    <input class="form-control opt_note_common" id="opt_end_location_note" required="true"
+                                                           placeholder="Note for location" name="opt_end_note_location">
+                                                    <input TYPE="hidden" name="opt_latitude_last" class="opt_latitude_last form-control opt_lat_common"
+                                                           value="" />
+                                                    <input TYPE="hidden" name="opt_longitude_last" class="opt_longitude_last form-control opt_lng_common"
+                                                           value="" />
+                                                    <input type="hidden" name="marker_status" class="form-control" id="opt_info"/>
+                                                </li>
+                                            </ul>
+
+                                            <div class="title">
+                                                <input type="text" name="opt_total_distance" class="map-input opt_total_distance"
+                                                        placeholder="Total Distance"/>
+                                                <input type="text" name="opt_total_hours" class="map-input opt_total_hours"
+                                                        placeholder="Total Hours"/>
+                                            </div>
+
+                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
+
+                                        </div>
                                         </form>
                                         <!-- form end -->
-
-{#                                        <div class="optimized_view" style="display: none">#}
-{#                                            <h3>Route</h3>#}
-{#                                            <div>&nbsp;</div>#}
-{#                                            <div class="cl"></div>#}
-{#                                            <div class="title">#}
-{#                                            <input type="text" class="form-control" name="trip_title" value=""#}
-{#                                                           placeholder="Trip Title" required="true"/>#}
-{#                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"#}
-{#                                                        placeholder="Trip Date Time"/>#}
-{#                                            </div>#}
-{#                                            <div>&nbsp;</div>#}
-{##}
-{#                                            <ul id="myList">#}
-{#                                                <li class="title loc">#}
-{##}
-{#                                                    <input class="controls form-control pac-input address_common" type="text"#}
-{#                                                           placeholder="Start Location" name="start_search_address"#}
-{#                                                           style="display: initial; width: 267px;" required="true">#}
-{#                                                    <input TYPE="hidden" id="address1" class="controls form-control near_address_common"#}
-{#                                                           type="text" placeholder="Start Nearest Address" name="start_near_address">#}
-{#                                                    <input class="form-control note_common" id="start_location_note" required="true"#}
-{#                                                           placeholder="Note for location" name="start_note_location">#}
-{#                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"#}
-{#                                                           value="" />#}
-{#                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"#}
-{#                                                           value="" />#}
-{#                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>#}
-{##}
-{#                                                </li>#}
-{##}
-{#                                                <li class="title loc">#}
-{#                                                    <input class="controls form-control pac-input address_common" type="text"#}
-{#                                                           placeholder="End Location" name="end_search_address"#}
-{#                                                           style="display: initial; width: 267px;" required="true">#}
-{#                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"#}
-{#                                                           placeholder="End Nearest address" name="end_near_address">#}
-{#                                                    <input class="form-control note_common" id="end_location_note" required="true"#}
-{#                                                           placeholder="Note for location" name="end_note_location">#}
-{#                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"#}
-{#                                                           value="" />#}
-{#                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"#}
-{#                                                           value="" />#}
-{#                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>#}
-{#                                                </li>#}
-{#                                            </ul>#}
-{##}
-{#                                            <div class="title">#}
-{#                                                <input type="text" name="total_distance" class="map-input total_distance"#}
-{#                                                        placeholder="Total Distance"/>#}
-{#                                                <input type="text" name="total_hours" class="map-input total_hours"#}
-{#                                                        placeholder="Total Hours"/>#}
-{#                                            </div>#}
-{##}
-{#                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">#}
-{##}
-{#                                        </div>#}
 
                                     </div>
                                 </div>
