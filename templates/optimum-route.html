@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include "logo_account.html" %}
+{% load location_title_tags %}
+
+<style>
+    .map-box{
+        background: #FFF !important;
+        padding: 25px;
+        height:600px;
+    }
+    #map-canvas {
+        width:100%;
+        height: 550px;
+        float: left;
+    }
+    .title{
+        margin-bottom:10px;
+    }
+    .title input,textarea{
+        margin-top:10px;
+    }
+    .title h4{
+        margin-top:10px;
+    }
+</style>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<script>
+
+var input_first;
+var input_last;
+var searchBox_first;
+var searchBox_last;
+
+var map;
+var markers = [];
+var autocomplete = [];
+var autocompleteOptions = {};
+var waypoints = [];
+var last_waypoint_no = parseInt({{ total_way_point }});
+
+
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var rendererOptions = {
+    draggable: true
+};
+
+function initialize() {
+    directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 6,
+        center: chicago
+    });
+
+    // direction service code
+    directionsDisplay.setMap(map);
+
+    calcRoute();
+
+}
+//initial function close here
+
+
+// calculate route function
+function calcRoute() {
+    for (var y = 0, marker; marker = markers[y]; y++) {
+        marker.setMap(null);
+    }
+    console.log("yes it is entering on calcroute");
+    var start = $('#address1').val();
+    var end = $('#address2').val();
+
+    console.log(start);
+    console.log(end);
+
+    var way_points_arr = [];
+    total_waypoints_temp = parseInt($('.total_waypoint').val()) +2;
+    for(var i=3; i<=total_waypoints_temp;i++){
+        if($('#address'+i).val() != ''){
+            way_points_arr.push({
+            location:$('#address'+i).val(),
+            stopover:true});
+        }
+    }
+    console.log(way_points_arr);
+
+    var request = {
+        origin: start,
+        destination: end,
+        waypoints: way_points_arr,
+{#        optimizeWaypoints: true,#}
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    String.prototype.toHHMMSS = function () {
+        var sec_num = parseInt(this, 10);
+        var hours   = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}
+        if (seconds < 10) {seconds = "0"+seconds;}
+        return hours+' hrs '+minutes+' mins';
+    };
+
+    directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+            console.log("Done");
+            var route = response.routes[0];
+            console.log(route);
+            var total_distance_int = 0;
+            var total_duration = 0;
+            for (var i = 0; i < route.legs.length; i++) {
+                total_distance_int += route.legs[i].distance.value;
+                total_duration+= route.legs[i].duration.value;
+            }
+            total_distance_int = (total_distance_int / 1000.0).toFixed();
+            console.log(total_duration);
+            var total_distance = total_distance_int.toString() + ' km';
+            var total_duration_in_format = total_duration.toString().toHHMMSS();
+            $('.total_distance').val(total_distance);
+            $('.total_hours').val(total_duration_in_format);
+        }
+    });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+
+<div class="contan-eria">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div role="tabpanel">
+
+                    <ul role="tablist" class="nav nav-tabs text-center">
+                        <li role="presentation" class="">
+                            <a href="{% url 'calender_prime' %}" class="right-tab">
+                                <i class="glyphicon glyphicon-calendar"></i> Calendar
+                            </a>
+                        </li>
+                        <li role="presentation" class="active">
+                            <a href="{{ url_to_direct }}" class="right-tab"  aria-expanded="true">
+                                <i class="glyphicon glyphicon-map-marker"></i> Route Map
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content tab-content-2">
+                        <div role="tabpanel" class="tab-pane active " id="profile">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
+                                    <div class="left-map">
+
+                                        {% csrf_token %}
+                                            <h3>Optimized Route</h3>
+                                            <div>&nbsp;</div>
+                                            <div class="cl"></div>
+                                            <div class="title">
+                                            <input type="text" disabled class="form-control" name="trip_title" value="{{ route_obj.trip_title }}"
+                                                           placeholder="Trip Title" required="true"/>
+                                            <input type="text" disabled required="true" name="trip_datetime" id="datepicker" class="form-control"
+                                                        placeholder="Trip Date Time" value="{{ route_obj.trip_datetime|date:'Y/m/d H:i' }}"/>
+                                            </div>
+                                            <div>&nbsp;</div>
+                                            <ul id="myList">
+                                                <li class="title loc">
+                                                    {% with location_obj|first as data %}
+                                                    <input class="controls form-control pac-input address_common" type="text"
+                                                           placeholder="Start Location" name="start_search_address"
+                                                           value="{{ data.location_address }}" disabled
+                                                           style="display: initial; width: 267px;" required="true">
+                                                    <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
+                                                           value="{{ data.location_near_address }}"
+                                                           type="text" placeholder="Start Nearest Address" name="start_near_address">
+                                                    <input class="form-control note_common" id="start_location_note" required="true"
+                                                           value="{{ data.location_note }}" disabled
+                                                           placeholder="Note for location" name="start_note_location">
+                                                    <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"
+                                                           value="{{ data.location_lat }}" id="latitude_first"/>
+                                                    <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
+                                                           value="{{ data.location_long }}" id="longitude_first"/>
+                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                    {% endwith %}
+                                                </li>
+
+                                                <li class="add_waypoint_container">
+                                                    <input type="hidden" value="{{ total_way_point }}" name="total_waypoint" class="total_waypoint" />
+                                                    <a role="button" class="btn btn-primary add_more_waypoint"
+                                                       style="display:none;">
+                                                        Add More Location
+                                                    </a>
+                                                    <div>&nbsp;</div>
+                                                </li>
+
+                                                {% for way_point in location_obj %}
+                                                {% if way_point.location_number not in start_end  %}
+                                                <li class="title loc way_loc_{{ way_point.location_number }}">
+                                                    <input class="controls form-control pac-input address_common"
+                                                    type="text" required="true" value="{{ way_point.location_address }}"
+                                                    placeholder="Waypoint {{ way_point.location_number }} Location"
+                                                    name="search_address{{ way_point.location_number }}" autocomplete="off"
+                                                    style="display: initial; width: 267px;" disabled>
+{#                                                    <a id="{{ way_point.location_number }}" class='delete_waypoint'>#}
+{#                                                    <i class='glyphicon glyphicon-remove'></i></a>#}
+
+                                                    <input TYPE="hidden" class="near_address_common controls form-control address{{ way_point.location_number }}"
+                                                    value="{{ way_point.location_near_address }}" type="text" name="near_address{{ way_point.location_number }}"
+                                                    id='address{{ way_point.location_number|add:"+2" }}'>
+
+                                                    <input class="form-control note_common location_note_{{ way_point.location_number }}" required="true" disabled
+                                                    placeholder="Note for Location" value="{{ way_point.location_note }}" name="note_waypoint{{ way_point.location_number }}">
+                                                    <input type="hidden" name="latitude{{ way_point.location_number }}"
+                                                    class="lat_common latitude{{ way_point.location_number }} form-control"
+                                                    value="{{ way_point.location_lat }}" id="latitude{{ way_point.location_number }}">
+                                                    <input type="hidden" name="longitude{{ way_point.location_number }}"
+                                                    class="lng_common longitude{{ way_point.location_number }} form-control"
+                                                     value="{{ way_point.location_long }}" id="longitude{{ way_point.location_number }}">
+                                                    <input type="hidden" name="marker_status{{ way_point.location_number }}" class="form-control" id="info">
+                                                    <input type="hidden" name="my_waypoint_no" class="my_waypoint_no" value="1">
+                                                </li>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                                <li class="title loc">
+                                                    {% for obj in location_obj %}
+                                                    {% if obj.location_number == 22 %}
+                                                    <input class="controls form-control pac-input address_common" type="text"
+                                                           placeholder="End Location" name="end_search_address"
+                                                           value="{{ obj.location_address }}" disabled
+                                                           style="display: initial; width: 267px;" required="true">
+                                                    <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"
+                                                           placeholder="End Nearest address" name="end_near_address"
+                                                           value="{{ obj.location_near_address }} ">
+                                                    <input class="form-control note_common" id="end_location_note" required="true"
+                                                           placeholder="Note for location" name="end_note_location"
+                                                           value="{{ obj.location_note }} disabled">
+                                                    <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
+                                                           value="{{ obj.location_lat }}" id="latitude_last"/>
+                                                    <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
+                                                           value="{{ obj.location_long }}" id="longitude_last"/>
+                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </li>
+                                            </ul>
+
+                                            <div class="title">
+
+                                                <input type="text" name="total_distance" class="map-input total_distance"
+                                                        placeholder="Total Distance" disabled value="{{ route_obj.total_distance }}"/>
+                                                <input type="text" name="total_hours" class="map-input total_hours"
+                                                        placeholder="Total Hours" disabled value="{{ route_obj.total_time }}"/>
+                                            </div>
+                                        &nbsp;
+                                        <!-- form end -->
+                                        <div class="">
+                                                    {% for route in routes %}
+                                                        <div class="title">
+                                                            <a href="{% url 'optimum-route' route.id %}">
+                                                                <h5>{{ route.trip_title }} </h5>
+                                                                <p>Location: {% for location in route.optimized_route_locations.all %}{% retrieve_title location.location_address %}, {% endfor %} </p>
+                                                                <p><span>Date: {{ route.trip_datetime }} | Distance: {{ route.optimized_total_distance }} Kms. Time: {{ route.optimized_total_time }} </span></p>
+                                                            </a>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
+                                    <div class="map-box">
+                                        <div id="map-canvas"></div>
+                                      <!--  Here comes the map div-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+jQuery.browser = {};
+(function () {
+    jQuery.browser.msie = false;
+    jQuery.browser.version = 0;
+    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+        jQuery.browser.msie = true;
+        jQuery.browser.version = RegExp.$1;
+    }
+})();
+     $(function(){
+         $("#datepicker").datetimepicker();
+     });
+</script>
+
+{% endblock %}
