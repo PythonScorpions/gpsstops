@@ -6,7 +6,31 @@
 {% include "logo_account.html" %}
 
 {% load location_title_tags %}    
-    
+
+<script>
+
+{#$(function() {#}
+
+function manual_view(){
+    $("#manual_li").addClass('active');
+    $("#optimized_li").removeClass('active');
+    $("#manual_a").removeAttr('href');
+    $("#optimized_a").attr('href', 'javascript:optimized_view()');
+    $(".optimized_view_div").hide();
+    $(".manual_view_div").show();
+}
+
+function optimized_view(){
+    $("#manual_li").removeClass('active');
+    $("#optimized_li").addClass('active');
+    $("#optimized_a").removeAttr('href');
+    $("#manual_a").attr('href', 'javascript:manual_view()');
+    $(".manual_view_div").hide();
+    $(".optimized_view_div").show();
+}
+
+</script>
+
 <div class="contan-eria">
     <div class="container">
         <div class="row">
@@ -32,6 +56,19 @@
                     <div class="tab-content tab-content-2">
                         <div role="tabpanel" class="tab-pane active" id="profile">
                             <div class="row">
+                                <ul role="tablist" class="nav nav-tabs ">
+                                    <li id="manual_li" role="presentation" class="active" style="margin-left: 15px;">
+                                        <a id="manual_a" style="font-size: 18px;" class="right-tab">
+                                            Manual View
+                                        </a>
+                                    </li>
+                                    <li id="optimized_li" role="presentation" class="">
+                                        <a href="javascript:optimized_view()" id="optimized_a" class="right-tab" style="font-size: 18px;
+                                         padding-left: 26px !important; padding-right: 26px !important;"
+                                        aria-expanded="true">Optimized View
+                                        </a>
+                                    </li>
+                                </ul>
                                 <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
                                     <div class="left-map left-map2">
                                         <h3> Route </h3>
@@ -41,13 +78,24 @@
                                         <div class="cl"></div>
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <div class="">
+                                                <div class="manual_view_div">
                                                     {% for route in routes %}
                                                         <div class="title">
                                                             <a href="{% url 'edit-route' route.id %}">
                                                                 <h5>{{ route.trip_title }} </h5>
                                                                 <p>Location: {% for location in route.route_locations.all %}{% retrieve_title location.location_address %}, {% endfor %} </p>
                                                                 <p><span>Date: {{ route.trip_datetime }} | Distance: {{ route.total_distance }} Kms. Time: {{ route.total_time }} </span></p>
+                                                            </a>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="optimized_view_div" style="display: none;">
+                                                    {% for route in routes %}
+                                                        <div class="title">
+                                                            <a href="{% url 'optimum-route' route.id %}">
+                                                                <h5>{{ route.trip_title }} </h5>
+                                                                <p>Location: {% for location in route.optimized_route_locations.all %}{% retrieve_title location.location_address %}, {% endfor %} </p>
+                                                                <p><span>Date: {{ route.trip_datetime }} | Distance: {{ route.optimized_total_distance }} Kms. Time: {{ route.optimized_total_time }} </span></p>
                                                             </a>
                                                         </div>
                                                     {% endfor %}

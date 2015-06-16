@@ -432,6 +432,7 @@ function initialize() {
 
 // calculate route function
 function calcRoute() {
+    $('.optimized_view').empty();
     for (var y = 0, marker; marker = markers[y]; y++) {
         marker.setMap(null);
     }
@@ -461,6 +462,14 @@ function calcRoute() {
         travelMode: google.maps.TravelMode.DRIVING
     };
 
+    var request2 = {
+        origin: start,
+        destination: end,
+        waypoints: way_points_arr,
+        optimizeWaypoints: true,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+
     String.prototype.toHHMMSS = function () {
         var sec_num = parseInt(this, 10);
         var hours   = Math.floor(sec_num / 3600);
@@ -472,6 +481,31 @@ function calcRoute() {
         if (seconds < 10) {seconds = "0"+seconds;}
         return hours+' hrs '+minutes+' mins';
     };
+
+
+    directionsService.route(request2, function(response2, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            console.log(response2);
+            var optimized_routes = response2.routes[0].legs;
+            var optimized_waypoints_order = response2.routes[0].waypoint_order;
+            console.log(optimized_routes);
+            var total_distance_opt = 0;
+            var total_duration_opt = 0;
+            for (var o = 0; o < optimized_routes.length; o++) {
+                total_distance_opt += optimized_routes[o].distance.value;
+                total_duration_opt += optimized_routes[o].duration.value;
+            }
+            total_distance_opt = (total_distance_opt / 1000.0).toFixed();
+            var total_distance_opt_int = total_distance_opt.toString() + ' km';
+            var total_duration_opt_format = total_duration_opt.toString().toHHMMSS();
+            for(var e=0;e<optimized_waypoints_order.length;++e){
+                console.log(optimized_waypoints_order[e]);
+                $('.optimized_view').append("<input TYPE='hidden' name='order"+e+"' value='"+optimized_waypoints_order[e]+"'>");
+            }
+            $('.optimized_view').append("<input type='text' name='opt_distance' value='"+total_distance_opt_int+"'/>" +
+            "<input type='text' name='opt_hours' value='"+total_duration_opt_format+"'/>");
+        }
+    });
 
     directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
@@ -530,8 +564,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
                                             <div class="cl"></div>
+                                            <div class="title">
                                             <input type="text" class="form-control" name="trip_title" value="{{ route_obj.trip_title }}"
                                                            placeholder="Trip Title" required="true"/>
+                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
+                                                        placeholder="Trip Date Time" value="{{ route_obj.trip_datetime|date:'Y/m/d H:i' }}"/>
+                                            </div>
                                             <div>&nbsp;</div>
                                             <ul id="myList">
                                                 <li class="title loc">
@@ -616,8 +654,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             </ul>
 
                                             <div class="title">
-                                                <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Trip Date Time" value="{{ route_obj.trip_datetime|date:'Y/m/d H:i' }}"/>
 
                                                 <input type="text" name="total_distance" class="map-input total_distance"
                                                         placeholder="Total Distance" value="{{ route_obj.total_distance }}"/>
@@ -625,8 +661,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                         placeholder="Total Hours" value="{{ route_obj.total_time }}"/>
                                             </div>
 
-                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save Route">
-
+                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Update Route">
+                                            <div class="optimized_view" style="display: none">
+                                            </div>
                                         </form>
                                         &nbsp;
                                         <!-- form end -->
