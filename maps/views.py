@@ -117,7 +117,7 @@ class Edit_Route(View):
         route_obj = Route.objects.get(id=id)
         print route_obj.trip_title
         start_end =[11, 22]
-        location_obj = Location.objects.filter(route = route_obj).order_by('id')
+        location_obj = Location.objects.filter(route=route_obj).order_by('id')
         for d1 in location_obj:
             print d1
 
@@ -139,10 +139,16 @@ class Edit_Route(View):
         print trip_title
         print type(trip_datetime), "-----------------", trip_datetime
         total_time = request.POST['total_hours']
+        total_time_opt = request.POST['opt_hours']
         if '.' in request.POST['total_distance']:
             total_distance = float(request.POST['total_distance'][:-3])
         else:
             total_distance = float(int(request.POST['total_distance'][:-3]))
+
+        if '.' in request.POST['opt_distance']:
+            total_distance_opt = float(request.POST['opt_distance'][:-3])
+        else:
+            total_distance_opt = float(int(request.POST['opt_distance'][:-3]))
 
         start_search_address = request.POST['start_search_address']
         start_near_address = request.POST['start_near_address']
@@ -160,16 +166,22 @@ class Edit_Route(View):
         route_obj.trip_datetime = trip_datetime
         route_obj.total_distance = total_distance
         route_obj.total_time = total_time
+        route_obj.optimized_total_time = total_time_opt
+        route_obj.optimized_total_distance = total_distance_opt
 
         route_obj.save()
 
         Location.objects.filter(route=route_obj).delete()
+        OptimizedLocation.objects.filter(route=route_obj).delete()
 
         total_waypoint = int(request.POST['total_waypoint'])
 
         Location(route=route_obj, location_address=start_search_address, location_near_address=start_near_address,
                  location_lat=latitude_first, location_long=longitude_first, location_note=start_note_location,
                  location_number=11).save()
+        OptimizedLocation(route=route_obj, location_address=start_search_address, location_near_address=start_near_address,
+                          location_lat=latitude_first, location_long=longitude_first, location_note=start_note_location,
+                          location_number=11).save()
 
         for i in xrange(1, total_waypoint+1):
             search_add_n = "search_address"+str(i)
@@ -186,9 +198,30 @@ class Edit_Route(View):
             Location(route=route_obj, location_address=search_address, location_near_address=near_address,
                      location_lat=lat_data, location_long=lng_data, location_note=note, location_number=i).save()
 
+        for k in xrange(1, total_waypoint+1):
+            order = "order"+str(k-1)
+            order_no = int(request.POST[order])+1
+            # near_opt = "opt_near_address"+str(k)
+            # latitude_opt = "opt_latitude"+str(i)
+            # longitude_opt = "opt_longitude"+str(i)
+            # near_opt_address = request.POST[near_opt]
+            # latitude_opt_address = request.POST[latitude_opt]
+            # longitude_opt_address = request.POST[longitude_opt]
+            manual_loc_obj = Location.objects.get(location_number=order_no)
+            # search_add_opt = manual_loc_obj.location_address
+            # note_opt = manual_loc_obj.location_note
+
+            OptimizedLocation(route=route_obj, location_address=manual_loc_obj.location_address,
+                              location_near_address=manual_loc_obj.location_near_address,
+                              location_lat=manual_loc_obj.location_lat, location_long=manual_loc_obj.location_long,
+                              location_note=manual_loc_obj.location_note, location_number=k).save()
+
         Location(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
                  location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
                  location_number=22).save()
+        OptimizedLocation(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
+                          location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
+                          location_number=22).save()
 
         # trip_title = request.POST['trip_title']
         active = "maps"
@@ -217,4 +250,28 @@ class Routes(View):
         date_selected = datetime.date(year_selected, month_selected, day_selected)
         print date_selected
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
+        return render(request, self.template1, locals())
+
+
+class Optimized_Route(View):
+    template1 = "optimum-route.html"
+
+    @method_decorator(login_required)
+    def get(self, request, **kwargs):
+        id = int(self.kwargs['id'])
+        route_obj = Route.objects.get(id=id)
+        print route_obj.trip_title
+        start_end =[11, 22]
+        location_obj = OptimizedLocation.objects.filter(route=route_obj).order_by('id')
+        for d1 in location_obj:
+            print d1
+
+        total_way_point = len(location_obj) - 2
+        print total_way_point, "<--Total way point"
+
+        active = "maps"
+        flag="maps"
+        today = datetime.date.today()
+        routes = Route.objects.filter(user=request.user, trip_datetime__startswith=today).exclude(id=id)
+
         return render(request, self.template1, locals())
