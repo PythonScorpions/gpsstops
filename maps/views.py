@@ -87,7 +87,7 @@ class Create_Route(View):
             # near_opt_address = request.POST[near_opt]
             # latitude_opt_address = request.POST[latitude_opt]
             # longitude_opt_address = request.POST[longitude_opt]
-            manual_loc_obj = Location.objects.get(location_number=order_no)
+            manual_loc_obj = Location.objects.get(location_number=order_no, route=route_obj)
             # search_add_opt = manual_loc_obj.location_address
             # note_opt = manual_loc_obj.location_note
 
@@ -207,7 +207,7 @@ class Edit_Route(View):
             # near_opt_address = request.POST[near_opt]
             # latitude_opt_address = request.POST[latitude_opt]
             # longitude_opt_address = request.POST[longitude_opt]
-            manual_loc_obj = Location.objects.get(location_number=order_no)
+            manual_loc_obj = Location.objects.get(location_number=order_no, route=route_obj)
             # search_add_opt = manual_loc_obj.location_address
             # note_opt = manual_loc_obj.location_note
 
