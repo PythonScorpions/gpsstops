@@ -138,7 +138,6 @@ function changeIds() {
         google.maps.event.clearListeners(autocomplete[r], 'place_changed');
     }
     autocomplete = [];
-    console.log(autocomplete);
     for(var k=0; k<current_classes;k++) {
         if (k != 0 && k != current_classes - 1) {
             alreadyInput = [];
@@ -146,11 +145,109 @@ function changeIds() {
             setupAutocomplete(autocomplete, alreadyInput, 0, k);
         }
     }
+    console.log(searchBox_first);
+    google.maps.event.clearListeners(searchBox_first, 'place_changed');
+    google.maps.event.clearListeners(searchBox_last, 'place_changed');
     input_first = $('.pac-input')[0];
     input_last = $('.pac-input')[current_classes-1];
+    console.log(input_first);
+    console.log(input_last);
     // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     searchBox_first = new google.maps.places.SearchBox((input_first));
+{#    console.log(searchBox_first);#}
     searchBox_last = new google.maps.places.SearchBox((input_last));
+
+    google.maps.event.addListener(searchBox_first, 'places_changed', function() {
+        console.log("searchbox first");
+        var places = searchBox_first.getPlaces();
+        if (places.length == 0) {
+            return;
+        }
+        for (var i = 0, marker; marker = markers[i]; i++) {
+            marker.setMap(null);
+        }
+        // For each place, get the icon, place name, and location.
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0, place; place = places[i]; i++) {
+              // Create a marker for each place.
+            marker = new google.maps.Marker({
+                map: map,
+                title: place.name,
+                position: place.geometry.location,
+            });
+            $("#latitude_first").val(place.geometry.location.lat());
+            $("#longitude_first").val(place.geometry.location.lng());
+            updateMarkerPosition(marker.getPosition());
+            geocodePosition(marker.getPosition(),'1');
+
+            google.maps.event.addListener(marker, 'dragend', function() {
+                geocodePosition(marker.getPosition(),'1');
+                $("#latitude_first").val(marker.getPosition().lat());
+                $("#longitude_first").val(marker.getPosition().lat());
+            });
+            markers.push(marker);
+            bounds.extend(place.geometry.location);
+        }
+
+        if($('#address2').val().length > 0 && $('#address2').val() != 'undefined')
+        {
+            console.log("searchbox last make route");
+            setTimeout(function() {
+                calcRoute();
+            }, 1000);
+        }
+        else{
+            map.fitBounds(bounds);
+            map.setZoom(9);
+        }
+    });
+
+    // End Place Search Box
+    google.maps.event.addListener(searchBox_last, 'places_changed', function() {
+        console.log("searchbox last");
+        var places1 = searchBox_last.getPlaces();
+        if (places1.length == 0) {
+            return;
+        }
+        for (var i = 0, marker; marker = markers[i]; i++) {
+            marker.setMap(null);
+        }
+        // For each place, get the icon, place name, and location.
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0, place; place = places1[i]; i++) {
+        // Create a marker for each place.
+            marker = new google.maps.Marker({
+                map: map,
+                title: place.name,
+                position: place.geometry.location,
+            });
+            $("#latitude_last").val(place.geometry.location.lat());
+            $("#longitude_last").val(place.geometry.location.lng());
+            updateMarkerPosition(marker.getPosition());
+            geocodePosition(marker.getPosition(),'2');
+
+            google.maps.event.addListener(marker, 'dragend', function() {
+                geocodePosition(marker.getPosition(),'2');
+                $("#latitude_last").val(marker.getPosition().lat());
+                $("#longitude_last").val(marker.getPosition().lat());
+            });
+            markers.push(marker);
+            bounds.extend(place.geometry.location);
+        }
+
+        if($('#address1').val().length > 0 && $('#address1').val() != 'undefined')
+        {
+            console.log("searchbox last make route");
+            setTimeout(function() {
+                calcRoute();
+            }, 500);
+        }
+        else{
+            map.fitBounds(bounds);
+            map.setZoom(9);
+        }
+    });
+
 }
 
 var map;
@@ -307,7 +404,7 @@ var startPos;
 var current_location;
 var directionsService = new google.maps.DirectionsService();
 var rendererOptions = {
-    draggable: true
+
 };
 
 function initialize() {
@@ -378,7 +475,6 @@ function initialize() {
                 map: map,
                 title: place.name,
                 position: place.geometry.location,
-                draggable: true
             });
             $("#latitude_first").val(place.geometry.location.lat());
             $("#longitude_first").val(place.geometry.location.lng());
@@ -425,7 +521,6 @@ function initialize() {
                 map: map,
                 title: place.name,
                 position: place.geometry.location,
-                draggable: true
             });
             $("#latitude_last").val(place.geometry.location.lat());
             $("#longitude_last").val(place.geometry.location.lng());

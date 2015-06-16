@@ -51,7 +51,8 @@
                                     <li><a href="#">About</a></li>
                                     {% if user.is_authenticated %}
                                         <li><a href="{% url 'calender_prime' %}">Calender</a></li>
-                                        <li><a href="{{ url_to_direct }}">Add route</a><li>
+                                        <li><a href="/maps/routes">Created routes</a><li>
+                                        <li><a href="/route/add">Add route</a><li>
                                     {% endif %}
                                     <li><a href="#" style="border:none;">Contact</a></li>
                                 </ul>

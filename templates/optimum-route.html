@@ -44,7 +44,6 @@ var last_waypoint_no = parseInt({{ total_way_point }});
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var rendererOptions = {
-    draggable: true
 };
 
 function initialize() {
@@ -153,8 +152,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
                             </a>
                         </li>
                     </ul>
-
+                    <a href="/maps/routes" class="btn btn-primary margin-top15" role="button">Back to Route List</a>
                     <div class="tab-content tab-content-2">
+
                         <div role="tabpanel" class="tab-pane active " id="profile">
                             <div class="row">
                                 <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
@@ -242,7 +242,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                            value="{{ obj.location_near_address }} ">
                                                     <input class="form-control note_common" id="end_location_note" required="true"
                                                            placeholder="Note for location" name="end_note_location"
-                                                           value="{{ obj.location_note }} disabled">
+                                                           value="{{ obj.location_note }}" disabled>
                                                     <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
                                                            value="{{ obj.location_lat }}" id="latitude_last"/>
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
