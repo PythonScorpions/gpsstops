@@ -49,9 +49,11 @@ class CreateUser(APIView):
                 alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
                 user_profile_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
                 user_profile_data.save()
-                message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
+                message = 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
-                send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user_data.email)],
+                t = loader.get_template('verification.txt')
+                c = Context({'varification_link': message})
+                send_mail('Welcome to gpsstops.com', t.render(c), 'scorpionspython@gmail.com', [str(user.user.email)],
                           fail_silently=False)
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
