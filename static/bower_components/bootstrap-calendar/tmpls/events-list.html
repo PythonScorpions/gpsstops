@@ -6,7 +6,10 @@
 				<span class="pull-left event <%= event['class'] %>"></span>&nbsp;
 				<a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
 					data-event-class="<%= event['class'] %>" class="event-item">
-					<%= event.title %></a>
+					Title-> <%= event.trip_title %>&nbsp;&nbsp;Route Info->
+                    <%= event.title %>&nbsp;&nbsp;
+                    Distance-><%= event.distance %> Kms&nbsp;&nbsp;
+                Total Time-> <%= event.time %>&nbsp;&nbsp;</a>
 			</li>
 		<% }) %>
 	</ul>
