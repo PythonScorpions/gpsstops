@@ -7,19 +7,37 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.template import RequestContext, Context
+
+
+def custom_login_required(f):
+
+    def wrap(request, *args, **kwargs):
+        """
+           this will check user is logged in , if not it will redirect to login page
+        """
+        if request.user.is_authenticated() and request.user.is_superuser is False:
+            pass
+        else:
+            return render_to_response('index.html', locals(), context_instance=RequestContext(request))
+        return f(request, *args, **kwargs)
+
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
+    return wrap
 
 
 class Create_Route(View):
     template1 = "add-route.html"
     template2 = "add-route.html"
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     def get(self, request):
         active = "maps"
         flag="maps"
         return render(request, self.template1, locals())
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     def post(self, request):
         print "came in POST"
         trip_title = request.POST['trip_title']
@@ -28,15 +46,16 @@ class Create_Route(View):
         print type(trip_datetime), "-----------------", trip_datetime
         total_time = request.POST['total_hours']
         total_time_opt = request.POST['opt_hours']
+        print request.POST['total_distance']
         if '.' in request.POST['total_distance']:
-            total_distance = float(request.POST['total_distance'][:-3])
+            total_distance = float(request.POST['total_distance'][:-6])
         else:
-            total_distance = float(int(request.POST['total_distance'][:-3]))
+            total_distance = float(int(request.POST['total_distance'][:-6]))
 
         if '.' in request.POST['opt_distance']:
-            total_distance_opt = float(request.POST['opt_distance'][:-3])
+            total_distance_opt = float(request.POST['opt_distance'][:-6])
         else:
-            total_distance_opt = float(int(request.POST['opt_distance'][:-3]))
+            total_distance_opt = float(int(request.POST['opt_distance'][:-6]))
 
         start_search_address = request.POST['start_search_address']
         start_near_address = request.POST['start_near_address']
@@ -110,7 +129,7 @@ class Edit_Route(View):
     template1 = "edit-route.html"
     template2 = "add-route.html"
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     def get(self, request, **kwargs):
         print "came in to get"
         id = int(self.kwargs['id'])
@@ -131,7 +150,7 @@ class Edit_Route(View):
 
         return render(request, self.template1, locals())
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     def post(self, request, id):
         print "came in POST"
         trip_title = request.POST['trip_title']
@@ -141,14 +160,14 @@ class Edit_Route(View):
         total_time = request.POST['total_hours']
         total_time_opt = request.POST['opt_hours']
         if '.' in request.POST['total_distance']:
-            total_distance = float(request.POST['total_distance'][:-3])
+            total_distance = float(request.POST['total_distance'][:-6])
         else:
-            total_distance = float(int(request.POST['total_distance'][:-3]))
+            total_distance = float(int(request.POST['total_distance'][:-6]))
 
         if '.' in request.POST['opt_distance']:
-            total_distance_opt = float(request.POST['opt_distance'][:-3])
+            total_distance_opt = float(request.POST['opt_distance'][:-6])
         else:
-            total_distance_opt = float(int(request.POST['opt_distance'][:-3]))
+            total_distance_opt = float(int(request.POST['opt_distance'][:-6]))
 
         start_search_address = request.POST['start_search_address']
         start_near_address = request.POST['start_near_address']
@@ -232,7 +251,7 @@ class Edit_Route(View):
 class Routes(View):
     template1 = "routes.html"
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     def get(self, request):
         date_selected = datetime.date.today()
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
@@ -241,7 +260,7 @@ class Routes(View):
         flag = "maps"
         return render(request, self.template1, locals())
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     @method_decorator(csrf_exempt)
     def post(self, request):
         day_selected = int(request.POST['day'])
@@ -256,7 +275,7 @@ class Routes(View):
 class Optimized_Route(View):
     template1 = "optimum-route.html"
 
-    @method_decorator(login_required)
+    @method_decorator(custom_login_required)
     def get(self, request, **kwargs):
         id = int(self.kwargs['id'])
         route_obj = Route.objects.get(id=id)
