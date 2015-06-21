@@ -9,9 +9,9 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-      <div class="col-lg-6 col-md-6 col-sm-6"><h1>Ultrices Iaculi</h1></div>
-            <div class="col-lg-6 col-md-6 col-sm-6"><h5>
-            {{ url_to_direct }}A feature rich versatile scheduling/customer contact system realtime GPS navigation and Mobile app sync with your computer
+      <div class="col-lg-6 col-md-6 col-sm-6"><h2>PLAN YOUR NEXT TRIP OR ROUTE</h2></div>
+            <div class="col-lg-6 col-md-6 col-sm-6"><h5 style="color: #000000">
+            Your Calendar, GPA, Scheduling, Customer Communication and data collection all come together in your mobile app
             </h5></div>
       </div>
     </div>
@@ -22,7 +22,19 @@
     <div class="row">
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
         <h2 class="hadding">Featured Products</h2>
-        <div class="products"> <img width="269" height="184" style="width: 100%;" alt="" src="{{ STATIC_URL }}images/img-1.jpg">
+        <div class="products"> <div class="flexslider" style="height: 196px;">
+      <ul class="slides">
+        <li>
+         <img src="{{ STATIC_URL }}images/slid1.jpg"/>
+        </li>
+        <li>
+        <img src="{{ STATIC_URL }}images/slid2.png"/>
+        </li>
+        <li>
+        <img  src="{{ STATIC_URL }}images/slid3.jpg"/>
+        </li>
+       </ul>
+    </div>
           <h3>GPS Tracker</h3>
           <span><a href="#">learn more</a></span> </div>
       </div>
@@ -44,20 +56,34 @@
         <h2 class="hadding">What we Deliver</h2>
         <div class="products" style="background: transparent none repeat scroll 0% 0%;">
           <ul style="margin-top: 0px;">
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> PC and mobile app interface </a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> Personal Calendar to organize stop, GPS turn voice navigation</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> Driving directions for off line viewing </a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> Calculated travel time and distance </a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> Make notes at a particular location and read them later</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> Real time location services seen on PC</a></li>
-            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> System saves distination address for future use </a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> PC and mobile app interface</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> Personal Calendar to organize stops and other appointments</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> Driving directions for off line viewing</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> Calculated travel time and distance</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> Make notes at a particular location and read them later</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> Real time location services seen on PC</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> System saves distination address for future use</a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> Send/ recieve customer information via mobile app </a></li>
+            <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> collect data in database </a></li>
 
           </ul>
-          <strong><a href="#">learn more</a></strong> </div>
+          <strong><a href="#">start free account</a></strong> </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+$(window).load(function() {
+  $('.flexslider').flexslider({
+    slideshow: true,
+	slideshowSpeed: 2000,
+	animation: "slide",
+	controlNav: false,
+	directionNav: false
+  });
+});
+</script>
 
 {% endblock %}
 

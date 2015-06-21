@@ -86,6 +86,7 @@ function changeIds() {
             lng_common.attr('name', 'longitude_first');
             lng_common.attr('id', 'longitude_first');
             near_address_common.attr('id', 'address1');
+            address_common.css('background-color', '#AFBFCD');
             $(delete_a).remove();
         }
         else{
@@ -99,6 +100,7 @@ function changeIds() {
                 lng_common.attr('name', 'longitude_last');
                 lng_common.attr('id', 'longitude_last');
                 near_address_common.attr('id', 'address2');
+                address_common.css('background-color', '#AFBFCD');
                 $(delete_a).remove();
             }
             else{
@@ -112,12 +114,13 @@ function changeIds() {
                     lng_common.attr('name', 'longitude_last');
                     lng_common.attr('id', 'longitude_last');
                     near_address_common.attr('id', 'address2');
+                    address_common.css('background-color', '#AFBFCD');
                     $(delete_a).remove();
                 }
                 else{
                     var way_li_class = 'way_loc_'+i;
                     $(obj).addClass(way_li_class);
-                    address_common.attr('placeholder', 'Waypoint '+ i +' Location');
+                    address_common.attr('placeholder', 'Stop '+ i );
                     address_common.attr('name', 'search_address'+i);
                     near_address_common.attr('name', 'near_address'+i);
                     note_common.attr('name', 'note_waypoint'+i);
@@ -128,6 +131,7 @@ function changeIds() {
                     near_address_common.attr('id', 'address'+(i+2));
                     $(delete_a).remove();
                     address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a>");
+                    address_common.css('background-color', '');
                 }
             }
         }
@@ -288,16 +292,20 @@ $(document).ready(function(){
         var waypoint_id = last_waypoint_no + 2;
         console.log("Adding waypoint value-->"+last_waypoint_no);
         var myhtml= "<li class='title loc way_loc_"+last_waypoint_no+"'><input class='controls form-control pac-input address_common' type='text' " +
-                "placeholder='Waypoint "+ last_waypoint_no+" Location' name='search_address"+ last_waypoint_no+"' required='true'" +
+                "placeholder='Stop "+ last_waypoint_no+"' name='search_address"+ last_waypoint_no+"' required='true'" +
                  "style='display: initial; width: 267px;'> <a id='"+last_waypoint_no+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a> " +
                 "<input TYPE='hidden' id='address"+waypoint_id+"' class='controls form-control near_address_common address"+last_waypoint_no+"' type='text' " +
                 "placeholder='Waypoint "+last_waypoint_no+" Nearest address' name='near_address"+ last_waypoint_no+"'>" +
                 "<input class='form-control note_common location_note_"+last_waypoint_no+"' " +
-                "placeholder='Note for Location' required='true' name='note_waypoint"+ last_waypoint_no+"'/ >" +
+                "placeholder='Note (optional)' name='note_waypoint"+ last_waypoint_no+"'/ >" +
                 "<input TYPE='hidden' name='latitude"+last_waypoint_no+"' id='latitude"+last_waypoint_no+"' class='lat_common latitude"+last_waypoint_no+" form-control' value />" +
                 "<input TYPE='hidden' name='longitude"+last_waypoint_no+"' id='longitude"+last_waypoint_no+"' class='lng_common longitude"+last_waypoint_no+" form-control' value />" +
                 "<input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/>" +
-                "<input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input></li>";
+                "<input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input>" +
+                "<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div></li>";
         // appending new waypoint html
         if(last_waypoint_no == 1){
             $('.add_waypoint_container').after(myhtml);
@@ -582,7 +590,8 @@ function calcRoute() {
         destination: end,
         waypoints: way_points_arr,
 {#        optimizeWaypoints: true,#}
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.IMPERIAL
     };
 
     var request2 = {
@@ -590,7 +599,8 @@ function calcRoute() {
         destination: end,
         waypoints: way_points_arr,
         optimizeWaypoints: true,
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.IMPERIAL
     };
 
     String.prototype.toHHMMSS = function () {
@@ -614,11 +624,11 @@ function calcRoute() {
             var total_distance_opt = 0;
             var total_duration_opt = 0;
             for (var o = 0; o < optimized_routes.length; o++) {
-                total_distance_opt += optimized_routes[o].distance.value;
+                total_distance_opt += parseInt(optimized_routes[o].distance.text.substr(0,3));
                 total_duration_opt += optimized_routes[o].duration.value;
             }
-            total_distance_opt = (total_distance_opt / 1000.0).toFixed();
-            var total_distance_opt_int = total_distance_opt.toString() + ' km';
+{#            total_distance_opt = (total_distance_opt / 1000.0).toFixed();#}
+            var total_distance_opt_int = total_distance_opt.toString() + ' miles';
             var total_duration_opt_format = total_duration_opt.toString().toHHMMSS();
             for(var e=0;e<optimized_waypoints_order.length;++e){
                 console.log(optimized_waypoints_order[e]);
@@ -648,12 +658,23 @@ function calcRoute() {
             var total_distance_int = 0;
             var total_duration = 0;
             for (var i = 0; i < route.legs.length; i++) {
-                total_distance_int += route.legs[i].distance.value;
+                console.log("--------");
+                console.log(route.legs[i].distance.text.substr(0,3));
+                console.log(route.legs[i].duration.value.toString().toHHMMSS());
+                console.log("--------");
+                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3));
                 total_duration+= route.legs[i].duration.value;
             }
-            total_distance_int = (total_distance_int / 1000.0).toFixed();
-            console.log(total_duration);
-            var total_distance = total_distance_int.toString() + ' km';
+
+            $('.stop_distance').each(function(i, obj) {
+                $(this).val(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3).toString() + ' miles');
+            });
+            $('.stop_hours').each(function(i, obj) {
+                $(this).val(route.legs[i].duration.value.toString().toHHMMSS());
+            });
+{#            total_distance_int = (total_distance_int / 1000.0).toFixed();#}
+
+            var total_distance = total_distance_int.toString() + ' miles';
             var total_duration_in_format = total_duration.toString().toHHMMSS();
             $('.total_distance').val(total_distance);
             $('.total_hours').val(total_duration_in_format);
@@ -678,7 +699,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                             </a>
                         </li>
                         <li role="presentation" class="active">
-                            <a href="{{ url_to_direct }}" class="right-tab"  aria-expanded="true">
+                            <a href="/maps/routes" class="right-tab"  aria-expanded="true">
                                 <i class="glyphicon glyphicon-map-marker"></i> Route Map
                             </a>
                         </li>
@@ -693,15 +714,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                         <!-- form start -->
                                         <form class="manual_view" name="create_route_form" action="{% url 'create_route' %}" method="POST">
                                         {% csrf_token %}
-                                            <h3>Route</h3>
+                                            <h3>Route / Trip Plan</h3>
                                             <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
                                             <div class="cl"></div>
                                             <div class="title">
                                             <input type="text" class="form-control" name="trip_title" value=""
-                                                           placeholder="Trip Title" required="true"/>
+                                                           placeholder="Give it a name" required="true"/>
                                             <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Trip Date Time"/>
+                                                        placeholder="Date / Time"/>
                                             </div>
                                             <div>&nbsp;</div>
 
@@ -710,24 +731,29 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="Start Location" name="start_search_address"
-                                                           style="display: initial; width: 267px;" required="true">
+                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" required="true" >
                                                     <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
                                                            type="text" placeholder="Start Nearest Address" name="start_near_address">
-                                                    <input class="form-control note_common" id="start_location_note" required="true"
-                                                           placeholder="Note for location" name="start_note_location">
+                                                    <input class="form-control note_common" id="start_location_note"
+                                                           placeholder="Note (optional)" name="start_note_location">
                                                     <input TYPE="hidden" name="latitude_first" class="latitude_first form-control
                                                     lat_common" id="latitude_first" value="" />
                                                     <input TYPE="hidden" name="longitude_first" class="longitude_first form-control
                                                     lng_common" id="longitude_first" value="" />
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
-
+                                                    <div class="stop_calc">
+                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
+                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
+                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                    </div>
                                                 </li>
 
                                                 <li class="add_waypoint_container">
                                                     <input type="hidden" value="0" name="total_waypoint" class="total_waypoint" />
                                                     <a role="button" class="btn btn-primary add_more_waypoint"
                                                        style="cursor:pointer;">
-                                                        Add More Location
+                                                        Add Stop
                                                     </a>
                                                     <div>&nbsp;</div>
                                                 </li>
@@ -735,11 +761,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                 <li class="title loc">
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="End Location" name="end_search_address"
-                                                           style="display: initial; width: 267px;" required="true">
+                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" required="true">
                                                     <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common"
                                                            type="text" placeholder="End Nearest address" name="end_near_address">
-                                                    <input class="form-control note_common" id="end_location_note" required="true"
-                                                           placeholder="Note for location" name="end_note_location">
+                                                    <input class="form-control note_common" id="end_location_note"
+                                                           placeholder="Note (optional)" name="end_note_location">
                                                     <input TYPE="hidden" name="latitude_last" class="latitude_last form-control
                                                     lat_common" id="latitude_last" value="" />
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control
@@ -749,13 +775,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             </ul>
 
                                             <div class="title">
-                                                <input type="text" name="total_distance" class="map-input total_distance"
-                                                        placeholder="Total Distance"/>
-                                                <input type="text" name="total_hours" class="map-input total_hours"
-                                                        placeholder="Total Hours"/>
+                                                <input type="text" readonly="true" name="total_distance" class="map-input total_distance"
+                                                        placeholder="Total Distance" style="font-weight: bold; color: blue;"/>
+                                                <input type="text" readonly="true" name="total_hours" class="map-input total_hours"
+                                                        placeholder="Total Hours" style="font-weight: bold; color: blue;"/>
                                             </div>
 
-                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save New Route">
+                                            <input type="submit" role="button" class="btn btn-primary btn-1" value="Save">
                                             <div class="optimized_view" style="display: none">
                                             </div>
                                         </form>

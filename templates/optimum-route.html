@@ -58,7 +58,7 @@ function initialize() {
 
     // direction service code
     directionsDisplay.setMap(map);
-
+    directionsDisplay.setPanel(document.getElementById('directions'));
     calcRoute();
 
 }
@@ -93,7 +93,8 @@ function calcRoute() {
         destination: end,
         waypoints: way_points_arr,
 {#        optimizeWaypoints: true,#}
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.IMPERIAL
     };
 
     String.prototype.toHHMMSS = function () {
@@ -117,12 +118,18 @@ function calcRoute() {
             var total_distance_int = 0;
             var total_duration = 0;
             for (var i = 0; i < route.legs.length; i++) {
-                total_distance_int += route.legs[i].distance.value;
+                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,3));
                 total_duration+= route.legs[i].duration.value;
             }
-            total_distance_int = (total_distance_int / 1000.0).toFixed();
+            $('.stop_distance').each(function(i, obj) {
+                $(this).val(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3).toString() + ' miles');
+            });
+            $('.stop_hours').each(function(i, obj) {
+                $(this).val(route.legs[i].duration.value.toString().toHHMMSS());
+            });
+{#            total_distance_int = (total_distance_int / 1000.0).toFixed();#}
             console.log(total_duration);
-            var total_distance = total_distance_int.toString() + ' km';
+            var total_distance = total_distance_int.toString() + ' miles';
             var total_duration_in_format = total_duration.toString().toHHMMSS();
             $('.total_distance').val(total_distance);
             $('.total_hours').val(total_duration_in_format);
@@ -131,6 +138,24 @@ function calcRoute() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+function manual_view(){
+    $("#manual_li").addClass('active');
+    $("#optimized_li").removeClass('active');
+    $("#manual_a").removeAttr('href');
+    $("#optimized_a").attr('href', 'javascript:optimized_view()');
+    $("#directions").hide();
+    $("#map_points").show();
+}
+
+function optimized_view(){
+    $("#manual_li").removeClass('active');
+    $("#optimized_li").addClass('active');
+    $("#optimized_a").removeAttr('href');
+    $("#manual_a").attr('href', 'javascript:manual_view()');
+    $("#map_points").hide();
+    $("#directions").show();
+}
 
 </script>
 
@@ -147,7 +172,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                             </a>
                         </li>
                         <li role="presentation" class="active">
-                            <a href="{{ url_to_direct }}" class="right-tab"  aria-expanded="true">
+                            <a href="/maps/routes" class="right-tab"  aria-expanded="true">
                                 <i class="glyphicon glyphicon-map-marker"></i> Route Map
                             </a>
                         </li>
@@ -157,9 +182,24 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
                         <div role="tabpanel" class="tab-pane active " id="profile">
                             <div class="row">
+
+                                <ul role="tablist" class="nav nav-tabs ">
+                                    <li id="manual_li" role="presentation" class="active" style="margin-left: 15px; width: 185px;">
+                                        <a id="manual_a" style="font-size: 18px; padding-left: 42px !important" class="right-tab">
+                                            Map Stops
+                                        </a>
+                                    </li>
+                                    <li id="optimized_li" role="presentation" class="" style="width: 185px;">
+                                        <a href="javascript:optimized_view()" id="optimized_a" class="right-tab" style="font-size: 18px;
+                                         padding-left: 42px !important; padding-right: 26px !important;"
+                                        aria-expanded="true">Directions
+                                        </a>
+                                    </li>
+                                </ul>
+
                                 <div class="col-lg-4 col-sm-12 col-md-4 col-xs-12">
                                     <div class="left-map">
-
+                                        <div id="map_points">
                                         {% csrf_token %}
                                             <h3>Optimized Route</h3>
                                             <div>&nbsp;</div>
@@ -177,18 +217,24 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="Start Location" name="start_search_address"
                                                            value="{{ data.location_address }}" disabled
-                                                           style="display: initial; width: 267px;" required="true">
+                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" required="true">
                                                     <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
                                                            value="{{ data.location_near_address }}"
                                                            type="text" placeholder="Start Nearest Address" name="start_near_address">
                                                     <input class="form-control note_common" id="start_location_note" required="true"
                                                            value="{{ data.location_note }}" disabled
-                                                           placeholder="Note for location" name="start_note_location">
+                                                           placeholder="Note (optional)" name="start_note_location">
                                                     <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"
                                                            value="{{ data.location_lat }}" id="latitude_first"/>
                                                     <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
                                                            value="{{ data.location_long }}" id="longitude_first"/>
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                        <div class="stop_calc">
+                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
+                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
+                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                    </div>
                                                     {% endwith %}
                                                 </li>
 
@@ -196,7 +242,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     <input type="hidden" value="{{ total_way_point }}" name="total_waypoint" class="total_waypoint" />
                                                     <a role="button" class="btn btn-primary add_more_waypoint"
                                                        style="display:none;">
-                                                        Add More Location
+                                                        Add Stop
                                                     </a>
                                                     <div>&nbsp;</div>
                                                 </li>
@@ -217,7 +263,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     id='address{{ way_point.location_number|add:"+2" }}'>
 
                                                     <input class="form-control note_common location_note_{{ way_point.location_number }}" required="true" disabled
-                                                    placeholder="Note for Location" value="{{ way_point.location_note }}" name="note_waypoint{{ way_point.location_number }}">
+                                                    placeholder="Note (optional)" value="{{ way_point.location_note }}" name="note_waypoint{{ way_point.location_number }}">
                                                     <input type="hidden" name="latitude{{ way_point.location_number }}"
                                                     class="lat_common latitude{{ way_point.location_number }} form-control"
                                                     value="{{ way_point.location_lat }}" id="latitude{{ way_point.location_number }}">
@@ -226,6 +272,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                      value="{{ way_point.location_long }}" id="longitude{{ way_point.location_number }}">
                                                     <input type="hidden" name="marker_status{{ way_point.location_number }}" class="form-control" id="info">
                                                     <input type="hidden" name="my_waypoint_no" class="my_waypoint_no" value="1">
+                                                <div class="stop_calc">
+                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
+                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
+                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                    </div>
                                                 </li>
                                                 {% endif %}
                                                 {% endfor %}
@@ -236,18 +288,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="End Location" name="end_search_address"
                                                            value="{{ obj.location_address }}" disabled
-                                                           style="display: initial; width: 267px;" required="true">
+                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" required="true">
                                                     <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"
                                                            placeholder="End Nearest address" name="end_near_address"
                                                            value="{{ obj.location_near_address }} ">
                                                     <input class="form-control note_common" id="end_location_note" required="true"
-                                                           placeholder="Note for location" name="end_note_location"
+                                                           placeholder="Note (optional)" name="end_note_location"
                                                            value="{{ obj.location_note }}" disabled>
                                                     <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
                                                            value="{{ obj.location_lat }}" id="latitude_last"/>
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
                                                            value="{{ obj.location_long }}" id="longitude_last"/>
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
+
                                                     {% endif %}
                                                     {% endfor %}
                                                 </li>
@@ -256,9 +309,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             <div class="title">
 
                                                 <input type="text" name="total_distance" class="map-input total_distance"
-                                                        placeholder="Total Distance" disabled value="{{ route_obj.total_distance }}"/>
+                                                        placeholder="Total Distance" style="font-weight: bold; color: blue;"
+                                                        disabled value="{{ route_obj.total_distance }}"/>
                                                 <input type="text" name="total_hours" class="map-input total_hours"
-                                                        placeholder="Total Hours" disabled value="{{ route_obj.total_time }}"/>
+                                                        placeholder="Total Hours" style="font-weight: bold; color: blue;"
+                                                        disabled value="{{ route_obj.total_time }}"/>
                                             </div>
                                         &nbsp;
                                         <!-- form end -->
@@ -268,14 +323,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                             <a href="{% url 'optimum-route' route.id %}">
                                                                 <h5>{{ route.trip_title }} </h5>
                                                                 <p>Location: {% for location in route.optimized_route_locations.all %}{% retrieve_title location.location_address %}, {% endfor %} </p>
-                                                                <p><span>Date: {{ route.trip_datetime }} | Distance: {{ route.optimized_total_distance }} Kms. Time: {{ route.optimized_total_time }} </span></p>
+                                                                <p><span>Date: {{ route.trip_datetime }} | Distance: {{ route.optimized_total_distance }} Miles. Time: {{ route.optimized_total_time }} </span></p>
                                                             </a>
                                                         </div>
                                                     {% endfor %}
                                                 </div>
                                     </div>
 
+                                    <div id="directions" style="display: none;">
+                                    </div>
 
+
+
+                                    </div>
 
                                 </div>
 
