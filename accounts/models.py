@@ -29,6 +29,7 @@ class UserProfiles(models.Model):
     occupation = models.CharField(max_length=100)
     company_name = models.CharField(max_length=100)
     token = models.CharField('Token', max_length=200, blank=True, null=True)
+    admin_status = models.CharField(max_length=50, blank=True, null=True)
 
     def __unicode(self):
         return u'%s' % self.user
