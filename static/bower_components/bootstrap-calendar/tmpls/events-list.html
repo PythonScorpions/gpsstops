@@ -4,12 +4,12 @@
 		<% _.each(events, function(event) { %>
 			<li>
 				<span class="pull-left event <%= event['class'] %>"></span>&nbsp;
-				<a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
-					data-event-class="<%= event['class'] %>" class="event-item">
-					Title-> <%= event.trip_title %>&nbsp;&nbsp;Route Info->
+
+					Title - <%= event.trip_title %>&nbsp;&nbsp;Route Info -
                     <%= event.title %>&nbsp;&nbsp;
-                    Distance-><%= event.distance %> Kms&nbsp;&nbsp;
-                Total Time-> <%= event.time %>&nbsp;&nbsp;</a>
+                    Distance - <%= event.distance %> Miles&nbsp;&nbsp;
+                Total Time - <%= event.time %>&nbsp;&nbsp; <a style="font-size: 17px;" href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
+					data-event-class="<%= event['class'] %>" class="event-item"> &nbsp;&nbsp;Show on Map</a>
 			</li>
 		<% }) %>
 	</ul>

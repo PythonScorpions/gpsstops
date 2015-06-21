@@ -146,8 +146,15 @@ ul.errorlist {
 	text-transform: uppercase;
 }
 .banner {
-	background:url(../images/header-bg.jpg) left top no-repeat;
-	padding:23px 0px;
+	/*background:url(../images/header-bg.jpg) left top no-repeat;*/
+	/*padding:23px 0px;*/
+    background-image: url(../images/header-bg.jpg);
+    padding: 23px 0px;
+    max-width: 100%;
+    float: none;
+    margin: 0 auto;
+    background-size: 100%;
+    height: 111px;
 }
 .banner h1 {
 	font-size:57px;
@@ -463,7 +470,7 @@ ul.errorlist {
 	text-align: center;
 	width: 39%;
 }
-	
+
 /******************Responsive****************************/
  @media (min-width:992px) and (max-width:1199px) {
 .input-box span {
