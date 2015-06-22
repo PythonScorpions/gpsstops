@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
 
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "logo_account.html" %}
+
+<div class="banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+      <div class="col-lg-6 col-md-6 col-sm-6"><h2>PLAN YOUR NEXT TRIP OR ROUTE</h2></div>
+            <div class="col-lg-6 col-md-6 col-sm-6"><h5 style="color: #000000">
+            Your Calendar, GPA, Scheduling, Customer Communication and data collection all come together in your mobile app
+            </h5></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contan-eria">
+  <div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="width: 70%">
+        <h2 class="hadding">Choose the appropriate link to download our gpsstops application to your Apple or Android device.</h2>
+        </div>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div style="padding-top: 112px;">
+            <img style="width: 239px;" src="{{ STATIC_URL }}images/android.png">
+        </div>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div>
+            <img style="width: 239px; height:74px;" src="{{ STATIC_URL }}images/apple.png">
+        </div>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}
+

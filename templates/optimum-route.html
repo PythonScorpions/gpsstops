@@ -229,12 +229,7 @@ function optimized_view(){
                                                     <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
                                                            value="{{ data.location_long }}" id="longitude_first"/>
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
-                                                        <div class="stop_calc">
-                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
-                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
-                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
-                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
-                                                    </div>
+
                                                     {% endwith %}
                                                 </li>
 
@@ -300,7 +295,12 @@ function optimized_view(){
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
                                                            value="{{ obj.location_long }}" id="longitude_last"/>
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
-
+                                                    <div class="stop_calc">
+                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
+                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
+                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                    </div>
                                                     {% endif %}
                                                     {% endfor %}
                                                 </li>
