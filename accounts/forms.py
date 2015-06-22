@@ -56,6 +56,7 @@ class RegisterForm(forms.ModelForm):
        user.password = make_password(password)
        user.save()
        proform.user = user
+       proform.admin_status = 'enable'
        proform.save()
        return proform
 

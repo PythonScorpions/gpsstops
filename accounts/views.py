@@ -86,7 +86,13 @@ class LoginView(TemplateView):
             user = authenticate(username=email, password=password)
 
             if user is not None:
+                admin_status = UserProfiles.objects.get(user__email=str(email)).admin_status
+                if admin_status == 'disabled':
+                    print "in disable mode"
+                    messages.success(request, "Your account has been disabled by Admin..")
+                    return render_to_response(self.template_name, locals(), context_instance=RequestContext(request))
                 if user.is_active:
+                    print "going here"
                     login(request, user)
                     return redirect('/calender')
                 else:
@@ -138,7 +144,7 @@ class ForgotPassword(TemplateView):
             c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
             send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'scorpionspython@gmail.com',
                       [email.email], fail_silently=False)
-            messages.success(request, 'Reset link has sent to your email')
+            messages.success(request, 'Password reset link has been sent to your email')
 
         else:
             messages.success(request, 'User with this email Doesnt exist')
@@ -229,3 +235,19 @@ class Add_route_prime(View):
         active = "maps"
         flag="maps"
         return render(request, self.template1, locals())
+
+
+class Download(TemplateView):
+    template_name = 'download.html'
+
+
+class Support(TemplateView):
+    template_name = 'support.html'
+
+
+class Contact(TemplateView):
+    template_name = 'contact.html'
+
+
+class About(TemplateView):
+    template_name = 'about.html'
