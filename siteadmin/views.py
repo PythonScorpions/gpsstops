@@ -60,10 +60,11 @@ class IndexView(View):
         #     return render(request, 'siteadmin/login.html', locals())
 
 
-def user_logout(request):
+def admin_logout(request):
+    print "jhfdkjhj"
     logout(request)
-
-    return HttpResponseRedirect('/admin/')
+    print "jnkjsd"
+    return redirect('/admin')
 
 
 class UserDetails(View):
