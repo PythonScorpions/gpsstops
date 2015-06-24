@@ -314,15 +314,23 @@ class EditRouteApi(APIView):
         print trip_title
         print type(trip_datetime), "-----------------", trip_datetime
         total_time = request.data['total_hours']
+        optimized_total_time = request.data['optimized_total_hours']
         if '.' in request.data['total_distance']:
             total_distance = float(request.data['total_distance'][:-3])
         else:
             total_distance = float(int(request.data['total_distance'][:-3]))
 
+        if '.' in request.data['optimized_total_distance']:
+            optimized_total_distance = float(request.data['optimized_total_distance'][:-3])
+        else:
+            optimized_total_distance = float(int(request.data['optimized_total_distance'][:-3]))
+
         route_obj.trip_title = trip_title
         route_obj.trip_datetime = trip_datetime
         route_obj.total_distance = total_distance
         route_obj.total_time = total_time
+        route_obj.optimized_total_distance = optimized_total_distance
+        route_obj.optimized_total_time = optimized_total_time
         try:
             route_obj.save()
 
