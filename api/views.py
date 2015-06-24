@@ -48,6 +48,7 @@ class CreateUser(APIView):
                                                  company_name=request.data['company_name'], admin_status='enable')
                 alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
                 user_profile_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
+                user_profile_data.admin_status = 'enable'
                 user_profile_data.save()
                 message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
