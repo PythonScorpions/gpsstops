@@ -35,6 +35,7 @@ var searchBox_first;
 var searchBox_last;
 
 $(function() {
+
     $("#myList").sortable({
         axis : 'y',
         items : '.title',
@@ -60,6 +61,55 @@ $(function() {
     });
 });
 
+function check_validation() {
+    console.log("jhfdj");
+    var flag = false;
+    if($('#trip_title').val() == ''){
+        flag = true;
+        $(".error_title").show();
+    }
+    else{
+        $(".error_title").hide();
+    }
+    if($('#datepicker').val() == ''){
+        flag = true;
+        $(".error_datetime").show();
+    }
+    else{
+        $(".error_datetime").hide();
+    }
+    $('.loc').each(function(i, obj) {
+        var near_address_common = $(this).find(".near_address_common");
+        if(i==0){
+            title_error = '#error_title1';
+        }
+        else{
+            if(last_waypoint_no == 0){
+                title_error = '#error_title2';
+            }
+            else{
+                if(last_waypoint_no+1 == i){
+                    title_error = '#error_title2';
+                }
+
+                else{
+                    title_error = '#error_title'+(i+2);
+                }
+            }
+        }
+        if(near_address_common.val() == ''){
+            flag = true;
+            $(title_error).show();
+        }
+        else{
+            $(title_error).hide();
+        }
+    });
+    if(flag==false){
+        $( ".manual_view" ).submit();
+    }
+}
+
 function changeIds() {
 
     $('.loc').each(function(i, obj) {
@@ -69,6 +119,9 @@ function changeIds() {
         var lat_common = $(this).find(".lat_common");
         var lng_common = $(this).find(".lng_common");
         var delete_a = $(this).find(".delete_waypoint");
+        var errors = $(this).find(".errors");
+        var infos = $(this).find(".info");
+        var stop_hs = $(this).find(".stop_calc");
 
         var prefix = "way_loc";
         var classes = obj.className.split(" ").filter(function(c) {
@@ -86,8 +139,11 @@ function changeIds() {
             lng_common.attr('name', 'longitude_first');
             lng_common.attr('id', 'longitude_first');
             near_address_common.attr('id', 'address1');
+            address_common.attr('id', 'cmn1');
+            errors.attr('id', 'error_title1');
             address_common.css('background-color', '#AFBFCD');
             $(delete_a).remove();
+            $(stop_hs).remove();
         }
         else{
             if(last_waypoint_no == 0){
@@ -100,8 +156,15 @@ function changeIds() {
                 lng_common.attr('name', 'longitude_last');
                 lng_common.attr('id', 'longitude_last');
                 near_address_common.attr('id', 'address2');
+                address_common.attr('id', 'cmn2');
+                errors.attr('id', 'error_title2');
                 address_common.css('background-color', '#AFBFCD');
                 $(delete_a).remove();
+                $(stop_hs).remove();
+                infos.after("<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div>");
             }
             else{
                 if(last_waypoint_no+1 == i){
@@ -114,8 +177,15 @@ function changeIds() {
                     lng_common.attr('name', 'longitude_last');
                     lng_common.attr('id', 'longitude_last');
                     near_address_common.attr('id', 'address2');
+                    address_common.attr('id', 'cmn2');
+                    errors.attr('id', 'error_title2');
                     address_common.css('background-color', '#AFBFCD');
                     $(delete_a).remove();
+                    $(stop_hs).remove();
+                    infos.after("<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div>");
                 }
                 else{
                     var way_li_class = 'way_loc_'+i;
@@ -129,9 +199,16 @@ function changeIds() {
                     lng_common.attr('name', 'longitude'+i);
                     lng_common.attr('id', 'longitude'+i);
                     near_address_common.attr('id', 'address'+(i+2));
+                    address_common.attr('id', 'cmn'+(i+2));
+                    errors.attr('id', 'error_title'+(i+2));
                     $(delete_a).remove();
                     address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove' style='color: #CD3C58;'></i></a>");
                     address_common.css('background-color', '');
+                    $(stop_hs).remove();
+                    infos.after("<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div>");
                 }
             }
         }
@@ -276,6 +353,14 @@ $(document).on("click",".delete_waypoint", function() {
     }
 });
 
+$(document).on("input",".address_common", function() {
+    if(this.value != ''){
+        var id = this.id.slice('-1');
+        var near_id = '#address' + id;
+        $(near_id).val('');
+    }
+});
+
 $(document).ready(function(){
 
     $('.manual_view').areYouSure( {'message':'Your Route Details are not saved yet!'} );
@@ -294,15 +379,16 @@ $(document).ready(function(){
         var waypoint_id = last_waypoint_no + 2;
         console.log("Adding waypoint value-->"+last_waypoint_no);
         var myhtml= "<li class='title loc way_loc_"+last_waypoint_no+"'><input class='controls form-control pac-input address_common' type='text' " +
-                "placeholder='Stop "+ last_waypoint_no+"' name='search_address"+ last_waypoint_no+"' required='true'" +
+                "placeholder='Stop "+ last_waypoint_no+"' id='cmn"+waypoint_id+"' name='search_address"+ last_waypoint_no+"' required='true'" +
                  "style='display: initial; width: 267px;'> <a id='"+last_waypoint_no+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove' style='color: #CD3C58;'></i></a> " +
+                "<span class='errors' id='error_title"+waypoint_id+"' style='display:none; color: red; font-size: 13px;'>This Location is invalid</span>" +
                 "<input TYPE='hidden' id='address"+waypoint_id+"' class='controls form-control near_address_common address"+last_waypoint_no+"' type='text' " +
                 "placeholder='Waypoint "+last_waypoint_no+" Nearest address' name='near_address"+ last_waypoint_no+"'>" +
                 "<input class='form-control note_common location_note_"+last_waypoint_no+"' " +
                 "placeholder='Note (optional)' name='note_waypoint"+ last_waypoint_no+"'/ >" +
                 "<input TYPE='hidden' name='latitude"+last_waypoint_no+"' id='latitude"+last_waypoint_no+"' class='lat_common latitude"+last_waypoint_no+" form-control' value />" +
                 "<input TYPE='hidden' name='longitude"+last_waypoint_no+"' id='longitude"+last_waypoint_no+"' class='lng_common longitude"+last_waypoint_no+" form-control' value />" +
-                "<input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/>" +
+                "<input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control info' id='info'/>" +
                 "<input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input>" +
                 "<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
                 "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
@@ -420,7 +506,7 @@ var rendererOptions = {
 function initialize() {
     directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 
-{#    var chicago = new google.maps.LatLng(41.850033, -87.6500523);#}
+    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
 {##}
 {#    map = new google.maps.Map(document.getElementById('map-canvas'), {#}
 {#        mapTypeId: google.maps.MapTypeId.ROADMAP,#}
@@ -455,10 +541,15 @@ function initialize() {
             zoom: 6,
             center: current_location
         });
+        var marker = new google.maps.Marker({
+            position: current_location,
+            map: map
+        });
+        markers.push(marker);
         directionsDisplay.setMap(map);
     };
 
-    navigator.geolocation.getCurrentPosition(geoSuccess);
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 
     // search box defined here
     input_first = $('.pac-input')[0];
@@ -626,7 +717,7 @@ function calcRoute() {
             var total_distance_opt = 0;
             var total_duration_opt = 0;
             for (var o = 0; o < optimized_routes.length; o++) {
-                total_distance_opt += parseInt(optimized_routes[o].distance.text.substr(0,3));
+                total_distance_opt += parseInt(optimized_routes[o].distance.text.substr(0,optimized_routes[o].distance.text.length-3).replace(',',''));
                 total_duration_opt += optimized_routes[o].duration.value;
             }
 {#            total_distance_opt = (total_distance_opt / 1000.0).toFixed();#}
@@ -635,16 +726,7 @@ function calcRoute() {
             for(var e=0;e<optimized_waypoints_order.length;++e){
                 console.log(optimized_waypoints_order[e]);
                 $('.optimized_view').append("<input TYPE='hidden' name='order"+e+"' value='"+optimized_waypoints_order[e]+"'>");
-{#                $('.optimized_view').append("<input TYPE='hidden' value='"+ optimized_routes[e].start_address +"'" +#}
-{#                " name='opt_near_address"+ e +"'><input TYPE='hidden' name='opt_latitude"+e+"' " +#}
-{#                "value='"+optimized_routes[e].start_location.A+"' />" +#}
-{#                "<input TYPE='hidden' name='opt_longitude"+e+"' value='"+optimized_routes[e].start_location.F+"' />");#}
-{#                if(e==optimized_routes.length-1){#}
-{#                    $('.optimized_view').append("<input TYPE='hidden' value='"+ optimized_routes[e].end_address +"'" +#}
-{#                    " name='opt_near_address"+ optimized_routes.length +"'><input TYPE='hidden' name='opt_latitude"+optimized_routes.length+"' " +#}
-{#                    "value='"+optimized_routes[e].end_location.A+"' />" +#}
-{#                    "<input TYPE='hidden' name='opt_longitude"+optimized_routes.length+"' value='"+optimized_routes[e].end_location.F+"' />");#}
-{#                }#}
+
             }
             $('.optimized_view').append("<input type='text' name='opt_distance' value='"+total_distance_opt_int+"'/>" +
             "<input type='text' name='opt_hours' value='"+total_duration_opt_format+"'/>");
@@ -664,7 +746,7 @@ function calcRoute() {
                 console.log(route.legs[i].distance.text.substr(0,3));
                 console.log(route.legs[i].duration.value.toString().toHHMMSS());
                 console.log("--------");
-                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3));
+                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3).replace(',',''));
                 total_duration+= route.legs[i].duration.value;
             }
 
@@ -719,12 +801,23 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             <h3>Route / Trip Plan</h3>
                                             <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
+
+                                            <span class="error_msg" style="display:none; color: red; font-size: 13px;">
+                                               One of your Locations is Invalid. Please Enter Valid Location
+                                            </span>
+
                                             <div class="cl"></div>
                                             <div class="title">
-                                            <input type="text" class="form-control" name="trip_title" value=""
+                                            <input type="text" class="form-control" name="trip_title" value="" id="trip_title"
                                                            placeholder="Give it a name" required="true"/>
+                                            <span class="error_title" style="display:none; color: red; font-size: 13px;">
+                                               Please give it a name
+                                            </span>
                                             <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
                                                         placeholder="Date / Time"/>
+                                            <span class="error_datetime" style="display:none; color: red; font-size: 13px;">
+                                               Please enter Date / Time
+                                            </span>
                                             </div>
                                             <div>&nbsp;</div>
 
@@ -733,7 +826,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="Start Location" name="start_search_address"
-                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" required="true" >
+                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" id="cmn1" required="true" >
+                                                    <span class="errors" id="error_title1" style="display:none; color: red; font-size: 13px;">
+                                                        This Location is invalid
+                                                    </span>
                                                     <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
                                                            type="text" placeholder="Start Nearest Address" name="start_near_address">
                                                     <input class="form-control note_common" id="start_location_note"
@@ -742,7 +838,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     lat_common" id="latitude_first" value="" />
                                                     <input TYPE="hidden" name="longitude_first" class="longitude_first form-control
                                                     lng_common" id="longitude_first" value="" />
-                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                    <input type="hidden" name="marker_status" class="form-control info" id="info"/>
 
                                                 </li>
 
@@ -758,7 +854,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                 <li class="title loc">
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="End Location" name="end_search_address"
-                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" required="true">
+                                                           style="display: initial; width: 267px; background-color: #AFBFCD;" id="cmn2" required="true">
+                                                    <span class="errors" id="error_title2" style="display:none; color: red; font-size: 13px;">
+                                                        This Location is invalid
+                                                    </span>
                                                     <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common"
                                                            type="text" placeholder="End Nearest address" name="end_near_address">
                                                     <input class="form-control note_common" id="end_location_note"
@@ -767,7 +866,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                                     lat_common" id="latitude_last" value="" />
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control
                                                     lng_common" id="longitude_last" value="" />
-                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                    <input type="hidden" name="marker_status" class="form-control info" id="info"/>
                                                     <div class="stop_calc">
                                                         <input type="text" name="stop_distance" class="map-input stop_distance"
                                                                 placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
@@ -778,13 +877,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             </ul>
 
                                             <div class="title">
-                                                <input type="text" readonly="true" name="total_distance" class="map-input total_distance"
-                                                        placeholder="Total Distance" style="font-weight: bold; color: blue;"/>
+                                                Total : <input type="text" readonly="true" name="total_distance" class="map-input total_distance"
+                                                        placeholder="Total Distance" style="font-weight: bold; color: blue; width: 120px;"/>
                                                 <input type="text" readonly="true" name="total_hours" class="map-input total_hours"
-                                                        placeholder="Total Hours" style="font-weight: bold; color: blue;"/>
+                                                        placeholder="Total Hours" style="font-weight: bold; color: blue; width: 120px;"/>
                                             </div>
 
-                                            <input type="submit" role="button" class="btn save_route btn-primary btn-1" value="Save">
+                                            <input type="button" role="button" onclick="check_validation()" class="btn save_route btn-primary btn-1" value="Save">
                                             <div class="optimized_view" style="display: none">
                                             </div>
                                         </form>

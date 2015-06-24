@@ -73,7 +73,7 @@ function initialize() {
         directionsDisplay.setMap(map);
     };
 
-    navigator.geolocation.getCurrentPosition(geoSuccess);
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 
 }
 

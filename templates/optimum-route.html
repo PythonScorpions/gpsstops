@@ -92,7 +92,7 @@ function calcRoute() {
         origin: start,
         destination: end,
         waypoints: way_points_arr,
-{#        optimizeWaypoints: true,#}
+        optimizeWaypoints: true,
         travelMode: google.maps.TravelMode.DRIVING,
         unitSystem: google.maps.UnitSystem.IMPERIAL
     };
@@ -118,7 +118,7 @@ function calcRoute() {
             var total_distance_int = 0;
             var total_duration = 0;
             for (var i = 0; i < route.legs.length; i++) {
-                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,3));
+                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3).replace(',',''));
                 total_duration+= route.legs[i].duration.value;
             }
             $('.stop_distance').each(function(i, obj) {
@@ -269,9 +269,9 @@ function optimized_view(){
                                                     <input type="hidden" name="my_waypoint_no" class="my_waypoint_no" value="1">
                                                 <div class="stop_calc">
                                                         <input type="text" name="stop_distance" class="map-input stop_distance"
-                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                                placeholder="Stop Distance" disabled style="font-weight: bold; color: blue;"/>
                                                         <input type="text" name="stop_hours" class="map-input stop_hours"
-                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                                placeholder="Stop Hours" disabled style="font-weight: bold; color: blue;"/>
                                                     </div>
                                                 </li>
                                                 {% endif %}
@@ -297,9 +297,9 @@ function optimized_view(){
                                                     <input type="hidden" name="marker_status" class="form-control" id="info"/>
                                                     <div class="stop_calc">
                                                         <input type="text" name="stop_distance" class="map-input stop_distance"
-                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                                disabled placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
                                                         <input type="text" name="stop_hours" class="map-input stop_hours"
-                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                               disabled placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
                                                     </div>
                                                     {% endif %}
                                                     {% endfor %}
@@ -308,11 +308,11 @@ function optimized_view(){
 
                                             <div class="title">
 
-                                                <input type="text" name="total_distance" class="map-input total_distance"
-                                                        placeholder="Total Distance" style="font-weight: bold; color: blue;"
+                                                Total : <input type="text" name="total_distance" class="map-input total_distance"
+                                                        placeholder="Total Distance" style="font-weight: bold; color: blue; width: 120px;"
                                                         disabled value="{{ route_obj.total_distance }}"/>
                                                 <input type="text" name="total_hours" class="map-input total_hours"
-                                                        placeholder="Total Hours" style="font-weight: bold; color: blue;"
+                                                        placeholder="Total Hours" style="font-weight: bold; color: blue; width: 120px;"
                                                         disabled value="{{ route_obj.total_time }}"/>
                                             </div>
                                         &nbsp;

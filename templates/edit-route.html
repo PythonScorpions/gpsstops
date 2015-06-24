@@ -57,6 +57,55 @@ $(function() {
     });
 });
 
+function check_validation() {
+    console.log("jhfdj");
+    var flag = false;
+    if($('#trip_title').val() == ''){
+        flag = true;
+        $(".error_title").show();
+    }
+    else{
+        $(".error_title").hide();
+    }
+    if($('#datepicker').val() == ''){
+        flag = true;
+        $(".error_datetime").show();
+    }
+    else{
+        $(".error_datetime").hide();
+    }
+    $('.loc').each(function(i, obj) {
+        var near_address_common = $(this).find(".near_address_common");
+        if(i==0){
+            title_error = '#error_title1';
+        }
+        else{
+            if(last_waypoint_no == 0){
+                title_error = '#error_title2';
+            }
+            else{
+                if(last_waypoint_no+1 == i){
+                    title_error = '#error_title2';
+                }
+
+                else{
+                    title_error = '#error_title'+(i+2);
+                }
+            }
+        }
+        if(near_address_common.val() == ''){
+            flag = true;
+            $(title_error).show();
+        }
+        else{
+            $(title_error).hide();
+        }
+    });
+    if(flag==false){
+        $( ".manual_view" ).submit();
+    }
+}
+
 function changeIds() {
 
     $('.loc').each(function(i, obj) {
@@ -66,6 +115,9 @@ function changeIds() {
         var lat_common = $(this).find(".lat_common");
         var lng_common = $(this).find(".lng_common");
         var delete_a = $(this).find(".delete_waypoint");
+        var errors = $(this).find(".errors");
+        var infos = $(this).find(".info");
+        var stop_hs = $(this).find(".stop_calc");
 
         var prefix = "way_loc";
         var classes = obj.className.split(" ").filter(function(c) {
@@ -81,8 +133,11 @@ function changeIds() {
             lat_common.attr('name', 'latitude_first');
             lng_common.attr('name', 'longitude_first');
             near_address_common.attr('id', 'address1');
+            address_common.attr('id', 'cmn1');
+            errors.attr('id', 'error_title1');
             address_common.css('background-color', '#AFBFCD');
             $(delete_a).remove();
+            $(stop_hs).remove();
         }
         else{
             if(last_waypoint_no == 0){
@@ -95,6 +150,11 @@ function changeIds() {
                 near_address_common.attr('id', 'address2');
                 address_common.css('background-color', '#AFBFCD');
                 $(delete_a).remove();
+                $(stop_hs).remove();
+                infos.after("<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div>");
             }
             else{
                 if(last_waypoint_no+1 == i){
@@ -105,8 +165,15 @@ function changeIds() {
                     lat_common.attr('name', 'latitude_last');
                     lng_common.attr('name', 'longitude_last');
                     near_address_common.attr('id', 'address2');
+                    address_common.attr('id', 'cmn2');
+                    errors.attr('id', 'error_title2');
                     address_common.css('background-color', '#AFBFCD');
                     $(delete_a).remove();
+                    $(stop_hs).remove();
+                infos.after("<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div>");
                 }
                 else{
                     var way_li_class = 'way_loc_'+i;
@@ -118,9 +185,18 @@ function changeIds() {
                     lat_common.attr('name', 'latitude'+i);
                     lng_common.attr('name', 'longitude'+i);
                     near_address_common.attr('id', 'address'+(i+2));
+                    address_common.attr('id', 'cmn'+(i+2));
+                    errors.attr('id', 'error_title'+(i+2));
+                    address_common.attr('id', 'cmn2');
+                    errors.attr('id', 'error_title2');
                     $(delete_a).remove();
-                    address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a>");
+                    address_common.after("<a id='"+i+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove' style='color: #CD3C58;'></i></a>");
                     address_common.css('background-color', '');
+                    $(stop_hs).remove();
+                    infos.after("<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
+                "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
+                "name='stop_hours' class='map-input stop_hours' placeholder='Stop Hours' style='font-weight: bold; color: blue;'/> " +
+                "</div>");
                 }
             }
         }
@@ -262,6 +338,14 @@ $(document).on("click",".delete_waypoint", function() {
     }
 });
 
+$(document).on("input",".address_common", function() {
+    if(this.value != ''){
+        var id = this.id.slice('-1');
+        var near_id = '#address' + id;
+        $(near_id).val('');
+    }
+});
+
 $(document).ready(function(){
 
     $(window).keydown(function(event){
@@ -278,15 +362,16 @@ $(document).ready(function(){
         var waypoint_id = last_waypoint_no + 2;
         console.log("Adding waypoint value-->"+last_waypoint_no);
         var myhtml= "<li class='title loc way_loc_"+last_waypoint_no+"'><input class='controls form-control pac-input address_common' type='text' " +
-                "placeholder='Stop "+ last_waypoint_no+"' name='search_address"+ last_waypoint_no+"' required='true'" +
-                 "style='display: initial; width: 267px;'> <a id='"+last_waypoint_no+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove'></i></a> " +
+                "placeholder='Stop "+ last_waypoint_no+"' id='cmn"+waypoint_id+"' name='search_address"+ last_waypoint_no+"' required='true'" +
+                 "style='display: initial; width: 267px;'> <a id='"+last_waypoint_no+"' class='delete_waypoint'><i class='glyphicon glyphicon-remove' style='color: #CD3C58;'></i></a> " +
+                "<span class='errors' id='error_title"+waypoint_id+"' style='display:none; color: red; font-size: 13px;'>This Location is invalid</span>" +
                 "<input TYPE='hidden' id='address"+waypoint_id+"' class='controls form-control near_address_common address"+last_waypoint_no+"' type='text' " +
                 "placeholder='Waypoint "+last_waypoint_no+" Nearest address' name='near_address"+ last_waypoint_no+"'>" +
                 "<input class='form-control note_common location_note_"+last_waypoint_no+"' " +
                 "placeholder='Note (optional)' name='note_waypoint"+ last_waypoint_no+"'/ >" +
                 "<input TYPE='hidden' name='latitude"+last_waypoint_no+"' id='latitude"+last_waypoint_no+"' class='lat_common latitude"+last_waypoint_no+" form-control' value />" +
                 "<input TYPE='hidden' name='longitude"+last_waypoint_no+"' id='longitude"+last_waypoint_no+"' class='lng_common longitude"+last_waypoint_no+" form-control' value />" +
-                "<input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control' id='info'/>" +
+                "<input type='hidden' name='marker_status"+last_waypoint_no+"' class='form-control info' id='info'/>" +
                 "<input type='hidden' name='my_waypoint_no' class='my_waypoint_no' value='"+last_waypoint_no+"'></input>" +
                 "<div class='stop_calc'><input type='text' readonly='true' name='stop_distance' class='map-input stop_distance' " +
                 "placeholder='Stop Distance' style='font-weight: bold; color: blue;'/><input type='text' readonly='true' " +
@@ -593,7 +678,7 @@ function calcRoute() {
             var total_distance_opt = 0;
             var total_duration_opt = 0;
             for (var o = 0; o < optimized_routes.length; o++) {
-                total_distance_opt += parseInt(optimized_routes[o].distance.text.substr(0,3));
+                total_distance_opt += parseInt(optimized_routes[o].distance.text.substr(0,optimized_routes[o].distance.text.length-3).replace(',',''));
                 total_duration_opt += optimized_routes[o].duration.value;
             }
 {#            total_distance_opt = (total_distance_opt / 1000.0).toFixed();#}
@@ -617,7 +702,7 @@ function calcRoute() {
             var total_distance_int = 0;
             var total_duration = 0;
             for (var i = 0; i < route.legs.length; i++) {
-                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,3));
+                total_distance_int += parseInt(route.legs[i].distance.text.substr(0,route.legs[i].distance.text.length-3).replace(',',''));
                 total_duration+= route.legs[i].duration.value;
             }
             $('.stop_distance').each(function(i, obj) {
@@ -705,12 +790,23 @@ function optimized_view(){
                                             <h3>Route / Trip Plan</h3>
                                             <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
+
+                                            <span class="error_msg" style="display:none; color: red; font-size: 13px;">
+                                               One of your Locations is Invalid. Please Enter Valid Location
+                                            </span>
+
                                             <div class="cl"></div>
                                             <div class="title">
                                             <input type="text" class="form-control" name="trip_title" value="{{ route_obj.trip_title }}"
-                                                           placeholder="Give it a name" required="true"/>
+                                                           placeholder="Give it a name" id="trip_title" required="true"/>
+                                            <span class="error_title" style="display:none; color: red; font-size: 13px;">
+                                               Please give it a name
+                                            </span>
                                             <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
                                                         placeholder="Date / Time" value="{{ route_obj.trip_datetime|date:'Y/m/d H:i' }}"/>
+                                            <span class="error_datetime" style="display:none; color: red; font-size: 13px;">
+                                               Please enter Date / Time
+                                            </span>
                                             </div>
                                             <div>&nbsp;</div>
                                             <ul id="myList">
@@ -718,8 +814,11 @@ function optimized_view(){
                                                     {% with location_obj|first as data %}
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="Start Location" name="start_search_address"
-                                                           value="{{ data.location_address }}"
+                                                           value="{{ data.location_address }}" id="cmn1"
                                                            style="display: initial; width: 267px; background-color: #AFBFCD;" required="true">
+                                                    <span class="errors" id="error_title1" style="display:none; color: red; font-size: 13px;">
+                                                        This Location is invalid
+                                                    </span>
                                                     <input TYPE="hidden" id="address1" class="controls form-control near_address_common"
                                                            value="{{ data.location_near_address }}"
                                                            type="text" placeholder="Start Nearest Address" name="start_near_address">
@@ -730,13 +829,8 @@ function optimized_view(){
                                                            value="{{ data.location_lat }}" id="latitude_first"/>
                                                     <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
                                                            value="{{ data.location_long }}" id="longitude_first"/>
-                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
-                                                        <div class="stop_calc">
-                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
-                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
-                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
-                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
-                                                    </div>
+                                                    <input type="hidden" name="marker_status" class="form-control info" id="info"/>
+
                                                     {% endwith %}
                                                 </li>
 
@@ -756,10 +850,12 @@ function optimized_view(){
                                                     type="text" required="true" value="{{ way_point.location_address }}"
                                                     placeholder="Waypoint {{ way_point.location_number }} Location"
                                                     name="search_address{{ way_point.location_number }}" autocomplete="off"
-                                                    style="display: initial; width: 267px;">
+                                                    style="display: initial; width: 267px;" id="cmn{{ way_point.location_number|add:"+2" }}">
                                                     <a id="{{ way_point.location_number }}" class='delete_waypoint'>
-                                                    <i class='glyphicon glyphicon-remove'></i></a>
-
+                                                    <i class='glyphicon glyphicon-remove' style='color: #CD3C58;'></i></a>
+                                                    <span class='errors' id='error_title{{ way_point.location_number|add:"+2" }}' style='display:none; color: red; font-size: 13px;'>
+                                                    This Location is invalid
+                                                    </span>
                                                     <input TYPE="hidden" class="near_address_common controls form-control address{{ way_point.location_number }}"
                                                     value="{{ way_point.location_near_address }}" type="text" name="near_address{{ way_point.location_number }}"
                                                     id='address{{ way_point.location_number|add:"+2" }}'>
@@ -772,7 +868,7 @@ function optimized_view(){
                                                     <input type="hidden" name="longitude{{ way_point.location_number }}"
                                                     class="lng_common longitude{{ way_point.location_number }} form-control"
                                                      value="{{ way_point.location_long }}" id="longitude{{ way_point.location_number }}">
-                                                    <input type="hidden" name="marker_status{{ way_point.location_number }}" class="form-control" id="info">
+                                                    <input type="hidden" name="marker_status{{ way_point.location_number }}" class="form-control info" id="info">
                                                     <input type="hidden" name="my_waypoint_no" class="my_waypoint_no" value="1">
                                                     <div class="stop_calc">
                                                         <input type="text" name="stop_distance" class="map-input stop_distance"
@@ -789,8 +885,11 @@ function optimized_view(){
                                                     {% if obj.location_number == 22 %}
                                                     <input class="controls form-control pac-input address_common" type="text"
                                                            placeholder="End Location" name="end_search_address"
-                                                           value="{{ obj.location_address }}"
+                                                           value="{{ obj.location_address }}" id="cmn2"
                                                            style="display: initial; width: 267px; background-color: #AFBFCD;" required="true">
+                                                    <span class="errors" id="error_title2" style="display:none; color: red; font-size: 13px;">
+                                                        This Location is invalid
+                                                    </span>
                                                     <input TYPE="hidden" id="address2" class="controls form-cotrol near_address_common" type="text"
                                                            placeholder="End Nearest address" name="end_near_address"
                                                            value="{{ obj.location_near_address }}">
@@ -801,7 +900,13 @@ function optimized_view(){
                                                            value="{{ obj.location_lat }}" id="latitude_last"/>
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
                                                            value="{{ obj.location_long }}" id="longitude_last"/>
-                                                    <input type="hidden" name="marker_status" class="form-control" id="info"/>
+                                                    <input type="hidden" name="marker_status" class="form-control info" id="info"/>
+                                                    <div class="stop_calc">
+                                                        <input type="text" name="stop_distance" class="map-input stop_distance"
+                                                                placeholder="Stop Distance" style="font-weight: bold; color: blue;"/>
+                                                        <input type="text" name="stop_hours" class="map-input stop_hours"
+                                                                placeholder="Stop Hours" style="font-weight: bold; color: blue;"/>
+                                                    </div>
                                                     {% endif %}
                                                     {% endfor %}
                                                 </li>
@@ -809,11 +914,11 @@ function optimized_view(){
 
                                             <div class="title">
 
-                                                <input type="text" readonly="true" name="total_distance" class="map-input total_distance"
-                                                        placeholder="Total Distance" style="font-weight: bold; color: blue;"
+                                                Total : <input type="text" readonly="true" name="total_distance" class="map-input total_distance"
+                                                        placeholder="Total Distance" style="font-weight: bold; color: blue; width: 120px;"
                                                         value="{{ route_obj.total_distance }}"/>
                                                 <input type="text"  readonly="true" name="total_hours" class="map-input total_hours"
-                                                        placeholder="Total Hours"  style="font-weight: bold; color: blue;"
+                                                        placeholder="Total Hours"  style="font-weight: bold; color: blue; width: 120px;"
                                                         value="{{ route_obj.total_time }}"/>
                                             </div>
 
