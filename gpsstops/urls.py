@@ -10,4 +10,5 @@ urlpatterns = patterns('',
                        url(r'support/', Support.as_view(), name='support'),
                        url(r'contact_us/', Contact.as_view(), name='contact'),
                        url(r'about_us/', About.as_view(), name='about'),
+                       url(r'learn_more', LearnMore.as_view(), name='learn-more'),
                        )
