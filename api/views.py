@@ -20,6 +20,8 @@ from django.template import RequestContext, Context
 import string
 import random
 from maps.models import *
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 for user in User.objects.all():
@@ -99,6 +101,7 @@ class UpdateUser(APIView):
 
 class LoginUser(APIView):
 
+    @method_decorator(csrf_exempt)
     def post(self, request, *args, **kwargs):
 
         email = request.data['username']
@@ -111,7 +114,6 @@ class LoginUser(APIView):
                 return Response({'code': 0, 'status': 200, 'Data': 'Null',
                                  'message': 'User is Disabled by Admin'})
             if user.is_active:
-                login(request, user)
                 return Response({'code': 1, 'status': 200, 'Data': {'user_id': request.user.id},
                                  'message': 'User is Logged In'})
             else:
