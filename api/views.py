@@ -45,7 +45,7 @@ class CreateUser(APIView):
                                                  zip_code=request.data['zip_code'], country=request.data['country'],
                                                  phone_number=request.data['phone_number'],
                                                  occupation=request.data['occupation'],
-                                                 company_name=request.data['company_name'])
+                                                 company_name=request.data['company_name'], admin_status='enable')
                 alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
                 user_profile_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
                 user_profile_data.save()
@@ -105,6 +105,10 @@ class LoginUser(APIView):
         user = authenticate(username=email, password=password)
 
         if user is not None:
+            admin_status = UserProfiles.objects.get(user__email=str(email)).admin_status
+            if admin_status == 'disabled':
+                return Response({'code': 0, 'status': 200, 'Data': 'Null',
+                                 'message': 'User is Disabled by Admin'})
             if user.is_active:
                 login(request, user)
                 return Response({'code': 1, 'status': 200, 'Data': {'user_id': request.user.id},
@@ -129,6 +133,13 @@ class ObtainAuthToken(APIView):
             serializer.is_valid()
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
+            profile_data = UserProfiles.objects.get(user=user).admin_status
+            if profile_data == 'disabled':
+                return Response({'code': 0, 'status': 200, 'Data': 'Null',
+                                 'message': 'User has been disabled by admin'})
+            if not user.is_active:
+                return Response({'code': 0, 'status': 200, 'Data': 'Null',
+                                 'message': 'User has been disabled by admin'})
             return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
                              'message': 'User is Logged In'})
         except:
