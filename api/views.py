@@ -100,7 +100,7 @@ class LoginUser(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        email = request.data['email']
+        email = request.data['username']
         password = request.data['password']
         user = authenticate(username=email, password=password)
 
@@ -139,7 +139,7 @@ class ObtainAuthToken(APIView):
                                  'message': 'User has been disabled by admin'})
             if not user.is_active:
                 return Response({'code': 0, 'status': 200, 'Data': 'Null',
-                                 'message': 'User has been disabled by admin'})
+                                 'message': 'Please verify your email'})
             return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
                              'message': 'User is Logged In'})
         except:
@@ -425,3 +425,20 @@ class DeleteRouteApi(APIView):
             return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been deleted'})
         except:
             return Response({'code': 0, 'status': 200, 'message': 'Route with this id does not exist'})
+
+
+class RoutesPerDay(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = int(self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+        year = int(self.kwargs['year'])
+        month = int(self.kwargs['month'])
+        day = int(self.kwargs['day'])
+        date_selected = datetime.date(year, month, day)
+        routes = Route.objects.filter(user__id=user_id, trip_datetime__startswith=date_selected)
+        serializer = RouteSerializer(routes, many=True)
+
+        return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
