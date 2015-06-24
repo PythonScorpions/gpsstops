@@ -103,7 +103,7 @@ class LoginUser(APIView):
 
         email = request.data['username']
         password = request.data['password']
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=str(email), password=password)
 
         if user is not None:
             admin_status = UserProfiles.objects.get(user__email=str(email)).admin_status
@@ -119,7 +119,7 @@ class LoginUser(APIView):
                                  'message': 'User has not verified Email'})
         else:
             return Response({'code': 0, 'status': 200, 'Data': 'Null',
-                             'message': 'Wrong Credentials'})
+                             'message': 'Wrong Credentials', 'ss': user})
 
 class ObtainAuthToken(APIView):
     throttle_classes = ()
