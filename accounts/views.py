@@ -251,3 +251,7 @@ class Contact(TemplateView):
 
 class About(TemplateView):
     template_name = 'about.html'
+
+
+class LearnMore(TemplateView):
+    template_name = 'learn_more.html'
