@@ -221,49 +221,49 @@ class CreateRouteApi(APIView):
         except:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
 
-        try:
-            route_obj = Route(user=user_obj, trip_title=trip_title, trip_datetime=trip_datetime,
-                              total_distance=total_distance, total_time=total_time,
-                              optimized_total_time=optimized_total_time,
-                              optimized_total_distance=optimized_total_distance)
-            route_obj.save()
-            print type(request.data['location'])
-            print len(request.data['location'])
-            for idx, loc in enumerate(request.data['location']):
-                if loc['latitude'] and loc['longitude']:
-                    loc_obj = Location(route=route_obj, location_address=loc['location_name'],
-                                       location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                       location_long=loc['longitude'], location_note=loc['note'])
-                    if idx == 0:
-                        loc_obj.location_number = 11
-                        loc_obj.save()
-                    elif idx == len(request.data['location'])-1:
-                        loc_obj.location_number = 22
-                        loc_obj.save()
-                    else:
-                        loc_obj.location_number = idx
-                        loc_obj.save()
+        # try:
+        route_obj = Route(user=user_obj, trip_title=trip_title, trip_datetime=trip_datetime,
+                          total_distance=total_distance, total_time=total_time,
+                          optimized_total_time=optimized_total_time,
+                          optimized_total_distance=optimized_total_distance)
+        route_obj.save()
+        print type(request.data['location'])
+        print len(request.data['location'])
+        for idx, loc in enumerate(request.data['location']):
+            if loc['latitude'] and loc['longitude']:
+                loc_obj = Location(route=route_obj, location_address=loc['location_name'],
+                                   location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
+                                   location_long=loc['longitude'], location_note=loc['note'])
+                if idx == 0:
+                    loc_obj.location_number = 11
+                    loc_obj.save()
+                elif idx == len(request.data['location'])-1:
+                    loc_obj.location_number = 22
+                    loc_obj.save()
                 else:
-                    pass
-            for idx, loc in enumerate(request.data['optimized_location']):
-                if loc['latitude'] and loc['longitude']:
-                    loc_obj = OptimizedLocation(route=route_obj, location_address=loc['location_name'],
-                                                location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                                location_long=loc['longitude'], location_note=loc['note'])
-                    if idx == 0:
-                        loc_obj.location_number = 11
-                        loc_obj.save()
-                    elif idx == len(request.data['location'])-1:
-                        loc_obj.location_number = 22
-                        loc_obj.save()
-                    else:
-                        loc_obj.location_number = idx
-                        loc_obj.save()
+                    loc_obj.location_number = idx
+                    loc_obj.save()
+            else:
+                pass
+        for idx, loc in enumerate(request.data['optimized_location']):
+            if loc['latitude'] and loc['longitude']:
+                loc_obj = OptimizedLocation(route=route_obj, location_address=loc['location_name'],
+                                            location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
+                                            location_long=loc['longitude'], location_note=loc['note'])
+                if idx == 0:
+                    loc_obj.location_number = 11
+                    loc_obj.save()
+                elif idx == len(request.data['location'])-1:
+                    loc_obj.location_number = 22
+                    loc_obj.save()
                 else:
-                    pass
-        except:
-            return Response({'code': 0, 'status': 200, 'message': 'Something went wrong'})
-            route_obj.delete()
+                    loc_obj.location_number = idx
+                    loc_obj.save()
+            else:
+                pass
+        # except:
+        #     return Response({'code': 0, 'status': 200, 'message': 'Something went wrong'})
+        #     route_obj.delete()
 
         return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been created'})
 
@@ -338,6 +338,7 @@ class EditRouteApi(APIView):
             route_obj.save()
 
             Location.objects.filter(route=route_obj).delete()
+            OptimizedLocation.objects.filter(route=route_obj).delete()
 
             for idx, loc in enumerate(request.data['location']):
                 if loc['latitude'] and loc['longitude']:
