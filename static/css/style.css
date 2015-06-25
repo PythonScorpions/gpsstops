@@ -35,6 +35,10 @@ ul.errorlist {
     color: red;
 }
 
+.tooltip-inner {
+    font-size:17px;
+}
+
 .input {
 	border: 1px solid #D8D8D8;
 	color: #000;
