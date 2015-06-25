@@ -916,7 +916,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
             jQuery.browser.msie = true;
             jQuery.browser.version = RegExp.$1;
         }
-        $("#datepicker").datetimepicker();
+        $("#datepicker").datetimepicker({
+{#            format:'DD.MM.YYYY h:mm a',#}
+{#          formatTime:'h:mm',#}
+            formatTime:'g:i A',
+            format: 'd/m/Y h:i A',
+{#          formatDate:'DD.MM.YYYY'#}
+        });
     })();
 </script>
 
