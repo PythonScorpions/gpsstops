@@ -35,6 +35,10 @@ ul.errorlist {
     color: red;
 }
 
+.tooltip-inner {
+    font-size:17px;
+}
+
 .input {
 	border: 1px solid #D8D8D8;
 	color: #000;
@@ -928,16 +932,114 @@ text-align:center;
 .inner_content .col-lg-4{
     text-align:center;
 }
-.item{
+.item-right{
     margin-top: 40px;
     text-align: justify;
 }
-.item p {
+
+.item-left{
+    margin-top: 40px;
+    text-align: justify;
+}
+.item-right p {
     color: #7b7b7d;
     line-height: 24px;
     font-size:16px;
 }
-.item .highlight {
+.item-right .highlight {
     font-size: 20px;
     font-weight: bold;
+}
+.item-left p {
+    color: #7b7b7d;
+    line-height: 24px;
+    font-size:16px;
+}
+.item-left .highlight {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+@media screen and (min-width: 700px) and (max-width: 1024px) {
+    .email-class {
+        margin-right: 6px;
+    }
+}
+
+/*@media screen and (max-width: 768px) {*/
+    /*.login-button {*/
+        /*padding: 4px 3px;*/
+    /*}*/
+/*}*/
+
+
+@media screen and (min-width: 801px) and (max-width: 1400px) {
+    .start_account {
+        margin-top: 8px; margin-right: 100px;
+    }
+    .footer_class {
+        left: 42%;
+    }
+    .logos {
+        margin-left: 41%;
+    }
+    .gps_tracker {
+        margin-left: 48px;
+    }
+    .learn_more {
+        margin-left: 53px;
+    }
+    .item-right{
+        margin-top: 40px;
+        text-align: justify;
+        padding-right: 104px;
+    }
+
+    .item-left{
+        margin-top: 40px;
+        text-align: justify;
+        padding-left: 90px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 800px) {
+    .start_account {
+        margin-top: 8px; margin-right: -10px;
+    }
+    .footer_class {
+        left: 36%;
+    }
+    .logos {
+        margin-left: 34%;
+    }
+    .gps_tracker {
+        margin-left: -13px;
+    }
+    .learn_more {
+        margin-left: -6px;
+    }
+    .flex-active-slide {
+        height: 300px;
+    }
+}
+
+@media screen and (min-width: 300px) and (max-width: 500px) {
+    .start_account {
+        margin-top: 8px;
+    }
+    .footer_class {
+        left: 6%;
+    }
+    .logos {
+        margin-left: 4%;
+    }
+    .title-text {
+        display: none;
+    }
+    .gps_tracker {
+        margin-left: 30px;
+    }
+    .flexslider {
+        width: 235px !important;
+    }
 }

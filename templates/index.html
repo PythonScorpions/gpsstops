@@ -10,11 +10,11 @@
     <div class="row">
       <div class="col-lg-12">
       <div class="col-lg-6 col-md-6 col-sm-6"><h3 style="font-size: 21px;">MULTI-STOP TRIP PLANNING OR ROUTE DISPATCH</h3>
-      <h4 style="padding-top: 10px;">optimize or prioritize your routes or route stops – click, drag, and you are done</h4></div>
-            <div class="col-lg-6 col-md-6 col-sm-6"><h4 style="letter-spacing:0.4px; color: #000000; padding-bottom: 5px;">
-            TURN-KEY MOBILE APP FOR YOUR BUSINESS – FREE TRIAL EASY SET UP<br>• customer contact info  • sales orders • scheduling calendar<br> • GPS navigation  • collect, store, retrieve
+      <h5 class="title-text" style="color: #000000; line-height:20px; padding-top: 6px;">optimize or prioritize your routes or route stops – click, drag, and you are done</h5></div>
+            <div class="col-lg-6 col-md-6 col-sm-6"><h5 class="title-text" style="letter-spacing:0.2px; line-height: 20px; color: #000000;">
+            TURN-KEY MOBILE APP FOR YOUR BUSINESS – FREE TRIAL EASY SET UP<br>• customer contact info  • sales orders • scheduling calendar • GPS navigation  • collect, store, retrieve
 data
-            </h4></div>
+            </h5></div>
       </div>
     </div>
   </div>
@@ -25,7 +25,7 @@ data
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
         <h2 class="hadding">Featured Products</h2>
         <div class="products"> <div class="flexslider" style="height: 196px;">
-      <ul class="slides">
+      <ul class="slides" style="margin-top: 0px; height: 400px;">
         <li>
          <img src="{{ STATIC_URL }}images/slider_Calendar.png"/>
         </li>
@@ -37,9 +37,13 @@ data
         </li>
        </ul>
     </div>
-          <h3>GPS Tracker</h3>
-          <span><a href="/learn_more">learn more</a></span> </div>
+          <h3 class="gps_tracker">GPS Tracker</h3>
+          <span class="learn_more">
+              <a style="display: block" id="learn" href="/learn_more">learn more
+              </a>
+          </span> </div>
       </div>
+    <div class="col-lg-1 col-sm-1 col-md-1"></div>
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
         <h2 class="hadding">Who we Serve</h2>
         <div class="products" style="background: transparent none repeat scroll 0% 0%;">
@@ -71,7 +75,7 @@ data
             <li><a href="javascript:void(0);" style="pointer-events: none;"><i class="glyphicon glyphicon-chevron-right"></i> collect data in database </a></li>
 
           </ul>
-          <strong style="margin-top: 8px;">
+          <strong class="start_account">
               {% if user.is_authenticated and user.is_active and user.user_profiles.admin_status == "enable"%}
               <a href="javascript:void(0);" style="background: #E57728 none repeat scroll 0 0;
               border-bottom: 5px solid #6E3521; pointer-events: none;">start free account</a>
@@ -83,8 +87,14 @@ data
         </div>
     </div>
       <br>
-      <div style="margin-left: 455px;"><a target="_blank" href="https://itunes.apple.com/in/genre/ios/id36?mt=8"><img style="width: 114px; height: 40px;" src="{{ STATIC_URL }}images/android.png"></a>
-          <a target="_blank" href="https://play.google.com/store/apps?hl=en"><img style="width: 114px" src="{{ STATIC_URL }}images/apple.png"></a></div>
+      <div class="logos">
+          <a target="_blank" href="https://itunes.apple.com/in/genre/ios/id36?mt=8">
+              <img style="width: 114px; height: 40px;" src="{{ STATIC_URL }}images/android.png">
+          </a>
+          <a target="_blank" href="https://play.google.com/store/apps?hl=en">
+              <img style="width: 114px" src="{{ STATIC_URL }}images/apple.png">
+          </a>
+      </div>
   </div>
 </div>
 

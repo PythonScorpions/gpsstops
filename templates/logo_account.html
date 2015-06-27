@@ -46,7 +46,7 @@
                           action="/login">
                         {% csrf_token %}
                             <span>
-                                <input type="email" style="margin-right: 6px;" class="input" placeholder="Email" name="email">
+                                <input type="email" class="input email-class" placeholder="Email" name="email">
                             </span>
 
                             <span>
@@ -55,7 +55,7 @@
                                 <a href="/forgot-password">Forget username / password?</a>
                             </span>
                     <!--<a href="calendar.html" class="btn btn-primary buttun2 buttun">LOGIN</a>-->
-                            <input type="submit" style="margin-right: 2px;" class="btn btn-primary buttun2 buttun" value="LOGIN" />
+                            <input type="submit" style="margin-right: 2px; margin-left: 7px;" class="btn btn-primary buttun2 buttun login-button" value="LOGIN" />
                             <a href="/signup" class="btn btn-primary buttun2 buttun">Create Account</a>
                     </form>
                     {% if messages %}

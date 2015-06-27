@@ -887,9 +887,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                             <div class="optimized_view" style="display: none">
                                             </div>
                                         </form>
+
                                         <!-- form end -->
 
                                     </div>
+                                    <br>
+                                    <span style="font-size: 20px; color: green">You can also click and drag for rearranging Locations</span>
                                 </div>
 
                                 <div class="col-lg-8 col-sm-12 col-md-8 col-xs-12">
@@ -916,6 +919,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
             jQuery.browser.msie = true;
             jQuery.browser.version = RegExp.$1;
         }
+{#        $("#datepicker").datetimepicker({#}
+{#            format:'DD.MM.YYYY h:mm a',#}
+{#          formatTime:'h:mm',#}
+{#            formatTime:'g:i A',#}
+{#            format: 'd/m/Y h:i A',#}
+{#          formatDate:'DD.MM.YYYY'#}
+{#        });#}
         $("#datepicker").datetimepicker();
     })();
 </script>

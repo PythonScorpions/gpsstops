@@ -46,6 +46,13 @@
     width: 269px;
     height:190px;
 }
+@media screen and (max-width: 768px) {
+    .flexslider {
+        width: 150px;
+        height:190px;
+    }
+}
+
 .flexslider .slides > li {
   display: none;
   -webkit-backface-visibility: hidden;

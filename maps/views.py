@@ -121,8 +121,8 @@ class Create_Route(View):
         OptimizedLocation(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
                           location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
                           location_number=22).save()
-
-        return HttpResponseRedirect('/maps/routes')
+        url_to_redirect = '/maps/routes?day='
+        return HttpResponseRedirect('/maps/routes?kk=22')
 
 
 class Edit_Route(View):
@@ -253,6 +253,7 @@ class Routes(View):
 
     @method_decorator(custom_login_required)
     def get(self, request):
+        print request.GET['kk']
         date_selected = datetime.date.today()
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
         print routes
