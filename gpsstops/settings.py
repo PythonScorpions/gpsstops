@@ -64,16 +64,16 @@ WSGI_APPLICATION = 'gpsstops.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 # For PythonAnwhere Server
- DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'gpsstops$gps_new_db',
-         'USER': 'gpsstops',
-         'PASSWORD': 'root',
-         'HOST': 'mysql.server',
-         'PORT': '3306',
-     }
- }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gpsstops$gps_new_db',
+        'USER': 'gpsstops',
+        'PASSWORD': 'root',
+        'HOST': 'mysql.server',
+        'PORT': '3306',
+    }
+}
 
 # For Local Server
 #DATABASES = {
