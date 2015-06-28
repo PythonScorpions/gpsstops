@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
+from django.contrib import messages
 
 
 def custom_login_required(f):
@@ -41,7 +42,7 @@ class Create_Route(View):
     def post(self, request):
         print "came in POST"
         trip_title = request.POST['trip_title']
-        trip_datetime = datetime.datetime.strptime(str(request.POST['trip_datetime']), "%Y/%m/%d %H:%M")
+        trip_datetime = datetime.datetime.strptime(str(request.POST['trip_datetime']), "%b %d,%Y %I:%M %p")
         print trip_title
         print type(trip_datetime), "-----------------", trip_datetime
         total_time = request.POST['total_hours']
@@ -121,8 +122,8 @@ class Create_Route(View):
         OptimizedLocation(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
                           location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
                           location_number=22).save()
-        url_to_redirect = '/maps/routes?day='
-        return HttpResponseRedirect('/maps/routes?kk=22')
+        url_to_redirect = '/maps/routes?day='+str(trip_datetime.day)+'&month='+str(trip_datetime.month)+'&year='+str(trip_datetime.year)
+        return HttpResponseRedirect(url_to_redirect)
 
 
 class Edit_Route(View):
@@ -154,7 +155,7 @@ class Edit_Route(View):
     def post(self, request, id):
         print "came in POST"
         trip_title = request.POST['trip_title']
-        trip_datetime = datetime.datetime.strptime(str(request.POST['trip_datetime']), "%Y/%m/%d %H:%M")
+        trip_datetime = datetime.datetime.strptime(str(request.POST['trip_datetime']), "%b %d,%Y %I:%M %p")
         print trip_title
         print type(trip_datetime), "-----------------", trip_datetime
         total_time = request.POST['total_hours']
@@ -245,7 +246,8 @@ class Edit_Route(View):
         # trip_title = request.POST['trip_title']
         active = "maps"
         flag = "maps"
-        return HttpResponseRedirect('/maps/routes')
+        url_to_redirect = '/maps/routes?day='+str(trip_datetime.day)+'&month='+str(trip_datetime.month)+'&year='+str(trip_datetime.year)
+        return HttpResponseRedirect(url_to_redirect)
 
 
 class Routes(View):
@@ -253,13 +255,17 @@ class Routes(View):
 
     @method_decorator(custom_login_required)
     def get(self, request):
-        print request.GET['kk']
-        date_selected = datetime.date.today()
+        if 'day' in request.GET:
+            date_selected = datetime.date(int(request.GET['year']), int(request.GET['month']), int(request.GET['day']))
+            messages.success(request, "Your Route has been saved")
+        else:
+            date_selected = datetime.date.today()
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
         print routes
         active = "maps"
         flag = "maps"
-        return render(request, self.template1, locals())
+        return render_to_response(self.template1, locals(), context_instance=RequestContext(request))
+        # return render(request, self.template1, locals())
 
     @method_decorator(custom_login_required)
     @method_decorator(csrf_exempt)
