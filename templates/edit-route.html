@@ -803,7 +803,7 @@ function optimized_view(){
                                                Please give it a name
                                             </span>
                                             <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Date / Time" value="{{ route_obj.trip_datetime|date:'Y/m/d H:i' }}"/>
+                                                        placeholder="Date / Time" value="{{ route_obj.trip_datetime|date:'M d,Y h:i A' }}"/>
                                             <span class="error_datetime" style="display:none; color: red; font-size: 13px;">
                                                Please enter Date / Time
                                             </span>
@@ -977,7 +977,10 @@ jQuery.browser = {};
     }
 })();
      $(function(){
-         $("#datepicker").datetimepicker();
+         $("#datepicker").datetimepicker({
+            formatTime:'g:i A',
+            format: 'M d,Y h:i A',
+        });
      });
 </script>
 

@@ -123,6 +123,11 @@ function optimized_view(){
                             </a>
                         </li>
                     </ul>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <span style="color: green;margin-left: 86px">{{ message }}</span>
+                        {% endfor %}
+                    {% endif %}
                     <div class="tab-content tab-content-2">
                         <div role="tabpanel" class="tab-pane active" id="profile">
                             <div class="row">

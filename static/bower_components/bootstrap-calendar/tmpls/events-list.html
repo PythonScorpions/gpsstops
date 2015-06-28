@@ -8,7 +8,7 @@
 					Title - <%= event.trip_title %>&nbsp;&nbsp;Route Info -
                     <%= event.title %>&nbsp;&nbsp;
                     Distance - <%= event.distance %> Miles&nbsp;&nbsp;
-                Total Time - <%= event.time %>&nbsp;&nbsp; <a style="font-size: 17px;" href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
+                Total Time - <%= event.time %>&nbsp;&nbsp; <a style="color:royalblue; font-size: 17px;" href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
 					data-event-class="<%= event['class'] %>" class="event-item"> &nbsp;&nbsp;Show on Map</a>
 			</li>
 		<% }) %>

@@ -208,7 +208,7 @@ function optimized_view(){
                                             <input type="text" disabled class="form-control" name="trip_title" value="{{ route_obj.trip_title }}"
                                                            placeholder="Trip Title" required="true"/>
                                             <input type="text" disabled required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Trip Date Time" value="{{ route_obj.trip_datetime|date:'Y/m/d H:i' }}"/>
+                                                        placeholder="Trip Date Time" value="{{ route_obj.trip_datetime|date:'M d,Y h:i A' }}"/>
                                             </div>
                                             <div>&nbsp;</div>
                                             <ul id="myList">

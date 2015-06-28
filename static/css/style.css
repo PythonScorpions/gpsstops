@@ -978,7 +978,8 @@ text-align:center;
         margin-top: 8px; margin-right: 100px;
     }
     .footer_class {
-        left: 42%;
+        left: 39%;
+        font-size:20px; background-color: white; width: 316px;
     }
     .logos {
         margin-left: 41%;
@@ -1007,7 +1008,8 @@ text-align:center;
         margin-top: 8px; margin-right: -10px;
     }
     .footer_class {
-        left: 36%;
+        left: 30%;
+        font-size:20px; background-color: white; width: 316px;
     }
     .logos {
         margin-left: 34%;
@@ -1028,7 +1030,8 @@ text-align:center;
         margin-top: 8px;
     }
     .footer_class {
-        left: 6%;
+        left: -10%;
+        font-size:14px; background-color: white; width: 316px;
     }
     .logos {
         margin-left: 4%;
@@ -1042,4 +1045,8 @@ text-align:center;
     .flexslider {
         width: 235px !important;
     }
+}
+
+.slides{
+    height: 200px !important;
 }
