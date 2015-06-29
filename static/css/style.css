@@ -76,7 +76,7 @@ ul.errorlist {
 	width:100%;
 	display:inline-block;
 	background:#262b2f;
-	padding:15px 0px;
+	padding:12px 0px;
 	color:#fff;
 	text-align:center;
 }
@@ -978,8 +978,8 @@ text-align:center;
         margin-top: 8px; margin-right: 100px;
     }
     .footer_class {
-        left: 39%;
-        font-size:20px; background-color: white; width: 320px;
+        left: 36%;
+        font-size:20px; width: 320px;
     }
     .logos {
         margin-left: 41%;
@@ -1008,8 +1008,8 @@ text-align:center;
         margin-top: 8px; margin-right: -10px;
     }
     .footer_class {
-        left: 30%;
-        font-size:20px; background-color: white; width: 316px;
+        left: 29%;
+        font-size:20px; width: 316px;
     }
     .logos {
         margin-left: 34%;
@@ -1030,8 +1030,8 @@ text-align:center;
         margin-top: 8px;
     }
     .footer_class {
-        left: -10%;
-        font-size:14px; background-color: white; width: 316px;
+        left: -13%;
+        font-size:14px; width: 316px;
     }
     .logos {
         margin-left: 4%;
