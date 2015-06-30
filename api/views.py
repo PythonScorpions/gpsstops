@@ -1,5 +1,4 @@
 import datetime
-import pytz
 from datetime import timedelta
 from rest_framework import authentication
 from rest_framework.response import Response
