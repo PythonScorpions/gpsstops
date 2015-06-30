@@ -1,4 +1,5 @@
 import datetime
+import pytz
 from datetime import timedelta
 from rest_framework import authentication
 from rest_framework.response import Response
@@ -414,16 +415,15 @@ class Events(APIView):
             temp['trip_datetime'] = rou.trip_datetime
             temp['url'] = 'http://gpsstops.pythonanywhere.com/maps/edit_route/'+str(rou.id)
             temp['class'] = 'event-info'
-            temp['start'] = str(int(rou.trip_datetime.strftime("%s")) * 1000)
+            temp['start'] = str((int(rou.trip_datetime.strftime("%s")) * 1000)-19800000)
             if rou.total_time[1] == ' ':
                 add_hour = int(rou.total_time[:1])
             else:
                 add_hour = int(rou.total_time[:2])
             add_minute = int(rou.total_time[7:9])
             add_time = rou.trip_datetime + timedelta(minutes=add_minute, hours=add_hour)
-            temp['end'] = str(int(add_time.strftime("%s")) * 1000)
+            temp['end'] = str((int(add_time.strftime("%s")) * 1000)-19800000)
             events.append(temp)
-
         return Response({'success': 1, 'result': events})
 
 

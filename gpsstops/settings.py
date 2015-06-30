@@ -76,7 +76,7 @@ DATABASES = {
 }
 
 # For Local Server
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.mysql',
 #        'NAME': 'gps_new_db',
@@ -84,16 +84,16 @@ DATABASES = {
 #        'PASSWORD': 'root',
 #        'HOST': 'localhost',
 #        'PORT': '3306',
-
+#
 #    }
-#}
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Kolkata'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
