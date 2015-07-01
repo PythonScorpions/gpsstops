@@ -126,6 +126,7 @@ EMAIL_HOST_PASSWORD = 'Gpsstops9977((@@'
 EMAIL_PORT = 587
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
