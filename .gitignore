@@ -55,3 +55,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# local settings file
+local_settings.py
+
+.idea
+*.sqlite*
