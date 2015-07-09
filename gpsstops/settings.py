@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'accounts',
     'rest_framework',
     'rest_framework.authtoken',
-    'maps'
+    'maps',
+    'appointments',
 )
 
 LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are not logged in

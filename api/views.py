@@ -1,27 +1,29 @@
-import datetime
-from datetime import timedelta
-from rest_framework import authentication
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import generics
+'''
+'''
 from django.contrib.auth.models import User
-from accounts.models import UserProfiles
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
-from api.serializers import *
-from rest_framework.authtoken.models import Token
-from rest_framework import parsers
-from rest_framework import renderers
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from django.template import loader
-from django.template import RequestContext, Context
-import string
-import random
-from maps.models import *
+from django.template import loader, RequestContext, Context
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+
+from rest_framework import parsers, renderers, generics, authentication, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from appointments.models import *
+from maps.models import *
+from api.serializers import *
+from accounts.models import UserProfiles
+
+from datetime import timedelta
+import string, random, datetime
 
 
 for user in User.objects.all():
@@ -453,3 +455,45 @@ class RoutesPerDay(APIView):
         serializer = RouteSerializer(routes, many=True)
 
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
+
+
+
+class AppointmentsViewSet(viewsets.ModelViewSet):
+    serializer_class = AppointmentsSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Appointments.objects.filter(user=request.user)
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Task.objects.filter(user=request.user)
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+    serializer_class = ContactSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Contact.objects.filter(user=request.user)
+
+
+class ContactGroupViewSet(viewsets.ModelViewSet):
+    serializer_class = ContactGroupSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return ContactGroup.objects.filter(user=request.user)
+

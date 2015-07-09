@@ -1,0 +1,6 @@
+<div class="form">
+  <form method="post" name="appointmentForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+  </form>
+</div>

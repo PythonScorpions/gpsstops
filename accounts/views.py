@@ -1,17 +1,20 @@
-from django.views.generic import TemplateView, UpdateView, View
-from django.shortcuts import render_to_response, redirect, render
-from accounts.forms import *
-from django.template import RequestContext, Context
+'''
+'''
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.template import loader
 from django.contrib.sites.models import Site
-from maps.models import *
-import datetime
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render_to_response, redirect, render
+from django.template import loader, RequestContext, Context
+from django.views.generic import TemplateView, UpdateView, View
 from django.utils.decorators import method_decorator
+
+from accounts.forms import *
+from maps.models import *
 from maps.views import custom_login_required
+
+import datetime
 
 
 class IndexView(View):
