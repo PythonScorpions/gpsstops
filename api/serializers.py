@@ -132,75 +132,144 @@ class OptRouteSerializer(serializers.ModelSerializer):
 
 
 class AppointmentsSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Appointments
         fields = ('id', 'title', 'start_datetime', 'end_datetime', 'timezone',
-                    'where', 'all_day', 'repeat', 'description')
+                    'location', 'latitude', 'longitude', 'where', 'all_day',
+                    'repeat', 'description', 'notification_required',
+                    'notification_time')
+
+    def validate_user_id(self, value):
+        try:
+            user = User.objects.get(id=value)
+        except:
+            raise serializers.ValidationError("User not found")
+        else:
+            if not user.is_active:
+                raise serializers.ValidationError("User not found")
+        return user
 
     def create(self, validated_data):
         appointments = Appointments.objects.create(
-            user=self.request.user,
+            user=validated_data['user'],
             title=validated_data['title'],
             start_datetime=validated_data['start_datetime'],
             end_datetime=validated_data['end_datetime'],
             timezone=validated_data['timezone'],
+            location=validated_data['location'],
+            latitude=validated_data['latitude'],
+            longitude=validated_data['longitude'],
             where=validated_data['where'],
             all_day=validated_data['all_day'],
             repeat=validated_data['repeat'],
-            description=validated_data['description']
+            description=validated_data['description'],
+            notification_time=validated_data['notification_time'],
+            notification_required=validated_data['notification_required']
         )
         return appointments
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Task
-        fields = ('id', 'title', 'due_date')
+        fields = ('id', 'title', 'due_date', 'timezone', 'note',
+                    'notification_required', 'notification_time')
+
+    def validate_user_id(self, value):
+        try:
+            user = User.objects.get(id=value)
+        except:
+            raise serializers.ValidationError("User not found")
+        else:
+            if not user.is_active:
+                raise serializers.ValidationError("User not found")
+        return user
 
     def create(self, validated_data):
         task = Task.objects.create(
-            user=self.request.user,
+            user=validated_data['user'],
             title=validated_data['title'],
-            due_date=validated_data['due_date']
+            due_date=validated_data['due_date'],
+            timezone=validated_data['timezone'],
+            note=validated_data['note'],
+            notification_time=validated_data['notification_time'],
+            notification_required=validated_data['notification_required']
         )
         return task
 
 
 class ContactSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+    group_id = serializers.IntegerField()
+
     class Meta:
         model = Contact
         fields = ('id', 'name', 'title', 'company', 'address_line_1',
                     'address_line_2', 'city', 'state', 'zipcode', 'mobile',
                     'office', 'email_1', 'email_2')
 
+    def validate_user_id(self, value):
+        try:
+            user = User.objects.get(id=value)
+        except:
+            raise serializers.ValidationError("User not found")
+        else:
+            if not user.is_active:
+                raise serializers.ValidationError("User not found")
+        return user
+
+    def validate_group_id(self, value):
+        try:
+            group = ContactGroup.objects.get(id=value)
+        except:
+            raise serializers.ValidationError("Group not found")
+        return group
+
     def create(self, validated_data):
         contact = Contact.objects.create(
-            user=self.request.user,
+            user=validated_data['user'],
             name=validated_data['name'],
             title=validated_data['title'],
             company=validated_data['company'],
-            address_line_1=validated_data['address_line_1'],
-            address_line_2=validated_data['address_line_2'],
+            location=validated_data['location'],
+            latitude=validated_data['latitude'],
+            longitude=validated_data['longitude'],
             city=validated_data['city'],
             state=validated_data['state'],
             zipcode=validated_data['zipcode'],
-            mobile=validated_data['mobile'],
-            office=validated_data['office'],
-            email_1=validated_data['email_1'],
-            email_2=validated_data['email_2'],
-            contact_group=validated_data['contact_group']
+            cell_phone=validated_data['cell_phone'],
+            office_phone=validated_data['office_phone'],
+            email1=validated_data['email1'],
+            email2=validated_data['email2'],
+            group=validated_data['group_id']
         )
         return contact
 
 
 class ContactGroupSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = ContactGroup
         fields = ('id', 'name', 'remarks')
 
+    def validate_user_id(self, value):
+        try:
+            user = User.objects.get(id=value)
+        except:
+            raise serializers.ValidationError("User not found")
+        else:
+            if not user.is_active:
+                raise serializers.ValidationError("User not found")
+        return user
+
     def create(self, validated_data):
         contact_group = ContactGroup.objects.create(
-            user=self.request.user,
+            user=validated_data['user'],
             name=validated_data['name'],
             remarks=validated_data['remarks']
         )
