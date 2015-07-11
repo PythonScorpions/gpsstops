@@ -27,15 +27,4 @@ $(document).ready(function() {
     });
   });
 
-  $("#calendar").on("click", ".cal-month-day", function(evt) {
-    $.ajax({
-      url: "/appointments/create/",
-      method: "GET",
-      success: function(data, textStatus, jqXHR) {
-        $("#appointmentDialog .modal-body").html(data);
-      }
-    });
-    $("#appointmentDialog .modal-body").html($(this).find("span").data("cal-date"));
-    $("#appointmentDialog").modal('show');
-  });
 });

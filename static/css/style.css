@@ -1050,3 +1050,32 @@ text-align:center;
 .slides{
     height: 200px !important;
 }
+
+
+/* Custom */
+#cal-slide-box #cal-slide-content .actions a {
+    display: inline-block;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    font-size: 0.8em;
+}
+
+.appointmentForm label {
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-top: 2em;
+    margin-right: 1em;
+}
+.appointmentForm input[type=text] {
+    width: 50%;
+}
+.appointmentForm select {
+    width: 50%;
+}
+.appointmentForm textarea {
+    width: 50%;
+    height: 100px;
+}
+.appointmentForm input[type=checkbox] {
+    margin-right: 0.5em;
+}

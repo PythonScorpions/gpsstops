@@ -3,10 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from appointments.constants import *
 
-NOTIFICATIONS_TIME_CHOICES = (
-    (5, 5), (10, 10), (15, 15), (30, 30)
-    )
 
 class Appointments(models.Model):
 
@@ -14,7 +12,8 @@ class Appointments(models.Model):
     title = models.CharField(max_length=100)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
-    timezone = models.CharField(max_length=100, default='Asia/Kolkatta') # Exhaustive list https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+    timezone = models.CharField(max_length=100, default='Asia/Calcutta',
+                choices=TIMEZONE_CHOICES) # Exhaustive list https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     location = models.CharField(max_length=300)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)

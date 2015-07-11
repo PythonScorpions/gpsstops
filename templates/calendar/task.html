@@ -1,0 +1,41 @@
+<div class="form appointmentForm">
+  <form method="post" name="appointmentForm">
+    {% csrf_token %}
+    <div class="field-row">
+        <label>Title</label>
+        <div class="field">
+        {{ form.title }}
+        {% if form.title.errors %}{{ form.title.errors }}{% endif %}
+        </div>
+    </div>
+    <div class="field-row">
+        <label>Due Date</label>
+        <div class="field">
+        {{ form.due_date }}
+        {% if form.due_date.errors %}{{ form.due_date.errors }}{% endif %}
+        </div>
+    </div>
+    <div class="field-row">
+        <label>Timezone</label>
+        <div class="field">
+        {{ form.timezone }}
+        {% if form.timezone.errors %}{{ form.timezone.errors }}{% endif %}
+        </div>
+    </div>
+    <div class="field-row">
+        <label>Note</label>
+        <div class="field">
+        {{ form.note }}
+        {% if form.note.errors %}{{ form.note.errors }}{% endif %}
+        </div>
+    </div>
+    <div class="field-row">
+        <label>Notification Required</label>
+        {{ form.notification_required }}
+    </div>
+    <div class="field-row">
+        <label>Notification Time</label>
+        {{ form.notification_time }}
+    </div>
+  </form>
+</div>

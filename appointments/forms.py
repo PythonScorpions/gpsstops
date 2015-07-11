@@ -10,3 +10,9 @@ class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointments
         exclude = ('user',)
+
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        exclude = ('user',)

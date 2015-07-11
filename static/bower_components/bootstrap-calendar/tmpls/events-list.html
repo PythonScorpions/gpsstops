@@ -1,5 +1,9 @@
 <span id="cal-slide-tick" style="display: none"></span>
 <div id="cal-slide-content" class="cal-event-list">
+    <div class="actions">
+        <a href="#" class="create-appointments">Create Appointment</a>
+        <a href="#" class="create-task">Create Task</a>
+    </div>
 	<ul class="unstyled list-unstyled">
 		<% _.each(events, function(event) { %>
 			<li>
@@ -14,3 +18,36 @@
 		<% }) %>
 	</ul>
 </div>
+<script type="text/javascript">
+$(function() {
+  $("a.create-appointments").on("click",
+    function(evt) {
+      $("#appointmentDialog .modal-body").html("");
+      $.ajax({
+        url: "/appointments/create/",
+        method: "GET",
+        success: function(data, textStatus, jqXHR) {
+          $("#appointmentDialog .modal-body").html(data);
+        }
+      });
+      $("#appointmentDialog").modal('show');
+
+      return false;
+  });
+
+  $("a.create-task").on("click",
+    function(evt) {
+      $("#taskDialog .modal-body").html("");
+      $.ajax({
+        url: "/appointments/task/create/",
+        method: "GET",
+        success: function(data, textStatus, jqXHR) {
+          $("#taskDialog .modal-body").html(data);
+        }
+      });
+      $("#taskDialog").modal('show');
+
+      return false;
+  });
+});
+</script>
