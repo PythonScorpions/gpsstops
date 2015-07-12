@@ -41,9 +41,9 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
 
-    'swampdragon',
-    'swampdragon_auth',
-    'swampdragon_notifications',
+    # 'swampdragon',
+    # 'swampdragon_auth',
+    # 'swampdragon_notifications',
 
     'maps',
     'appointments',

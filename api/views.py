@@ -488,7 +488,7 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Appointments.objects.filter(user=request.user)
+        return Appointments.objects.filter(user=self.request.user)
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -498,7 +498,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Task.objects.filter(user=request.user)
+        return Task.objects.filter(user=self.request.user)
 
 
 class ContactViewSet(viewsets.ModelViewSet):
@@ -508,7 +508,7 @@ class ContactViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Contact.objects.filter(user=request.user)
+        return Contact.objects.filter(user=self.request.user)
 
 
 class ContactGroupViewSet(viewsets.ModelViewSet):
@@ -518,5 +518,5 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return ContactGroup.objects.filter(user=request.user)
+        return ContactGroup.objects.filter(user=self.request.user)
 
