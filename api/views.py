@@ -484,8 +484,8 @@ class RoutesPerDay(APIView):
 class AppointmentsViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentsSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Appointments.objects.filter(user=request.user)
@@ -494,8 +494,8 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Task.objects.filter(user=request.user)
@@ -504,8 +504,8 @@ class TaskViewSet(viewsets.ModelViewSet):
 class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Contact.objects.filter(user=request.user)
@@ -514,8 +514,8 @@ class ContactViewSet(viewsets.ModelViewSet):
 class ContactGroupViewSet(viewsets.ModelViewSet):
     serializer_class = ContactGroupSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return ContactGroup.objects.filter(user=request.user)
