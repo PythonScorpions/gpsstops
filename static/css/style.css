@@ -1082,3 +1082,11 @@ text-align:center;
 .appointmentForm input[type=checkbox] {
     margin-right: 0.5em;
 }
+
+.events-list-appointments {}
+.events-list-appointments a {
+    display: block;
+    padding: 1px;
+    font-size: 0.8em;
+    margin: 2px;
+}

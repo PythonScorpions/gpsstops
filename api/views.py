@@ -424,6 +424,29 @@ class Events(APIView):
             add_minute = int(rou.total_time[7:9])
             add_time = rou.trip_datetime + timedelta(minutes=add_minute, hours=add_hour)
             temp['end'] = str((int(add_time.strftime("%s")) * 1000)-19800000)
+            temp['route'] = 'true'
+            events.append(temp)
+
+        appointments = Appointments.objects.filter(user=request.user)
+        for appointment in appointments:
+            temp = {}
+            temp['id'] = appointment.id
+            temp['title'] = appointment.title
+            temp['url'] = '/appointments/%s/' % appointment.id
+            temp['class'] = 'event-info appointment'
+            temp['start'] = str((int(appointment.start_datetime.strftime("%s")) * 1000)-19800000)
+            temp['appointment'] = 'true'
+            events.append(temp)
+
+        tasks = Task.objects.filter(user=request.user)
+        for task in tasks:
+            temp = {}
+            temp['id'] = task.id
+            temp['title'] = task.title
+            temp['url'] = '/appointments/task/%s/' % task.id
+            temp['class'] = 'event-info task'
+            temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
+            temp['appointment'] = 'true'
             events.append(temp)
         return Response({'success': 1, 'result': events})
 
