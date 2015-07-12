@@ -11,7 +11,7 @@ class Appointments(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(max_length=100)
     start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField(null=True, blank=True)
+    # end_datetime = models.DateTimeField(null=True, blank=True)
     timezone = models.CharField(max_length=100, default='Asia/Calcutta',
                 choices=TIMEZONE_CHOICES) # Exhaustive list https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     location = models.CharField(max_length=300)
