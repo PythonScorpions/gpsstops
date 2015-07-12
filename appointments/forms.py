@@ -7,6 +7,9 @@ from appointments.models import *
 
 
 class AppointmentForm(forms.ModelForm):
+    start_datetime = forms.DateTimeField(
+        input_formats=["%b %d,%Y %I:%M %p"])
+
     class Meta:
         model = Appointments
         exclude = ('user',)

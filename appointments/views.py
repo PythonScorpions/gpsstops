@@ -1,6 +1,6 @@
 '''
 '''
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse
 
@@ -18,9 +18,11 @@ class AppointmentView(View):
         form = AppointmentForm(request.POST)
         if form.is_valid():
             form.instance.user = request.user
-            form.save();
-            return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
+            form.save()
+            # return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
+            return redirect("/calendar/")
         else:
+            print form.errors
             return render(request, "calendar/appointments.html", {'form':form})
 appointment_view = AppointmentView.as_view()
 

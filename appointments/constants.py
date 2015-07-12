@@ -548,5 +548,5 @@ for tz in TIMEZONES:
     TIMEZONE_CHOICES.append((tz[0], "%s (%s)" % (tz[0], tz[1])))
 
 NOTIFICATIONS_TIME_CHOICES = (
-    (5, 5), (10, 10), (15, 15), (30, 30)
-    )
+    (5, 5), (10, 10), (15, 15), (20, 20), (25, 25), (30, 30)
+)

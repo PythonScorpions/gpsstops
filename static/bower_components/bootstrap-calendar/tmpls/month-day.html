@@ -8,5 +8,7 @@
 					title="<%= event.title %>"></a>
 			<% }); %>
 		</div>
+	<% } else { %>
+		<div class="events-list" data-cal-start="<%= start %>" data-cal-end="<%= end %>"></div>
 	<% } %>
 </div>

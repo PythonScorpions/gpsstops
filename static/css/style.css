@@ -1060,6 +1060,9 @@ text-align:center;
     font-size: 0.8em;
 }
 
+.appointmentBlock {
+    margin: 2em;
+}
 .appointmentForm label {
     font-size: 0.9em;
     font-weight: normal;
@@ -1067,13 +1070,13 @@ text-align:center;
     margin-right: 1em;
 }
 .appointmentForm input[type=text] {
-    width: 50%;
+    width: 30%;
 }
 .appointmentForm select {
-    width: 50%;
+    width: 30%;
 }
 .appointmentForm textarea {
-    width: 50%;
+    width: 30%;
     height: 100px;
 }
 .appointmentForm input[type=checkbox] {
