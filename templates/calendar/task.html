@@ -5,7 +5,7 @@
 <div class="appointmentBlock">
     <h4>Task</h4>
     <div class="form appointmentForm">
-      <form method="post" name="appointmentForm" action="/appointments/create/">
+      <form method="post" name="appointmentForm" action="/appointments/task/create/">
         {% csrf_token %}
         <input type="hidden" name="latitude" value=""/>
         <input type="hidden" name="longitude" value=""/>

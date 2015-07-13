@@ -16,6 +16,9 @@ class AppointmentForm(forms.ModelForm):
 
 
 class TaskForm(forms.ModelForm):
+    due_date = forms.DateTimeField(
+        input_formats=["%b %d,%Y %I:%M %p"])
+
     class Meta:
         model = Task
         exclude = ('user',)

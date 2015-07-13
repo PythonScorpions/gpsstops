@@ -444,9 +444,9 @@ class Events(APIView):
             temp['id'] = task.id
             temp['title'] = task.title
             temp['url'] = '/appointments/task/%s/' % task.id
-            temp['class'] = 'event-info task'
+            temp['class'] = 'event-special task'
             temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
-            temp['appointment'] = 'true'
+            temp['task'] = 'true'
             events.append(temp)
         return Response({'success': 1, 'result': events})
 
