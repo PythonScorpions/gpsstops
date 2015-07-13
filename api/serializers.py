@@ -139,9 +139,26 @@ class AppointmentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointments
         fields = ('id', 'user', 'title', 'start_datetime', 'timezone',
-                    'location', 'latitude', 'longitude', 'all_day',
+                    'location', 'latitude', 'longitude',
                     'repeat_days', 'description', 'notification_required',
                     'notification_time')
+
+    def create(self, validated_data):
+         appointments = Appointments.objects.create(
+            user=validated_data['user'],
+            title=validated_data['title'],
+            start_datetime=validated_data['start_datetime'],
+            timezone=validated_data['timezone'],
+            location=validated_data['location'],
+            latitude=validated_data['latitude'],
+            longitude=validated_data['longitude'],
+            where=validated_data['location'],
+            repeat_days=validated_data['repeat_days'],
+            description=validated_data['description'],
+            notification_time=validated_data['notification_time'],
+            notification_required=validated_data['notification_required']
+         )
+         return appointments
 
 
 
