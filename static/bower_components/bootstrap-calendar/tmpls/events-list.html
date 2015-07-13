@@ -19,8 +19,8 @@
             <% } %>
         <% }) %>
     </ul>
-    <h5>Appointments</h5>
-    <ul class="unstyled list-unstyled">
+    <h5 class="appointmentlist">Appointments</h5>
+    <ul class="unstyled list-unstyled appointmentlist">
         <% _.each(events, function(event) { %>
             <% if (event.appointment) { %>
             <li>
@@ -33,8 +33,8 @@
             <% } %>
         <% }) %>
     </ul>
-    <h5>Task</h5>
-    <ul class="unstyled list-unstyled">
+    <h5 class="tasklist-header">Task</h5>
+    <ul class="unstyled list-unstyled tasklist">
         <% _.each(events, function(event) { %>
             <% if (event.task) { %>
             <li>
@@ -48,3 +48,16 @@
         <% }) %>
     </ul>
 </div>
+<script type="text/javascript">
+$(function() {
+    if ($(".appointmentlist li").length <= 0) {
+        $(".appointmentlist-header").hide();
+        $(".appointmentlist").hide();
+    };
+
+    if ($(".tasklist li").length <= 0) {
+        $(".tasklist-header").hide();
+        $(".tasklist").hide();
+    };
+});
+</script>
