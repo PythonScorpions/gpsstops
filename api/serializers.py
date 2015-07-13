@@ -140,24 +140,15 @@ class AppointmentsSerializer(serializers.ModelSerializer):
                     'repeat', 'description', 'notification_required',
                     'notification_time')
 
-    def create(self, validated_data):
-        appointments = Appointments.objects.create(
-            user=validated_data['user'],
-            title=validated_data['title'],
-            start_datetime=validated_data['start_datetime'],
-            # end_datetime=validated_data['end_datetime'],
-            timezone=validated_data['timezone'],
-            location=validated_data['location'],
-            latitude=validated_data['latitude'],
-            longitude=validated_data['longitude'],
-            where=validated_data['where'],
-            all_day=validated_data['all_day'],
-            repeat=validated_data['repeat'],
-            description=validated_data['description'],
-            notification_time=validated_data['notification_time'],
-            notification_required=validated_data['notification_required']
-        )
-        return appointments
+    # def create(self, validated_data):
+    #     response = super(AppointmentsSerializer, self).create(validated_data)
+    #     print dir(response), type(response)
+    #     return response
+
+    # def _format_response(self, response):
+    #     return {
+
+    #     }
 
 
 class TaskSerializer(serializers.ModelSerializer):

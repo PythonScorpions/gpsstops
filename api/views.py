@@ -480,7 +480,6 @@ class RoutesPerDay(APIView):
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
 
 
-
 class AppointmentsViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentsSerializer
 
@@ -489,6 +488,27 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Appointments.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code == 200:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -500,6 +520,27 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Task.objects.all()
 
+    def dispatch(self, request, *args, **kwargs):
+        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code == 200:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
+
 
 class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer
@@ -510,6 +551,27 @@ class ContactViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Contact.objects.all()
 
+    def dispatch(self, request, *args, **kwargs):
+        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code == 200:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
+
 
 class ContactGroupViewSet(viewsets.ModelViewSet):
     serializer_class = ContactGroupSerializer
@@ -519,4 +581,25 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ContactGroup.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code == 200:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
 

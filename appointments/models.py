@@ -25,8 +25,7 @@ class Appointments(models.Model):
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
 
     def __unicode__(self):
-        return "%s - %s (%s - %s)" % (self.user, self.title,
-            self.start_datetime, self.end_datetime)
+        return "%s - %s (%s)" % (self.user, self.title, self.start_datetime)
 
 
 class Task(models.Model):
