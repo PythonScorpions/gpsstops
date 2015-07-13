@@ -8,6 +8,7 @@ from django.contrib.sites.models import Site
 from django.template import loader, RequestContext, Context
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django import forms
 
 from rest_framework import parsers, renderers, generics, authentication, viewsets
 from rest_framework.authtoken.models import Token
@@ -480,6 +481,10 @@ class RoutesPerDay(APIView):
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
 
 
+class QueryForm(forms.Form):
+    date = forms.DateField(required=False)
+    user = forms.IntegerField()
+
 class AppointmentsViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentsSerializer
 
@@ -487,7 +492,21 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Appointments.objects.all()
+        form = QueryForm(self.request.query_params)
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            date = form.cleaned_data.get('date', None)
+
+            appointments = Appointments.objects.filter(user__id=user)
+            if date:
+                appointments = appointments.filter(
+                                    start_datetime__day=date.day,
+                                    start_datetime__month=date.month,
+                                    start_datetime__year=date.year,
+                                )
+            return appointments
+
+        return Appointments.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
