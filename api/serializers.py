@@ -139,7 +139,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointments
         fields = ('id', 'user', 'title', 'start_datetime', 'timezone',
-                    'location', 'latitude', 'longitude', 'where', 'all_day',
+                    'location', 'latitude', 'longitude', 'all_day',
                     'repeat_days', 'description', 'notification_required',
                     'notification_time')
 
