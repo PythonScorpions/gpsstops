@@ -20,9 +20,13 @@ class Appointments(models.Model):
     where = models.CharField(max_length=500)
     all_day = models.BooleanField(default=False)
     repeat = models.BooleanField(default=False)
+    repeat_days = models.CommaSeparatedIntegerField(max_length=100)
     description = models.TextField(blank=True, null=True)
     notification_required = models.BooleanField(default=False)
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return "%s - %s (%s)" % (self.user, self.title, self.start_datetime)
@@ -37,6 +41,9 @@ class Task(models.Model):
     notification_required = models.BooleanField(default=False)
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
 
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
+
     def __unicode__(self):
         return "%s - %s" % (self.user, self.title)
 
@@ -45,6 +52,9 @@ class ContactGroup(models.Model):
     user = models.ForeignKey(User)
     name = models.CharField(max_length=300)
     remarks = models.TextField(blank=True, null=True)
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
 
 
 class Contact(models.Model):
@@ -63,4 +73,7 @@ class Contact(models.Model):
     email1 = models.EmailField(blank=True, null=True)
     email2 = models.EmailField(blank=True, null=True)
     group = models.ForeignKey(ContactGroup, blank=True, null=True)
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
 

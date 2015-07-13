@@ -491,12 +491,18 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
-        if self.response.status_code == 200:
+        if self.response.status_code in [200, 201, 202]:
             code = 1
             message = 'success'
         elif self.response.status_code == 400:
             code = 0
             message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
         else:
             code = 0
             message = 'Some error occurred'
@@ -522,12 +528,18 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
-        if self.response.status_code == 200:
+        if self.response.status_code in [200, 201, 202]:
             code = 1
             message = 'success'
         elif self.response.status_code == 400:
             code = 0
             message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
         else:
             code = 0
             message = 'Some error occurred'
@@ -559,6 +571,12 @@ class ContactViewSet(viewsets.ModelViewSet):
         elif self.response.status_code == 400:
             code = 0
             message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
         else:
             code = 0
             message = 'Some error occurred'
@@ -590,6 +608,12 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
         elif self.response.status_code == 400:
             code = 0
             message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
         else:
             code = 0
             message = 'Some error occurred'

@@ -132,26 +132,23 @@ class OptRouteSerializer(serializers.ModelSerializer):
 
 
 class AppointmentsSerializer(serializers.ModelSerializer):
+    start_datetime = serializers.DateTimeField(
+                        format="%m/%d/%Y %I:%M %p",
+                        input_formats=["%m/%d/%Y %I:%M %p"])
 
     class Meta:
         model = Appointments
         fields = ('id', 'user', 'title', 'start_datetime', 'timezone',
                     'location', 'latitude', 'longitude', 'where', 'all_day',
-                    'repeat', 'description', 'notification_required',
+                    'repeat_days', 'description', 'notification_required',
                     'notification_time')
 
-    # def create(self, validated_data):
-    #     response = super(AppointmentsSerializer, self).create(validated_data)
-    #     print dir(response), type(response)
-    #     return response
-
-    # def _format_response(self, response):
-    #     return {
-
-    #     }
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    due_date = serializers.DateTimeField(
+                        format="%m/%d/%Y %I:%M %p",
+                        input_formats=["%m/%d/%Y %I:%M %p"])
 
     class Meta:
         model = Task
