@@ -13,6 +13,7 @@ from django import forms
 from rest_framework import parsers, renderers, generics, authentication, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
@@ -492,25 +493,28 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        form = QueryForm(self.request.query_params)
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
         if form.is_valid():
             user = form.cleaned_data.get('user',0)
             date = form.cleaned_data.get('date', None)
 
             appointments = Appointments.objects.filter(user__id=user)
-            if date:
+            if date and self.request.method == 'GET':
                 appointments = appointments.filter(
                                     start_datetime__day=date.day,
                                     start_datetime__month=date.month,
                                     start_datetime__year=date.year,
                                 )
             return appointments
-
         return Appointments.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
-        if self.response.status_code in [200, 201, 202]:
+        if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
         elif self.response.status_code == 400:
@@ -543,11 +547,28 @@ class TaskViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Task.objects.all()
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            date = form.cleaned_data.get('date', None)
+
+            tasks = Task.objects.filter(user__id=user)
+            if date and self.request.method == 'GET':
+                tasks = tasks.filter(
+                            due_date__day=date.day,
+                            due_date__month=date.month,
+                            due_date__year=date.year,
+                        )
+            return tasks
+        return Task.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
-        if self.response.status_code in [200, 201, 202]:
+        if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
         elif self.response.status_code == 400:
@@ -571,6 +592,17 @@ class TaskViewSet(viewsets.ModelViewSet):
         self.response.status_code = 200
         self.response.render()
         return self.response
+
+    @detail_route(methods=['DELETE'])
+    def destory(self, request, pk=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(pk=pk)
+        except:
+            return Response({'detail':'Object not found'}, status=400)
+        else:
+            obj.delete()
+        return Response({'detail':'Object deleted successfully'})
 
 
 class ContactViewSet(viewsets.ModelViewSet):
@@ -580,11 +612,19 @@ class ContactViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Contact.objects.all()
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            return Contact.objects.filter(user__id=user)
+        return Contact.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
-        if self.response.status_code == 200:
+        if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
         elif self.response.status_code == 400:
@@ -608,6 +648,17 @@ class ContactViewSet(viewsets.ModelViewSet):
         self.response.status_code = 200
         self.response.render()
         return self.response
+
+    @detail_route(methods=['DELETE'])
+    def destory(self, request, pk=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(pk=pk)
+        except:
+            return Response({'detail':'Object not found'}, status=400)
+        else:
+            obj.delete()
+        return Response({'detail':'Object deleted successfully'})
 
 
 class ContactGroupViewSet(viewsets.ModelViewSet):
@@ -617,11 +668,19 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return ContactGroup.objects.all()
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            return ContactGroup.objects.filter(user__id=user)
+        return ContactGroup.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
         super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
-        if self.response.status_code == 200:
+        if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
         elif self.response.status_code == 400:
@@ -646,3 +705,13 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
         self.response.render()
         return self.response
 
+    @detail_route(methods=['DELETE'])
+    def destory(self, request, pk=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(pk=pk)
+        except:
+            return Response({'detail':'Object not found'}, status=400)
+        else:
+            obj.delete()
+        return Response({'detail':'Object deleted successfully'})

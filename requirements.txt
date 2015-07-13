@@ -22,3 +22,4 @@ swampdragon-auth==0.1.3
 swampdragon-notifications==0.1.3.1
 redis==2.10.3
 pytz
+django-cors-headers
