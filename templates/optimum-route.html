@@ -26,6 +26,8 @@
 </style>
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/routeboxer/src/RouteBoxer.js"></script>
+
 <script>
 
 var input_first;
@@ -39,12 +41,85 @@ var autocomplete = [];
 var autocompleteOptions = {};
 var waypoints = [];
 var last_waypoint_no = parseInt({{ total_way_point }});
-
+var hotel_markers = [];
+var food_markers = [];
+var gas_markers = [];
+var hotel_status = false;
+var food_status = false;
+var gas_status = false;
 
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
+var trafficLayer = new google.maps.TrafficLayer();
+var rboxer = new RouteBoxer();
 var rendererOptions = {
 };
+
+function way_point_weathers(w){
+
+    if(w == last_waypoint_no){
+        return;
+    }
+    var cmn_var = w+3;
+    var lat_var = w+1;
+    var lng_var = w+1;
+    console.log(cmn_var);
+    if($("#cmn"+cmn_var+"").val() != ""){
+
+        console.log(lat_var);
+        console.log(lng_var);
+        var lat = $("#latitude"+lat_var+"").val();
+        var lng = $("#longitude"+lng_var+"").val();
+        selected_date = new Date(Date.parse($("#datepicker").val()));
+        selected_day = selected_date.getDate();
+        selected_month = selected_date.getMonth();
+        selected_year = selected_date.getFullYear();
+        weather_url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+lng+"&cnt=16&units=imperial";
+        console.log(weather_url);
+        flag = false;
+        $.get(weather_url, function(data, status){
+            for(var f=0;f<data.list.length;++f){
+                var date = new Date(data.list[f].dt * 1000);
+                var day = date.getDate();
+                var month = date.getMonth();
+                var year = date.getFullYear();
+                if(selected_day==day && selected_month==month && selected_year==year){
+                    var description = data.list[f].weather[0].description;
+                    var clouds = (data.list[f].temp.min+data.list[f].temp.min)/2 +' F';
+                    var wind_speed = data.list[f].speed + ' ml/h';
+                    var humidity = data.list[f].humidity + '%';
+                    console.log(description);
+                    $(".desc_"+lat_var+"").text(description);
+                    $(".fer_"+lat_var+"").text(clouds);
+                    $(".wind_"+lat_var+"").text(wind_speed);
+                    $(".hum_"+lat_var+"").text(humidity);
+                    flag = true;
+                    break
+                }
+            }
+            if(flag == false){
+                $(".desc_"+lat_var+"").text('Weather Forecast Not available at this day');
+                $(".fer_"+lat_var+"").text('');
+                $(".wind_"+lat_var+"").text('');
+                $(".hum_"+lat_var+"").text('');
+            }
+        });
+
+    }
+    else{
+        $(".desc_"+lat_var+"").text('');
+        $(".fer_"+lat_var+"").text('');
+        $(".wind_"+lat_var+"").text('');
+        $(".hum_"+lat_var+"").text('');
+    }
+
+    setTimeout(function()
+    {
+        way_point_weathers(w + 1);
+
+    }, 2000);
+
+}
 
 function initialize() {
     directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
@@ -58,12 +133,93 @@ function initialize() {
 
     // direction service code
     directionsDisplay.setMap(map);
+    trafficLayer.setMap(map);
+    service = new google.maps.places.PlacesService(map);
+        infowindow = new google.maps.InfoWindow();
     directionsDisplay.setPanel(document.getElementById('directions'));
     calcRoute();
+
+    lat = $("#latitude_first").val();
+    lng = $("#longitude_first").val();
+    selected_date = new Date(Date.parse($("#datepicker").val()));
+    selected_day = selected_date.getDate();
+    selected_month = selected_date.getMonth();
+    selected_year = selected_date.getFullYear();
+    weather_url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+lng+"&cnt=16&units=imperial";
+
+    $.get(weather_url, function(data, status){
+        flag = false;
+        for(f=0;f<data.list.length;++f){
+            var date = new Date(data.list[f].dt * 1000);
+            var day = date.getDate();
+            var month = date.getMonth();
+            var year = date.getFullYear();
+            if(selected_day==day && selected_month==month && selected_year==year){
+                console.log(data.list[f]);
+                description = data.list[f].weather[0].description;
+                clouds = (data.list[f].temp.min+data.list[f].temp.min)/2 +' F';
+                wind_speed = data.list[f].speed + ' ml/h';
+                humidity = data.list[f].humidity + '%';
+                $(".desc_first").text(description);
+                $(".fer_first").text(clouds);
+                $(".wind_first").text(wind_speed);
+                $(".hum_first").text(humidity);
+                flag = true;
+                break
+            }
+        }
+        if(flag == false){
+            $(".desc_first").text('Weather Forecast Not available at this day');
+            $(".fer_first").text('');
+                $(".wind_first").text('');
+                $(".hum_first").text('');
+        }
+    });
+
+
+    lat = $("#latitude_last").val();
+    lng = $("#longitude_last").val();
+    selected_date = new Date(Date.parse($("#datepicker").val()));
+    selected_day = selected_date.getDate();
+    selected_month = selected_date.getMonth();
+    selected_year = selected_date.getFullYear();
+    weather_url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+lng+"&cnt=16&units=imperial";
+
+    $.get(weather_url, function(data, status){
+        flag = false;
+        for(f=0;f<data.list.length;++f){
+            var date = new Date(data.list[f].dt * 1000);
+            var day = date.getDate();
+            var month = date.getMonth();
+            var year = date.getFullYear();
+            if(selected_day==day && selected_month==month && selected_year==year){
+                console.log(data.list[f]);
+                description = data.list[f].weather[0].description;
+                clouds = (data.list[f].temp.min+data.list[f].temp.min)/2 +' F';
+                wind_speed = data.list[f].speed + ' ml/h';
+                humidity = data.list[f].humidity + '%';
+                $(".desc_last").text(description);
+                $(".fer_last").text(clouds);
+                $(".wind_last").text(wind_speed);
+                $(".hum_last").text(humidity);
+                flag = true;
+                break
+            }
+        }
+        if(flag == false){
+            $(".desc_last").text('Weather Forecast Not available at this day');
+            $(".fer_last").text('');
+                $(".wind_last").text('');
+                $(".hum_last").text('');
+        }
+    });
+
+    way_point_weathers(0);
 
 }
 //initial function close here
 
+var route;
 
 // calculate route function
 function calcRoute() {
@@ -113,7 +269,7 @@ function calcRoute() {
         if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay.setDirections(response);
             console.log("Done");
-            var route = response.routes[0];
+            route = response.routes[0];
             console.log(route);
             var total_distance_int = 0;
             var total_duration = 0;
@@ -157,6 +313,137 @@ function optimized_view(){
     $("#directions").show();
 }
 
+function setAllMap(map, item_markers) {
+  for (var i = 0; i < item_markers.length; i++) {
+    item_markers[i].setMap(map);
+  }
+}
+
+$(document).ready(function(){
+    $('.show_hotels').on('click', function(){
+        hotel_status ^= true;
+        if(hotel_status == true){
+            $('.show_hotels').text('Hide Hotels');
+            var path = route.overview_path;
+            var boxes = rboxer.box(path, 0.1);
+
+            for (var u = 0; u < boxes.length; u++) {
+                var bounds = boxes[u];
+                var request = {
+                    bounds: bounds,
+                    types: ['lodging']
+                };
+                service.nearbySearch(request, callback);
+            }
+
+            function callback(results, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        var place = results[i];
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: place.geometry.location,
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
+                        });
+                        hotel_markers.push(marker);
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(place.name);
+                            infowindow.open(map, this);
+                        });
+                    }
+                }
+            }
+        }
+        else{
+            $('.show_hotels').text('Find Hotels');
+            setAllMap(null, hotel_markers);
+        }
+
+    });
+
+    $('.show_food').on('click', function(){
+        food_status ^= true;
+        if(food_status == true){
+            $('.show_food').text('Hide Food');
+            var path = route.overview_path;
+            var boxes = rboxer.box(path, 0.1);
+
+            for (var u = 0; u < boxes.length; u++) {
+                var bounds = boxes[u];
+                var request = {
+                    bounds: bounds,
+                    types: ['food']
+                };
+                service.nearbySearch(request, callback);
+            }
+
+            function callback(results, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        var place = results[i];
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: place.geometry.location,
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'
+                        });
+                        food_markers.push(marker);
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(place.name);
+                            infowindow.open(map, this);
+                        });
+                    }
+                }
+            }
+        }
+        else{
+            $('.show_food').text('Find Food');
+            setAllMap(null, food_markers);
+        }
+
+    });
+
+    $('.show_gas').on('click', function(){
+        gas_status ^= true;
+        if(gas_status == true){
+            $('.show_gas').text('Hide GasStations');
+            var path = route.overview_path;
+            var boxes = rboxer.box(path, 0.6);
+
+            for (var u = 0; u < boxes.length; u++) {
+                var bounds = boxes[u];
+                var request = {
+                    bounds: bounds,
+                    types: ['gas_station']
+                };
+                service.nearbySearch(request, callback);
+            }
+
+            function callback(results, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        var place = results[i];
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: place.geometry.location,
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                        });
+                        gas_markers.push(marker);
+                        google.maps.event.addListener(marker, 'click', function() {
+                            infowindow.setContent(place.name);
+                            infowindow.open(map, this);
+                        });
+                    }
+                }
+            }
+        }
+        else{
+            $('.show_gas').text('Find GasStations');
+            setAllMap(null, gas_markers);
+        }
+
+    });
+});
+
 </script>
 
 <div class="contan-eria">
@@ -177,6 +464,13 @@ function optimized_view(){
                             </a>
                         </li>
                     </ul>
+
+                    <ul role="tablist" class="route_extra nav nav-tabs text-right">
+                    <li><a class="show_hotels btn btn-primary margin-top15" style="" role="button">Find Hotels</a></li>
+                    <li><a class="show_food btn btn-primary margin-top15" role="button">Find Food</a></li>
+                    <li><a class="show_gas btn btn-primary margin-top15" role="button">Find GasStations</a></li>
+                    </ul>
+
                     <a href="/maps/routes" class="btn btn-primary margin-top15" role="button">Back to Route List</a>
                     <div class="tab-content tab-content-2">
 
@@ -224,6 +518,16 @@ function optimized_view(){
                                                     <input class="form-control note_common" id="start_location_note" required="true"
                                                            value="{{ data.location_note }}" disabled
                                                            placeholder="Note (optional)" name="start_note_location">
+
+                                                    <p class="weather_first">
+                                                        <b style="color: blue; font-size: 15px">Weather:</b>
+                                                        <b class="descs desc_first" style="font-size: 15px;"></b>
+                                                        <p class="fers fer_first" style="margin-left: 63px; font-weight: 700;
+                                                        font-size: 15px"></p><br>
+                                                        <p style="font-size: 12px">Wind: <b class="winds wind_first"></b>
+                                                        Humidity: <b class="hums hum_first"></b></p>
+                                                    </p>
+
                                                     <input TYPE="hidden" name="latitude_first" class="latitude_first form-control lat_common"
                                                            value="{{ data.location_lat }}" id="latitude_first"/>
                                                     <input TYPE="hidden" name="longitude_first" class="longitude_first form-control lng_common"
@@ -259,6 +563,16 @@ function optimized_view(){
 
                                                     <input class="form-control note_common location_note_{{ way_point.location_number }}" required="true" disabled
                                                     placeholder="Note (optional)" value="{{ way_point.location_note }}" name="note_waypoint{{ way_point.location_number }}">
+
+                                                    <p class="weather_{{ way_point.location_number }}">
+                                                        <b style="color: blue; font-size: 15px">Weather:</b>
+                                                        <b class="descs desc_{{ way_point.location_number }}" style="font-size: 15px;"></b>
+                                                        <p class="fers fer_{{ way_point.location_number }}" style="margin-left: 63px; font-weight: 700;
+                                                        font-size: 15px"></p><br>
+                                                        <p style="font-size: 12px">Wind: <b class="winds wind_{{ way_point.location_number }}"></b>
+                                                        Humidity: <b class="hums hum_{{ way_point.location_number }}"></b></p>
+                                                    </p>
+
                                                     <input type="hidden" name="latitude{{ way_point.location_number }}"
                                                     class="lat_common latitude{{ way_point.location_number }} form-control"
                                                     value="{{ way_point.location_lat }}" id="latitude{{ way_point.location_number }}">
@@ -290,6 +604,16 @@ function optimized_view(){
                                                     <input class="form-control note_common" id="end_location_note" required="true"
                                                            placeholder="Note (optional)" name="end_note_location"
                                                            value="{{ obj.location_note }}" disabled>
+
+                                                    <p class="weather_last">
+                                                        <b style="color: blue; font-size: 15px">Weather:</b>
+                                                        <b class="descs desc_last" style="font-size: 15px;"></b>
+                                                        <p class="fers fer_last" style="margin-left: 63px; font-weight: 700;
+                                                        font-size: 15px"></p><br>
+                                                        <p style="font-size: 12px">Wind: <b class="winds wind_last"></b>
+                                                        Humidity: <b class="hums hum_last"></b></p>
+                                                    </p>
+
                                                     <input TYPE="hidden" name="latitude_last" class="latitude_last form-control lat_common"
                                                            value="{{ obj.location_lat }}" id="latitude_last"/>
                                                     <input TYPE="hidden" name="longitude_last" class="longitude_last form-control lng_common"
