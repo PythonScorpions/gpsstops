@@ -39,6 +39,7 @@ var gas_markers = [];
 var hotel_status = false;
 var food_status = false;
 var gas_status = false;
+var traffic_status = false;
 
 $(function() {
     $("#myList").sortable({
@@ -778,6 +779,18 @@ $(document).ready(function(){
 
     });
 
+    $('.show_traffic').on('click', function() {
+        traffic_status ^= true;
+        if (traffic_status == true) {
+            trafficLayer.setMap(map);
+            $('.show_traffic').text('Hide Traffic');
+        }
+        else {
+            trafficLayer.setMap(null);
+            $('.show_traffic').text('Find Traffic');
+        }
+    });
+
     $('#datepicker').on('change', function(){
         console.log("datepicker chnaged");
         if($("#datepicker").val() != ""){
@@ -1067,7 +1080,7 @@ function initialize() {
 
     // direction service code
     directionsDisplay.setMap(map);
-    trafficLayer.setMap(map);
+{#    trafficLayer.setMap(map);#}
     service = new google.maps.places.PlacesService(map);
         infowindow = new google.maps.InfoWindow();
     directionsDisplay.setPanel(document.getElementById('directions'));
@@ -1518,6 +1531,7 @@ function optimized_view(){
                     <li><a class="show_hotels btn btn-primary margin-top15" style="" role="button">Find Hotels</a></li>
                     <li><a class="show_food btn btn-primary margin-top15" role="button">Find Food</a></li>
                     <li><a class="show_gas btn btn-primary margin-top15" role="button">Find GasStations</a></li>
+                    <li><a class="show_traffic btn btn-primary margin-top15" role="button">Show Traffic</a></li>
                     </ul>
                     <div class="tab-content tab-content-2">
                         <div role="tabpanel" class="tab-pane active " id="profile">
