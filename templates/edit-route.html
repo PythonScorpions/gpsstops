@@ -661,7 +661,7 @@ $(document).ready(function(){
         if(hotel_status == true){
             $('.show_hotels').text('Hide Hotels');
             var path = route.overview_path;
-            var boxes = rboxer.box(path, 0.1);
+            var boxes = rboxer.box(path, 0.3);
 
             for (var u = 0; u < boxes.length; u++) {
                 var bounds = boxes[u];
@@ -702,7 +702,7 @@ $(document).ready(function(){
         if(food_status == true){
             $('.show_food').text('Hide Food');
             var path = route.overview_path;
-            var boxes = rboxer.box(path, 0.1);
+            var boxes = rboxer.box(path, 0.3);
 
             for (var u = 0; u < boxes.length; u++) {
                 var bounds = boxes[u];
