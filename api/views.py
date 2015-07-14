@@ -567,7 +567,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         return Task.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
-        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        super(TaskViewSet, self).dispatch(request, *args, **kwargs)
         if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
@@ -623,7 +623,7 @@ class ContactViewSet(viewsets.ModelViewSet):
         return Contact.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
-        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        super(ContactViewSet, self).dispatch(request, *args, **kwargs)
         if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
@@ -679,7 +679,7 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
         return ContactGroup.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
-        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        super(ContactGroupViewSet, self).dispatch(request, *args, **kwargs)
         if self.response.status_code in [200, 201, 202, 204]:
             code = 1
             message = 'success'
