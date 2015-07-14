@@ -61,12 +61,49 @@
 
 <script>/* Javascript */
 
-var calendar = $("#calendar").calendar(
-            {
-                tmpl_path: "{{ STATIC_URL }}bower_components/bootstrap-calendar/tmpls/",
-                events_source: '/api/events'
+var calendar = $("#calendar").calendar({
+    tmpl_path: "{{ STATIC_URL }}bower_components/bootstrap-calendar/tmpls/",
+    events_source: '/api/events'
+});
 
+$('.events-list a.appointment').draggable({
+  appendTo: "body",
+  helper: "clone"
+});
+$('.events-list a.task').draggable({
+  appendTo: "body",
+  helper: "clone"
+});
+
+$('.cal-cell').droppable({
+  activeClass: "ui-state-default",
+  hoverClass: "ui-state-hover",
+  accept: ":not(.ui-sortable-helper)",
+  drop: function( event, ui ) {
+    var el = $(ui.draggable);
+    var eventId = $(ui.draggable).data('event-id');
+    var date = $(event.target).find('span').data('cal-date');
+
+    if (eventId && date) {
+        var url = null;
+        if ($(el).hasClass('appointment')) {
+            url = '/appointments/event/' + eventId + '/move/?date=' + date;
+        } else if ($(el).hasClass('task')) {
+            url = '/appointments/event/task/' + eventId + '/move/?date=' + date
+        }
+
+        if (url) {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(data, textStatus, jqXHR) {
+                    location.reload();
+                }
             });
+        }
+    };
+  }
+});
 
 
 </script>

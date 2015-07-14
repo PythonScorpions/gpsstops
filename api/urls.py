@@ -8,7 +8,6 @@ from rest_framework.authtoken import views
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.SimpleRouter()
 router.register(r'appointments', AppointmentsViewSet, base_name='Appointments')
-# router.register(r'appointments/(?P<pk>[\d]+)/', AppointmentsViewSet, base_name='AppointmentsD')
 router.register(r'task', TaskViewSet, base_name='Task')
 router.register(r'contact', ContactViewSet, base_name='Contact')
 router.register(r'contact_group', ContactGroupViewSet, base_name='ContactGroup')
@@ -32,8 +31,4 @@ urlpatterns = patterns("api.views",
 
 
    url(r'^', include(router.urls)),
-   # url(r'appointments/(?P<pk>[0-9]+)/$', AppointmentsViewSet.as_view({'put': 'update',
-   #                                                    'get': 'retrieve',
-   #                                                    'patch': 'partial_update',
-   #                                                    'delete': 'destroy'})),
 )
