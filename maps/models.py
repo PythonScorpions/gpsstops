@@ -27,6 +27,8 @@ class Location(models.Model):
     location_long = models.FloatField(default=0.0)
     location_note = models.CharField(max_length=200, blank=True, null=True)
     location_number = models.IntegerField(default=0)
+    distance = models.CharField(max_length=200, blank=True, null=True)
+    time = models.CharField(max_length=200, blank=True, null=True)
 
     def __unicode(self):
         return u'%s' % self.route
@@ -40,6 +42,8 @@ class OptimizedLocation(models.Model):
     location_long = models.FloatField(default=0.0)
     location_note = models.CharField(max_length=200, blank=True, null=True)
     location_number = models.IntegerField(default=0)
+    distance = models.CharField(max_length=200, blank=True, null=True)
+    time = models.CharField(max_length=200, blank=True, null=True)
 
     def __unicode(self):
         return u'%s' % self.route
