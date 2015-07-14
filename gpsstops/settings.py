@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
 # Application definition
@@ -40,13 +40,21 @@ INSTALLED_APPS = (
     'accounts',
     'rest_framework',
     'rest_framework.authtoken',
+
+    'swampdragon',
+    'swampdragon_auth',
+    'swampdragon_notifications',
+
     'maps',
     'appointments',
+
+    # 'corsheaders',
 )
 
 LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are not logged in
 
 MIDDLEWARE_CLASSES = (
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -102,6 +110,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_METHODS = (
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS'
+    )
+
 
 REST_FRAMEWORK = {
 
@@ -146,6 +164,23 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
+DRAGON_URL="/data"
+SWAMP_DRAGON_CONNECTION = ('swampdragon_notifications.notification_connection.Connection', '/data')
+SWAMP_DRAGON_NOTIFICATION_BACKENDS = [
+    ('realtime', 'swampdragon_notifications.backends.realtime_notifications.RealtimeNotification'),
+    # ('email', 'swampdragon_notifications.backends.email_notifications.EmailNotification'),
+]
+
+SWAMP_DRAGON_NOTIFICATIONS = {
+    'foo': {
+        'processor': 'appointments.subject_renderer.get_appointments',
+        'icon': 'http://placekitten.com/g/64/64',
+        'subject': 'Appointments',
+        'template': 'new_appointments_notification',
+    }
+}
+SWAMP_DRAGON_HEARTBEAT_ENABLED = True
+SWAMP_DRAGON_HEARTBEAT_FREQUENCY = 1000 * 60 * 1  # Five minutes
 
 try:
     from local_settings import *

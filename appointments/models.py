@@ -3,31 +3,33 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from appointments.constants import *
 
-NOTIFICATIONS_TIME_CHOICES = (
-    (5, 5), (10, 10), (15, 15), (30, 30)
-    )
 
 class Appointments(models.Model):
 
     user = models.ForeignKey(User)
     title = models.CharField(max_length=100)
     start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
-    timezone = models.CharField(max_length=100, default='Asia/Kolkatta') # Exhaustive list https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+    # end_datetime = models.DateTimeField(null=True, blank=True)
+    timezone = models.CharField(max_length=100, default='Asia/Calcutta',
+                choices=TIMEZONE_CHOICES) # Exhaustive list https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     location = models.CharField(max_length=300)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
     where = models.CharField(max_length=500)
     all_day = models.BooleanField(default=False)
     repeat = models.BooleanField(default=False)
+    repeat_days = models.CommaSeparatedIntegerField(max_length=100)
     description = models.TextField(blank=True, null=True)
     notification_required = models.BooleanField(default=False)
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
 
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
+
     def __unicode__(self):
-        return "%s - %s (%s - %s)" % (self.user, self.title,
-            self.start_datetime, self.end_datetime)
+        return "%s - %s (%s)" % (self.user, self.title, self.start_datetime)
 
 
 class Task(models.Model):
@@ -39,6 +41,9 @@ class Task(models.Model):
     notification_required = models.BooleanField(default=False)
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
 
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
+
     def __unicode__(self):
         return "%s - %s" % (self.user, self.title)
 
@@ -47,6 +52,9 @@ class ContactGroup(models.Model):
     user = models.ForeignKey(User)
     name = models.CharField(max_length=300)
     remarks = models.TextField(blank=True, null=True)
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
 
 
 class Contact(models.Model):
@@ -65,4 +73,7 @@ class Contact(models.Model):
     email1 = models.EmailField(blank=True, null=True)
     email2 = models.EmailField(blank=True, null=True)
     group = models.ForeignKey(ContactGroup, blank=True, null=True)
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
 

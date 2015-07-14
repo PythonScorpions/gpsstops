@@ -1,3 +1,4 @@
+{% load swampdragon_tags static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -17,6 +18,7 @@
 {#        <script type="text/javascript" src="{{ STATIC_URL }}bower_components/jquery/jquery.js"></script>#}
         <script src="{{ STATIC_URL }}js/jquery.datetimepicker.js" type="text/javascript"></script>
         <script src="{{STATIC_URL}}js/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
         <script src="{{ STATIC_URL }}js/bootstrap.min.js" type="text/javascript"></script>
         <script src="{{ STATIC_URL }}js/jquery.flexslider-min.js" type="text/javascript"></script>
         <script src="{{ STATIC_URL }}js/jquery.are-you-sure.js" type="text/javascript"></script>
@@ -27,6 +29,13 @@
 
 
 {#        <link href="{{STATIC_URL}}css/fullcalendar.css" rel="stylesheet" type="text/css" />#}
+
+        <!-- Swamp dragon -->
+        {% swampdragon_settings %}
+        <script type="text/javascript" src="{% static 'swampdragon/js/dist/swampdragon.min.js' %}"></script>
+
+        <!-- Swamp dragon notifications -->
+        <script type="text/javascript" src="{% static 'js/dist/swampdragon-notifications.js' %}"></script>
     </head>
 
     <body>

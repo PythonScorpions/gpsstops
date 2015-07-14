@@ -6,7 +6,7 @@ from rest_framework.authtoken import views
 
 
 # Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'appointments', AppointmentsViewSet, base_name='Appointments')
 router.register(r'task', TaskViewSet, base_name='Task')
 router.register(r'contact', ContactViewSet, base_name='Contact')
@@ -28,6 +28,7 @@ urlpatterns = patterns("api.views",
     url(r'delete_route/(?P<pk>[a-zA-Z0-9]+)', DeleteRouteApi.as_view(), name='delete-route-api'),
    url(r'events', Events.as_view(), name='events-api'),
    url(r'routes_per_day/(?P<pk>[a-zA-Z0-9]+)/(?P<year>[a-zA-Z0-9]+)/(?P<month>[a-zA-Z0-9]+)/(?P<day>[a-zA-Z0-9]+)', RoutesPerDay.as_view(), name='routes-per-day'),
+
 
    url(r'^', include(router.urls)),
 )

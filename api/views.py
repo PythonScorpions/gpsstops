@@ -8,10 +8,12 @@ from django.contrib.sites.models import Site
 from django.template import loader, RequestContext, Context
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django import forms
 
 from rest_framework import parsers, renderers, generics, authentication, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
@@ -428,6 +430,29 @@ class Events(APIView):
             add_minute = int(rou.total_time[7:9])
             add_time = rou.trip_datetime + timedelta(minutes=add_minute, hours=add_hour)
             temp['end'] = str((int(add_time.strftime("%s")) * 1000)-19800000)
+            temp['route'] = 'true'
+            events.append(temp)
+
+        appointments = Appointments.objects.filter(user=request.user)
+        for appointment in appointments:
+            temp = {}
+            temp['id'] = appointment.id
+            temp['title'] = appointment.title
+            temp['url'] = '/appointments/%s/' % appointment.id
+            temp['class'] = 'event-info appointment'
+            temp['start'] = str((int(appointment.start_datetime.strftime("%s")) * 1000)-19800000)
+            temp['appointment'] = 'true'
+            events.append(temp)
+
+        tasks = Task.objects.filter(user=request.user)
+        for task in tasks:
+            temp = {}
+            temp['id'] = task.id
+            temp['title'] = task.title
+            temp['url'] = '/appointments/task/%s/' % task.id
+            temp['class'] = 'event-special task'
+            temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
+            temp['task'] = 'true'
             events.append(temp)
         return Response({'success': 1, 'result': events})
 
@@ -461,43 +486,236 @@ class RoutesPerDay(APIView):
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
 
 
+class QueryForm(forms.Form):
+    date = forms.DateField(required=False)
+    user = forms.IntegerField()
 
 class AppointmentsViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentsSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Appointments.objects.filter(user=request.user)
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            date = form.cleaned_data.get('date', None)
+
+            appointments = Appointments.objects.filter(user__id=user)
+            if date and self.request.method == 'GET':
+                appointments = appointments.filter(
+                                    start_datetime__day=date.day,
+                                    start_datetime__month=date.month,
+                                    start_datetime__year=date.year,
+                                )
+            return appointments
+        return Appointments.objects.none()
+
+    def dispatch(self, request, *args, **kwargs):
+        super(AppointmentsViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code in [200, 201, 202, 204]:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
 
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Task.objects.filter(user=request.user)
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            date = form.cleaned_data.get('date', None)
+
+            tasks = Task.objects.filter(user__id=user)
+            if date and self.request.method == 'GET':
+                tasks = tasks.filter(
+                            due_date__day=date.day,
+                            due_date__month=date.month,
+                            due_date__year=date.year,
+                        )
+            return tasks
+        return Task.objects.none()
+
+    def dispatch(self, request, *args, **kwargs):
+        super(TaskViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code in [200, 201, 202, 204]:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
+
+    @detail_route(methods=['DELETE'])
+    def destory(self, request, pk=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(pk=pk)
+        except:
+            return Response({'detail':'Object not found'}, status=400)
+        else:
+            obj.delete()
+        return Response({'detail':'Object deleted successfully'})
 
 
 class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Contact.objects.filter(user=request.user)
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            return Contact.objects.filter(user__id=user)
+        return Contact.objects.none()
+
+    def dispatch(self, request, *args, **kwargs):
+        super(ContactViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code in [200, 201, 202, 204]:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
+
+    @detail_route(methods=['DELETE'])
+    def destory(self, request, pk=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(pk=pk)
+        except:
+            return Response({'detail':'Object not found'}, status=400)
+        else:
+            obj.delete()
+        return Response({'detail':'Object deleted successfully'})
 
 
 class ContactGroupViewSet(viewsets.ModelViewSet):
     serializer_class = ContactGroupSerializer
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return ContactGroup.objects.filter(user=request.user)
+        if self.request.method == 'GET':
+            form = QueryForm(self.request.query_params)
+        else:
+            form = QueryForm(self.request.data)
 
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            return ContactGroup.objects.filter(user__id=user)
+        return ContactGroup.objects.none()
+
+    def dispatch(self, request, *args, **kwargs):
+        super(ContactGroupViewSet, self).dispatch(request, *args, **kwargs)
+        if self.response.status_code in [200, 201, 202, 204]:
+            code = 1
+            message = 'success'
+        elif self.response.status_code == 400:
+            code = 0
+            message = 'Invalid input'
+        elif self.response.status_code == 401:
+            code = 0
+            message = 'Unauthorized Access'
+        elif self.response.status_code == 404:
+            code = 0
+            message = 'API not found'
+        else:
+            code = 0
+            message = 'Some error occurred'
+
+        self.response.data = {
+            'code': code,
+            'message': message,
+            'data': self.response.data
+        }
+        self.response.status_code = 200
+        self.response.render()
+        return self.response
+
+    @detail_route(methods=['DELETE'])
+    def destory(self, request, pk=None):
+        queryset = self.get_queryset()
+        try:
+            obj = queryset.get(pk=pk)
+        except:
+            return Response({'detail':'Object not found'}, status=400)
+        else:
+            obj.delete()
+        return Response({'detail':'Object deleted successfully'})

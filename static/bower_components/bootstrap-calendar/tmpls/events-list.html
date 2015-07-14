@@ -1,16 +1,63 @@
 <span id="cal-slide-tick" style="display: none"></span>
 <div id="cal-slide-content" class="cal-event-list">
-	<ul class="unstyled list-unstyled">
-		<% _.each(events, function(event) { %>
-			<li>
-				<span class="pull-left event <%= event['class'] %>"></span>&nbsp;
+    <div class="actions">
+        <a href="/appointments/create/" class="create-appointments">Create Appointment</a>
+        <a href="/appointments/task/create/" class="create-task">Create Task</a>
+    </div>
+    <ul class="unstyled list-unstyled">
+        <% _.each(events, function(event) { %>
+            <% if (event.route) { %>
+            <li>
+                <span class="pull-left event <%= event['class'] %>"></span>&nbsp;
 
-					Title - <%= event.trip_title %>&nbsp;&nbsp;Route Info -
+                    Title - <%= event.trip_title %>&nbsp;&nbsp;Route Info -
                     <%= event.title %>&nbsp;&nbsp;
                     Distance - <%= event.distance %> Miles&nbsp;&nbsp;
                 Total Time - <%= event.time %>&nbsp;&nbsp; <a style="color:royalblue; font-size: 17px;" href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
-					data-event-class="<%= event['class'] %>" class="event-item"> &nbsp;&nbsp;Show on Map</a>
-			</li>
-		<% }) %>
-	</ul>
+                    data-event-class="<%= event['class'] %>" class="event-item"> &nbsp;&nbsp;Show on Map</a>
+            </li>
+            <% } %>
+        <% }) %>
+    </ul>
+    <h5 class="appointmentlist">Appointments</h5>
+    <ul class="unstyled list-unstyled appointmentlist">
+        <% _.each(events, function(event) { %>
+            <% if (event.appointment) { %>
+            <li>
+                <span class="pull-left event event-info"></span>&nbsp;
+                <%= event.title %>&nbsp;&nbsp;
+                <a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
+                    data-event-class="event-info"
+                    data-toggle="tooltip" title="" data-original-title="<%= event.title %>">Edit</a>
+            </li>
+            <% } %>
+        <% }) %>
+    </ul>
+    <h5 class="tasklist-header">Task</h5>
+    <ul class="unstyled list-unstyled tasklist">
+        <% _.each(events, function(event) { %>
+            <% if (event.task) { %>
+            <li>
+                <span class="pull-left event event-info"></span>&nbsp;
+                <%= event.title %>&nbsp;&nbsp;
+                <a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
+                    data-event-class="event-info"
+                    data-toggle="tooltip" title="" data-original-title="<%= event.title %>">Edit</a>
+            </li>
+            <% } %>
+        <% }) %>
+    </ul>
 </div>
+<script type="text/javascript">
+$(function() {
+    if ($(".appointmentlist li").length <= 0) {
+        $(".appointmentlist-header").hide();
+        $(".appointmentlist").hide();
+    };
+
+    if ($(".tasklist li").length <= 0) {
+        $(".tasklist-header").hide();
+        $(".tasklist").hide();
+    };
+});
+</script>

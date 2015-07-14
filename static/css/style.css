@@ -1050,3 +1050,50 @@ text-align:center;
 .slides{
     height: 200px !important;
 }
+
+
+/* Custom */
+#cal-slide-box #cal-slide-content .actions a {
+    display: inline-block;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    font-size: 0.8em;
+}
+#cal-slide-box #cal-slide-content h5 {
+    margin: 1.4em 0em 0.4em;
+    font-size: 0.8em;
+    font-weight: normal;
+    text-decoration: underline;
+    color: #FF00F2;
+}
+
+.appointmentBlock {
+    margin: 2em;
+}
+.appointmentForm label {
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-top: 2em;
+    margin-right: 1em;
+}
+.appointmentForm input[type=text] {
+    width: 30%;
+}
+.appointmentForm select {
+    width: 30%;
+}
+.appointmentForm textarea {
+    width: 30%;
+    height: 100px;
+}
+.appointmentForm input[type=checkbox] {
+    margin-right: 0.5em;
+}
+
+/*.events-list-appointments {}
+.events-list-appointments a {
+    display: block;
+    padding: 1px;
+    font-size: 0.8em;
+    margin: 2px;
+}*/
