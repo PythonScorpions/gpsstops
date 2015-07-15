@@ -439,7 +439,7 @@ class Events(APIView):
             temp['id'] = appointment.id
             temp['title'] = appointment.title
             temp['url'] = '/appointments/%s/' % appointment.id
-            temp['class'] = 'event-info appointment'
+            temp['class'] = 'event-warning appointment'
             temp['start'] = str((int(appointment.start_datetime.strftime("%s")) * 1000)-19800000)
             temp['appointment'] = 'true'
             events.append(temp)
@@ -450,7 +450,7 @@ class Events(APIView):
             temp['id'] = task.id
             temp['title'] = task.title
             temp['url'] = '/appointments/task/%s/' % task.id
-            temp['class'] = 'event-special task'
+            temp['class'] = 'event-success task'
             temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
             temp['task'] = 'true'
             events.append(temp)
