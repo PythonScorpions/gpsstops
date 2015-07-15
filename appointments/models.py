@@ -57,7 +57,7 @@ class ContactGroup(models.Model):
     modified_on = models.DateTimeField(auto_now=True)
 
 
-class Contact(models.Model):
+class Contacts(models.Model):
     user = models.ForeignKey(User)
     name = models.CharField(max_length=300)
     title = models.CharField(max_length=200)
@@ -76,4 +76,3 @@ class Contact(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
-

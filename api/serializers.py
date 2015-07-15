@@ -188,7 +188,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Contact
+        model = Contacts
         fields = ('id', 'user', 'name', 'title', 'company', 'address_line_1',
                     'address_line_2', 'city', 'state', 'zipcode', 'mobile',
                     'office', 'email_1', 'email_2', 'group')
