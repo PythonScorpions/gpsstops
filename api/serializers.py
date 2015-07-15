@@ -189,9 +189,9 @@ class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contacts
-        fields = ('id', 'user', 'name', 'title', 'company',
-                    'city', 'state', 'zipcode', 'mobile',
-                    'office', 'email_1', 'email_2', 'group')
+        fields = ('id', 'user', 'name', 'title', 'company', 'location',
+                    'latitude', 'longitude', 'city', 'state', 'zipcode', 'cell_phone',
+                    'office_phone', 'email1', 'email2', 'group')
 
     def create(self, validated_data):
         contact = Contact.objects.create(
