@@ -209,7 +209,7 @@ class ContactSerializer(serializers.ModelSerializer):
             office_phone=validated_data['office_phone'],
             email1=validated_data['email1'],
             email2=validated_data['email2'],
-            group=validated_data['group_id']
+            group=validated_data['group']
         )
         return contact
 
