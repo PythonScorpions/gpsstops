@@ -52,7 +52,7 @@ def register(request):
             print user.user.email
             t = loader.get_template('verification.txt')
             c = Context({'varification_link': message})
-            send_mail('Welcome to gpsstops.com', t.render(c), 'scorpionspython@gmail.com', [str(user.user.email)],
+            send_mail('Welcome to gpsstops.com', t.render(c), 'pparekh9999@gmail.com', [str(user.user.email)],
                       fail_silently=False)
             print "yes sent"
             return redirect('email-sent')
@@ -145,7 +145,7 @@ class ForgotPassword(TemplateView):
             site = Site.objects.get(pk=1)
             t = loader.get_template('password.txt')
             c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
-            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'scorpionspython@gmail.com',
+            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'pparekh9999@gmail.com',
                       [email.email], fail_silently=False)
             messages.success(request, 'Password reset link has been sent to your email')
 

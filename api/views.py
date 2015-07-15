@@ -58,7 +58,7 @@ class CreateUser(APIView):
                 user_profile_data.save()
                 message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
-                send_mail('Verification Link', message, 'scorpionspython@gmail.com', [str(user_data.email)],
+                send_mail('Verification Link', message, 'pparekh9999@gmail.com', [str(user_data.email)],
                           fail_silently=False)
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
@@ -192,7 +192,7 @@ class ForgotPassword(APIView):
             site = Site.objects.get(pk=1)
             t = loader.get_template('password.txt')
             c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
-            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'scorpionspython@gmail.com',
+            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'pparekh9999@gmail.com',
                       [email.email], fail_silently=False)
             return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
 
@@ -237,7 +237,8 @@ class CreateRouteApi(APIView):
             if loc['latitude'] and loc['longitude']:
                 loc_obj = Location(route=route_obj, location_address=loc['location_name'],
                                    location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                   location_long=loc['longitude'], location_note=loc['note'])
+                                   location_long=loc['longitude'], location_note=loc['note'],
+                                   distance=loc['distance'], time=loc['time'])
                 if idx == 0:
                     loc_obj.location_number = 11
                     loc_obj.save()
@@ -253,7 +254,8 @@ class CreateRouteApi(APIView):
             if loc['latitude'] and loc['longitude']:
                 loc_obj = OptimizedLocation(route=route_obj, location_address=loc['location_name'],
                                             location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                            location_long=loc['longitude'], location_note=loc['note'])
+                                            location_long=loc['longitude'], location_note=loc['note'],
+                                            distance=loc['distance'], time=loc['time'])
                 if idx == 0:
                     loc_obj.location_number = 11
                     loc_obj.save()
@@ -348,7 +350,8 @@ class EditRouteApi(APIView):
                 if loc['latitude'] and loc['longitude']:
                     loc_obj = Location(route=route_obj, location_address=loc['location_name'],
                                        location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                       location_long=loc['longitude'], location_note=loc['note'])
+                                       location_long=loc['longitude'], location_note=loc['note'],
+                                       distance=loc['distance'], time=loc['time'])
                     if idx == 0:
                         loc_obj.location_number = 11
                         loc_obj.save()
@@ -364,7 +367,8 @@ class EditRouteApi(APIView):
                 if loc['latitude'] and loc['longitude']:
                     loc_obj = OptimizedLocation(route=route_obj, location_address=loc['location_name'],
                                                 location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                                location_long=loc['longitude'], location_note=loc['note'])
+                                                location_long=loc['longitude'], location_note=loc['note'],
+                                                distance=loc['distance'], time=loc['time'])
                     if idx == 0:
                         loc_obj.location_number = 11
                         loc_obj.save()
