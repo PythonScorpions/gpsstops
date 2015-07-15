@@ -593,17 +593,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         self.response.render()
         return self.response
 
-    @detail_route(methods=['DELETE'])
-    def destory(self, request, pk=None):
-        queryset = self.get_queryset()
-        try:
-            obj = queryset.get(pk=pk)
-        except:
-            return Response({'detail':'Object not found'}, status=400)
-        else:
-            obj.delete()
-        return Response({'detail':'Object deleted successfully'})
-
 
 class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer
@@ -649,17 +638,6 @@ class ContactViewSet(viewsets.ModelViewSet):
         self.response.render()
         return self.response
 
-    @detail_route(methods=['DELETE'])
-    def destory(self, request, pk=None):
-        queryset = self.get_queryset()
-        try:
-            obj = queryset.get(pk=pk)
-        except:
-            return Response({'detail':'Object not found'}, status=400)
-        else:
-            obj.delete()
-        return Response({'detail':'Object deleted successfully'})
-
 
 class ContactGroupViewSet(viewsets.ModelViewSet):
     serializer_class = ContactGroupSerializer
@@ -704,14 +682,3 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
         self.response.status_code = 200
         self.response.render()
         return self.response
-
-    @detail_route(methods=['DELETE'])
-    def destory(self, request, pk=None):
-        queryset = self.get_queryset()
-        try:
-            obj = queryset.get(pk=pk)
-        except:
-            return Response({'detail':'Object not found'}, status=400)
-        else:
-            obj.delete()
-        return Response({'detail':'Object deleted successfully'})
