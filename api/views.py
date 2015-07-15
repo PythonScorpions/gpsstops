@@ -612,8 +612,8 @@ class ContactViewSet(viewsets.ModelViewSet):
 
         if form.is_valid():
             user = form.cleaned_data.get('user',0)
-            return Contact.objects.filter(user__id=user)
-        return Contact.objects.none()
+            return Contacts.objects.filter(user__id=user)
+        return Contacts.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
         super(ContactViewSet, self).dispatch(request, *args, **kwargs)

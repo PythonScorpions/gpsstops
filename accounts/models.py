@@ -42,3 +42,8 @@ class UserProfiles(models.Model):
         super(UserProfiles, self).save(*args, **kwargs)
         self.token = self.random_key()
         super(UserProfiles, self).save(*args, ** kwargs)
+
+
+
+class RegistratedDevice(models.Model):
+    user = models.ForeignKey
