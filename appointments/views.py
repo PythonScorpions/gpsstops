@@ -122,17 +122,7 @@ class TaskEventView(View):
         else:
             form = DateForm(request.GET)
             if form.is_valid():
-                curdt = task.due_date
-                newdt = datetime.datetime(
-                        form.cleaned_data['date'].year,
-                        form.cleaned_data['date'].month,
-                        form.cleaned_data['date'].day,
-                        curdt.hour,
-                        curdt.minute,
-                        curdt.second
-                    )
-
-                task.due_date = newdt
+                task.due_date = form.cleaned_data['date']
                 task.save()
                 return HttpResponse('success')
         return HttpResponseServerError('object not found')

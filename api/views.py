@@ -22,7 +22,7 @@ from rest_framework.permissions import IsAuthenticated
 from appointments.models import *
 from maps.models import *
 from api.serializers import *
-from accounts.models import UserProfiles
+from accounts.models import *
 
 from datetime import timedelta
 import string, random, datetime
@@ -134,7 +134,7 @@ class ObtainAuthToken(APIView):
     renderer_classes = (renderers.JSONRenderer,)
 
     def post(self, request):
-        print "o"
+        # print "o"
         try:
             serializer = AuthTokenSerializer(data=request.data)
             serializer.is_valid()
@@ -147,6 +147,12 @@ class ObtainAuthToken(APIView):
             if not user.is_active:
                 return Response({'code': 0, 'status': 200, 'Data': 'Null',
                                  'message': 'Please verify your email'})
+
+            RegistratedDevice.objects.get_or_create(
+                user=user,
+                device_token=serializer.validated_data('device_token'),
+                device_type=serializer.validated_data('device_type'),
+            )
             return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
                              'message': 'User is Logged In'})
         except:
@@ -170,6 +176,23 @@ class CurrentUser(APIView):
             return Response({'code': 1, 'status': 200, 'Data': final_data, 'message': 'current user details'})
         except:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+
+
+class LogoutUser(APIView):
+
+    def get(self, request, *args, **kwargs):
+        user_id = self.kwargs['pk']
+        devie_token = self.request.GET.get('device_token', None)
+        try:
+            user = User.objects.get(id=int(user_id))
+            RegistratedDevice.objects.get(
+                user=user,
+                device_token=serializer.validated_data('device_token')
+            ).delete()
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+        else:
+            return Response({'code': 1, 'status': 200, 'message': 'Logged out successfully'})
 
 
 class CountryList(APIView):
@@ -614,6 +637,13 @@ class ContactViewSet(viewsets.ModelViewSet):
             user = form.cleaned_data.get('user',0)
             return Contacts.objects.filter(user__id=user)
         return Contacts.objects.none()
+
+    def list(self, request):
+        response = super(ContactViewSet, self).list(request)
+        queryset = self.get_queryset()
+        for i in range(queryset.count()):
+            response.data[i]['group_name'] = queryset[i].group.name
+        return response
 
     def dispatch(self, request, *args, **kwargs):
         super(ContactViewSet, self).dispatch(request, *args, **kwargs)

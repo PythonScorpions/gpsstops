@@ -46,4 +46,6 @@ class UserProfiles(models.Model):
 
 
 class RegistratedDevice(models.Model):
-    user = models.ForeignKey
+    user = models.ForeignKey(User)
+    device_token = models.CharField(max_length=300)
+    device_type = models.CharField(max_length=100)
