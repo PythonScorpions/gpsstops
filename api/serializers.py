@@ -27,6 +27,30 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class AuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            # print "fkk"
+            user = authenticate(username=username, password=password)
+
+            if not user:
+                # print "jfdjk"
+                msg = _('Unable to log in with provided credentials.')
+                raise exceptions.ValidationError(msg)
+        else:
+            msg = _('Must include "username" and "password"')
+            raise exceptions.ValidationError(msg)
+
+        attrs['user'] = user
+        return attrs
+
+
+class DeviceTokenSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
     device_token = serializers.CharField()
     device_type = serializers.CharField()
 

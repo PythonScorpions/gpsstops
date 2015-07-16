@@ -25,7 +25,7 @@ from api.serializers import *
 from accounts.models import *
 
 from datetime import timedelta
-import string, random, datetime
+import string, random, datetime, sys
 
 
 for user in User.objects.all():
@@ -148,15 +148,49 @@ class ObtainAuthToken(APIView):
                 return Response({'code': 0, 'status': 200, 'Data': 'Null',
                                  'message': 'Please verify your email'})
 
-            RegistratedDevice.objects.get_or_create(
-                user=user,
-                device_token=serializer.validated_data('device_token'),
-                device_type=serializer.validated_data('device_type'),
-            )
             return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
                              'message': 'User is Logged In'})
         except:
             return Response({'code': 0, 'status': 200, 'Data': 'Null',
+                             'message': 'Wrong Credentials'})
+
+
+
+class GetAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+
+    def post(self, request):
+        serializer = DeviceTokenSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+
+            try:
+                profile_data = UserProfiles.objects.get(user=user).admin_status
+            except:
+                print sys.exc_info()
+            else:
+                if profile_data == 'disabled':
+                    return Response({'code': 0, 'status': 200, 'Data': 'Null',
+                                     'message': 'User has been disabled by admin'})
+
+                if not user.is_active:
+                    return Response({'code': 0, 'status': 200, 'Data': 'Null',
+                                     'message': 'Please verify your email'})
+
+                RegistratedDevice.objects.get_or_create(
+                    user=user,
+                    device_token=serializer.validated_data['device_token'],
+                    device_type=serializer.validated_data['device_type'],
+                )
+                return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
+                                 'message': 'User is Logged In'})
+
+        return Response({'code': 0, 'status': 200, 'Data': 'Null',
                              'message': 'Wrong Credentials'})
 
 
@@ -180,17 +214,20 @@ class CurrentUser(APIView):
 
 class LogoutUser(APIView):
 
-    def get(self, request, *args, **kwargs):
-        user_id = self.kwargs['pk']
-        devie_token = self.request.GET.get('device_token', None)
+    def post(self, request, *args, **kwargs):
+        user_id = self.request.POST.get('user', None)
+        device_token = self.request.POST.get('device_token', None)
         try:
             user = User.objects.get(id=int(user_id))
-            RegistratedDevice.objects.get(
-                user=user,
-                device_token=serializer.validated_data('device_token')
-            ).delete()
         except:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+
+        try:
+            RegistratedDevice.objects \
+            .get(user=user, device_token=device_token) \
+            .delete()
+        except:
+            return Response({'code': 0, 'status': 200, 'message': 'Device token doesn\'t exist'})
         else:
             return Response({'code': 1, 'status': 200, 'message': 'Logged out successfully'})
 
