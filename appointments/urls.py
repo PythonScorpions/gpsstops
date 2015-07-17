@@ -13,4 +13,12 @@ urlpatterns = patterns('',
 
     url(r'^task/create/$', task_view),
     url(r'^task/(?P<pk>\d+)/$', task_view),
+
+    url(r'^contact_group/$', contactgroup_list_view),
+    url(r'^contact_group/create/$', contactgroup_view),
+    url(r'^contact_group/(?P<pk>\d+)/$', contactgroup_view),
+
+    url(r'^contact/$', contact_list_view),
+    url(r'^contact/create/$', contact_view),
+    url(r'^contact/(?P<pk>\d+)/$', contact_view)
 )

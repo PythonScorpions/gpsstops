@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+<div class="appointmentBlock">
+    <h4>Contact</h4>
+    <div class="form appointmentForm">
+      <form method="post" name="appointmentForm">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="field-row">
+            <label>{{ field.label }}</label>
+            <div class="field">
+            {{ field }}
+            {% if field.errors %}{{ field.errors }}{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <div class="field-row">
+            <input type="submit" />
+        </div>
+      </form>
+    </div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/appointments.js"></script>
+{% endblock content %}

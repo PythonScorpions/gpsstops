@@ -56,6 +56,9 @@ class ContactGroup(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Contacts(models.Model):
     user = models.ForeignKey(User)

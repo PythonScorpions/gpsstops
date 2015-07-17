@@ -127,3 +127,93 @@ class TaskEventView(View):
                 return HttpResponse('success')
         return HttpResponseServerError('object not found')
 task_event_view = TaskEventView.as_view()
+
+
+class ContactGroupListView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        groups = ContactGroup.objects.filter(user=request.user)
+        return render(request, "contact/group_list.html", {'groups':groups})
+contactgroup_list_view = ContactGroupListView.as_view()
+
+
+class ContactGroupView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        contact_group = None
+        try:
+            contact_group = ContactGroup.objects.get(id=pk)
+        except:
+            redirect('/appointments/contact_group/create/')
+
+        if contact_group:
+            form = ContactGroupForm(instance=contact_group)
+        else:
+            form = ContactGroupForm()
+
+        return render(request, "contact/group.html", {'form':form})
+
+    def post(self, request, pk=None, *args, **kwargs):
+        contact_group = None
+        try:
+            contact_group = ContactGroup.objects.get(id=pk)
+        except:
+            redirect('/appointments/contact_group/create/')
+
+        if contact_group:
+            form = ContactGroupForm(request.POST, instance=contact_group)
+        else:
+            form = ContactGroupForm(request.POST)
+
+        if form.is_valid():
+            form.instance.user = request.user
+            form.save()
+            # return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
+            return redirect("/appointments/contact_group/")
+        else:
+            print form.errors
+            return render(request, "contact/group.html", {'form':form})
+contactgroup_view = ContactGroupView.as_view()
+
+
+class ContactListView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        contacts = Contacts.objects.filter(user=request.user)
+        return render(request, "contact/contact_list.html", {'contacts':contacts})
+contact_list_view = ContactListView.as_view()
+
+
+class ContactView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        contact = None
+        try:
+            contact = Contacts.objects.get(id=pk)
+        except:
+            redirect('/appointments/contact/create/')
+
+        if contact:
+            form = ContactForm(instance=contact_group)
+        else:
+            form = ContactForm()
+
+        return render(request, "contact/contact.html", {'form':form})
+
+    def post(self, request, pk=None, *args, **kwargs):
+        contact = None
+        try:
+            contact = Contacts.objects.get(id=pk)
+        except:
+            redirect('/appointments/contact/create/')
+
+        if contact:
+            form = ContactForm(request.POST, instance=contact)
+        else:
+            form = ContactForm(request.POST)
+
+        if form.is_valid():
+            form.instance.user = request.user
+            form.save()
+            # return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
+            return redirect("/appointments/contact/")
+        else:
+            print form.errors
+            return render(request, "contact/contact.html", {'form':form})
+contact_view = ContactView.as_view()

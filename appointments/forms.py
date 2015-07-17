@@ -22,3 +22,14 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         exclude = ('user',)
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contacts
+        exclude = ('user','latitude','longitude')
+
+class ContactGroupForm(forms.ModelForm):
+    class Meta:
+        model = ContactGroup
+        exclude = ('user',)
