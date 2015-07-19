@@ -24,7 +24,6 @@
                     </ul>
 
                     <div class="page-header">
-
                         <div class="pull-right form-inline">
                             <div class="btn-group">
                                 <button class="btn btn-primary" data-calendar-nav="prev"><< Prev</button>
@@ -36,6 +35,17 @@
                                 <button class="btn btn-warning active" data-calendar-view="month">Month</button>
                                 <button class="btn btn-warning" data-calendar-view="week">Week</button>
                                 <button class="btn btn-warning" data-calendar-view="day">Day</button>
+                            </div>
+                        </div>
+                        <div class="pull-right form-inline actions">
+                            <div class="btn-group">
+                                <a class="btn btn-warning" href="/route/add/">
+                                    <span class="glyphicon glyphicon-map-marker"></span>Create Route</a>
+                                <a class="btn btn-warning" href="{% url 'create_appointment' %}">
+                                    <span class="event event-success"></span>Create Appointments</a>
+                                <a class="btn btn-warning" href="{% url 'create_task' %}">
+                                    <span class="event event-warning"></span>Create Task</a>
+                                <button class="btn btn-warning" data-calendar-view="day">Agenda</button>
                             </div>
                         </div>
 

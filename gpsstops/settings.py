@@ -165,6 +165,10 @@ TEMPLATE_DIRS = (
 )
 
 
+CERT_FILE = BASE_DIR + '/certs/gpsstops_cer.pem'
+KEY_FILE = BASE_DIR + '/certs/agpsstops_key1.pem'
+DEV_CERT_FILE = BASE_DIR + '/certs/gpsstops-dev.pem'
+
 
 # SwampDragon settings
 SWAMP_DRAGON_CONNECTION = ('swampdragon_notifications.notification_connection.Connection', '/data')
@@ -188,7 +192,7 @@ SWAMP_DRAGON_NOTIFICATIONS = {
 }
 
 SWAMP_DRAGON_HEARTBEAT_ENABLED = True
-SWAMP_DRAGON_HEARTBEAT_FREQUENCY = 1000 * 60 * 1  # Five minutes
+SWAMP_DRAGON_HEARTBEAT_FREQUENCY = 1000 * 30  # Five minutes
 
 
 

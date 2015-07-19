@@ -1,9 +1,11 @@
 <span id="cal-slide-tick" style="display: none"></span>
 <div id="cal-slide-content" class="cal-event-list">
     <div class="actions">
+        <a href="/appointments/create/" class="create-appointments">Create Route</a>
         <a href="/appointments/create/" class="create-appointments">Create Appointment</a>
         <a href="/appointments/task/create/" class="create-task">Create Task</a>
     </div>
+    <h5 class="routelist">Routes</h5>
     <ul class="unstyled list-unstyled">
         <% _.each(events, function(event) { %>
             <% if (event.route) { %>
@@ -13,7 +15,7 @@
                     Title - <%= event.trip_title %>&nbsp;&nbsp;Route Info -
                     <%= event.title %>&nbsp;&nbsp;
                     Distance - <%= event.distance %> Miles&nbsp;&nbsp;
-                Total Time - <%= event.time %>&nbsp;&nbsp; <a style="color:royalblue; font-size: 17px;" href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
+                Total Time - <%= event.time %>&nbsp;&nbsp; <a style="color:royalblue;" href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
                     data-event-class="<%= event['class'] %>" class="event-item"> &nbsp;&nbsp;Show on Map</a>
             </li>
             <% } %>

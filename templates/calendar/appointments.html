@@ -2,73 +2,78 @@
 
 {% block content %}
 {% include 'logo_account.html' %}
-<div class="appointmentBlock">
-    <h4>Appointment</h4>
-    <div class="form appointmentForm">
-      <form method="post" name="appointmentForm" action="/appointments/create/">
-        {% csrf_token %}
-        <input type="hidden" name="latitude" value=""/>
-        <input type="hidden" name="longitude" value=""/>
-        <input type="hidden" name="location" value=""/>
-        <input type="hidden" name="repeat_days" value="0"/>
-        <div class="field-row">
-            <label>Title</label>
-            <div class="field">
-            {{ form.title }}
-            {% if form.title.errors %}{{ form.title.errors }}{% endif %}
+<div class="appointmentBlock row">
+    <div class="wrapper panel panel-default .col-lg">
+        <h4 class="panel-heading">Appointment</h4>
+        <div class="form appointmentForm panel-body">
+          <form method="post" name="appointmentForm" action="/appointments/create/">
+            {% csrf_token %}
+            <input type="hidden" name="latitude" value=""/>
+            <input type="hidden" name="longitude" value=""/>
+            <input type="hidden" name="location" value=""/>
+            <input type="hidden" name="repeat_days" value="0"/>
+            <div class="field-row">
+                <label>Title</label>
+                <div class="field">
+                {{ form.title }}
+                {% if form.title.errors %}{{ form.title.errors }}{% endif %}
+                </div>
             </div>
-        </div>
-        <div class="field-row">
-            <label>Date</label>
-            <div class="field">
-            {{ form.start_datetime }}
-            {% if form.start_datetime.errors %}{{ form.start_datetime.errors }}{% endif %}
+            <div class="field-row">
+                <label>Date</label>
+                <div class="field">
+                {{ form.start_datetime }}
+                {% if form.start_datetime.errors %}{{ form.start_datetime.errors }}{% endif %}
+                </div>
             </div>
-        </div>
-        <div class="field-row">
-            <label>Timezone</label>
-            <div class="field">
-            {{ form.timezone }}
-            {% if form.timezone.errors %}{{ form.timezone.errors }}{% endif %}
+            <div class="field-row">
+                <label>Timezone</label>
+                <div class="field">
+                {{ form.timezone }}
+                {% if form.timezone.errors %}{{ form.timezone.errors }}{% endif %}
+                </div>
             </div>
-        </div>
-        <div class="field-row">
-            <label>Where</label>
-            <div class="field">
-            {{ form.where }}
-            {% if form.where.errors %}{{ form.where.errors }}{% endif %}
+            <div class="field-row">
+                <label>Where</label>
+                <div class="field">
+                {{ form.where }}
+                {% if form.where.errors %}{{ form.where.errors }}{% endif %}
+                </div>
             </div>
-        </div>
-        <div class="field-row">
-            {{ form.all_day }}<label>All Day</label>
-            <span class="sep"></span>
-            {{ form.repeat }}<label>Repeat</label>
-        </div>
-        <div class="field-row">
-            <label>Description</label>
-            <div class="field">
-            {{ form.description }}
-            {% if form.description.errors %}{{ form.description.errors }}{% endif %}
+            <div class="field-row">
+                {{ form.all_day }}<label>All Day</label>
+                <span class="sep"></span>
+                {{ form.repeat }}<label>Repeat</label>
             </div>
+            <div class="field-row">
+                <label>Description</label>
+                <div class="field">
+                {{ form.description }}
+                {% if form.description.errors %}{{ form.description.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>Notification Required</label>
+                {{ form.notification_required }}
+            </div>
+            <div class="field-row">
+                <label>Notification Time</label>
+                {{ form.notification_time }}
+            </div>
+            <div class="field-row">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <!-- <button type="button" type="submit" class="btn btn-primary">Add</button>
+                -->
+                <input type="submit" />
+            </div>
+          </form>
         </div>
-        <div class="field-row">
-            <label>Notification Required</label>
-            {{ form.notification_required }}
-        </div>
-        <div class="field-row">
-            <label>Notification Time</label>
-            {{ form.notification_time }}
-        </div>
-        <div class="field-row">
-            <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-            <!-- <button type="button" type="submit" class="btn btn-primary">Add</button>
-            -->
-            <input type="submit" />
-        </div>
-      </form>
     </div>
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/appointments.js"></script>
+<script type="text/javascript">
+
+</script>
 {% endblock content %}
