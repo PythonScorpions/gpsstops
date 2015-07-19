@@ -3,9 +3,9 @@
 {% block content %}
 {% include 'logo_account.html' %}
 <div class="appointmentBlock list">
-    <div class="wrapper">
-        <h4>Contact Group <a href="/appointments/contact/create/">Add</a></h4>
-        <div class="listBlock">
+    <div class="wrapper panel panel-default">
+        <h4 class="panel-heading">Contact <a href="/appointments/contact/create/" class="btn btn-primary">Add</a></h4>
+        <div class="listBlock panel-body">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
@@ -35,7 +35,10 @@
                         <td>{{ contact.email1 }}</td>
                         <td>{{ contact.email2 }}</td>
                         <td>{{ contact.group }}</td>
-                        <td><a href="/appointments/contact/{{ group.id }}/">Edit</a></td>
+                        <td>
+                            <a href="/appointments/contact/{{ contact.id }}/">Edit</a>
+                            <a href="/appointments/contact/{{ contact.id }}/delete/">Delete</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -1094,10 +1094,11 @@ text-align:center;
 .appointmentBlock {
 	border-top: 1px solid #24a9e1;
     padding: 2em;
+    margin: 1em;
 }
 .appointmentBlock .wrapper {
-	margin: 0 auto;
-	width: 60%;
+	/* margin: 0 auto; */
+	padding: 0;
 }
 .appointmentBlock .wrapper .panel-body {
 	padding: 1em;
@@ -1120,6 +1121,43 @@ text-align:center;
 }
 .appointmentForm input[type=checkbox] {
     margin-right: 0.5em;
+}
+.appointmentForm .actions {
+	text-align: center;
+}
+.appointmentForm input[type=submit] {
+    display: inline-block;
+    width: auto;
+    margin: 1em auto 0;
+}
+
+.panel .panel-heading {
+	font-size: 1em;
+}
+.panel .panel-heading .btn {
+    float: right;
+    font-size: 0.8em;
+    margin-top: -6px;
+    margin-right: -10px;
+}
+
+.appointmentBlock.list .panel-body table {
+    table-layout: fixed;
+    font-size: 0.9em;
+}
+.appointmentBlock.list .panel-body table thead tr th:first-child,
+.appointmentBlock.list .panel-body table tbody tr td:first-child {
+	width:50px;
+}
+.appointmentBlock.list .panel-body table tbody tr td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.appointmentBlock.list .panel-body table tbody tr td:last-child a:first-child:after {
+	content:" \00B7";
+	color:#000;
+	font-size: 1em;
 }
 
 /*.events-list-appointments {}

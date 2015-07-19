@@ -3,9 +3,9 @@
 {% block content %}
 {% include 'logo_account.html' %}
 <div class="appointmentBlock">
-    <div class="wrapper">
-        <h4>Contact</h4>
-        <div class="form appointmentForm">
+    <div class="wrapper panel panel-default col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+        <h4 class="panel-heading">Contact</h4>
+        <div class="form appointmentForm panel-body">
           <form method="post" name="appointmentForm">
             {% csrf_token %}
             {% for field in form %}
@@ -17,7 +17,7 @@
                 </div>
             </div>
             {% endfor %}
-            <div class="field-row">
+            <div class="field-row actions">
                 <input type="submit" />
             </div>
           </form>
@@ -27,4 +27,11 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/appointments.js"></script>
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
 {% endblock content %}

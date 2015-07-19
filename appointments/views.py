@@ -190,7 +190,7 @@ class ContactView(View):
             redirect('/appointments/contact/create/')
 
         if contact:
-            form = ContactForm(instance=contact_group)
+            form = ContactForm(instance=contact)
         else:
             form = ContactForm()
 

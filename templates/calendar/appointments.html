@@ -3,7 +3,7 @@
 {% block content %}
 {% include 'logo_account.html' %}
 <div class="appointmentBlock row">
-    <div class="wrapper panel panel-default .col-lg">
+    <div class="wrapper panel panel-default col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
         <h4 class="panel-heading">Appointment</h4>
         <div class="form appointmentForm panel-body">
           <form method="post" name="appointmentForm" action="/appointments/create/">
@@ -60,7 +60,7 @@
                 <label>Notification Time</label>
                 {{ form.notification_time }}
             </div>
-            <div class="field-row">
+            <div class="field-row actions">
                 <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                 <!-- <button type="button" type="submit" class="btn btn-primary">Add</button>
                 -->
@@ -74,6 +74,10 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/appointments.js"></script>
 <script type="text/javascript">
-
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
 </script>
 {% endblock content %}
