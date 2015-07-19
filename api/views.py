@@ -487,7 +487,10 @@ class Events(APIView):
                 add_hour = int(rou.total_time[:1])
             else:
                 add_hour = int(rou.total_time[:2])
-            add_minute = int(rou.total_time[7:9])
+            if rou.total_time[7:9]:
+                add_minute = int(rou.total_time[7:9])
+            else:
+                add_minute = 0
             add_time = rou.trip_datetime + timedelta(minutes=add_minute, hours=add_hour)
             temp['end'] = str((int(add_time.strftime("%s")) * 1000)-19800000)
             temp['route'] = 'true'
