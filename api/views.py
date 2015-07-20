@@ -463,8 +463,8 @@ class Events(APIView):
     def get(self, request, *args, **kwargs):
         user_id = request.user.id
         events = []
-        routes = Route.objects.filter(user__id=user_id)
 
+        routes = Route.objects.filter(user__id=user_id)
         for idx, rou in enumerate(routes):
             temp = dict()
             temp['id'] = str(rou.id)
@@ -517,6 +517,7 @@ class Events(APIView):
             temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
             temp['task'] = 'true'
             events.append(temp)
+
         return Response({'success': 1, 'result': events})
 
 

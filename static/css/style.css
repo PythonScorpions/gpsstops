@@ -1095,6 +1095,7 @@ text-align:center;
 	border-top: 1px solid #24a9e1;
     padding: 2em;
     margin: 1em;
+    min-height: 71vh;
 }
 .appointmentBlock .wrapper {
 	/* margin: 0 auto; */
@@ -1159,6 +1160,26 @@ text-align:center;
 	color:#000;
 	font-size: 1em;
 }
+
+.agendalist {}
+.agendalist h4 {
+    font-size: 0.8em;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: .6em;
+    padding-bottom: .6em;
+}
+.agendalist .agenda_list {}
+.agendalist .agenda_list .item {}
+.agendalist .agenda_list .item .date {
+    display: inline-block;
+}
+.agendalist .agenda_list .item .title {
+    display: inline-block;
+    float: none;
+    border-bottom: none;
+    width: auto;
+}
+
 
 /*.events-list-appointments {}
 .events-list-appointments a {

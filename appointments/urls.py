@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^task/(?P<pk>\d+)/$', task_view, name='edit_task'),
     url(r'^event/task/(?P<pk>\d+)/move/$', task_event_view, name='move_task'),
 
+    url(r'^agenda/$', agenda_view, name='get_agendas'),
+
     url(r'^contact_group/$', contactgroup_list_view, name='list_contact_group'),
     url(r'^contact_group/create/$', contactgroup_view, name='create_contact_group'),
     url(r'^contact_group/(?P<pk>\d+)/$', contactgroup_view, name='edit_contact_group'),

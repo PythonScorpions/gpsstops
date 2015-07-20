@@ -209,11 +209,30 @@ class ContactView(View):
             form = ContactForm(request.POST)
 
         if form.is_valid():
-            form.instance.user = request.user
-            form.save()
+            if request.GET.get('delete', None) == "true" and contact != None:
+                contact.delete()
+            else:
+                form.instance.user = request.user
+                form.save()
             # return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
             return redirect("/appointments/contact/")
         else:
             print form.errors
             return render(request, "contact/contact.html", {'form':form})
 contact_view = ContactView.as_view()
+
+
+class AgendaView(View):
+    def get(self, request, *args, **kwargs):
+        agenda = {'appointments':[], 'tasks':[]}
+
+        agenda['appointments'] = Appointments.objects \
+                                .filter(user=request.user) \
+                                .filter(start_datetime__gt=datetime.date.today())
+
+        agenda['tasks'] = Task.objects \
+                          .filter(user=request.user) \
+                          .filter(due_date__gt=datetime.date.today())
+        return render(request, "calendar/agenda.html", {'agenda':agenda})
+agenda_view = AgendaView.as_view()
+
