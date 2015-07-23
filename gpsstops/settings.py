@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': 'bennyapp_django',
         'USER': 'bennyapp',
         'PASSWORD': '2~Pdo4c1',
-        'HOST': 'mysql.server',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
