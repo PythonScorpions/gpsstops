@@ -89,27 +89,27 @@ WSGI_APPLICATION = 'gpsstops.wsgi.application'
 # }
 
 # For new server
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'bennyapp_django',
-#         'USER': 'bennyapp',
-#         'PASSWORD': '2~Pdo4c1',
-#         'HOST': 'mysql.server',
-#         'PORT': '3306',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'bennyapp.sqlite3',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bennyapp_django',
+        'USER': 'bennyapp',
+        'PASSWORD': '2~Pdo4c1',
+        'HOST': 'mysql.server',
+        'PORT': '3306',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'bennyapp.sqlite3',
+#         'USER': '',
+#         'PASSWORD': '',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }
 
 # For Local Server
 # DATABASES = {
