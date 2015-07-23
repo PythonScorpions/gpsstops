@@ -170,7 +170,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
                     'notification_time')
 
     def create(self, validated_data):
-         appointments = Appointments.objects.create(
+        appointments = Appointments.objects.create(
             user=validated_data['user'],
             title=validated_data['title'],
             start_datetime=validated_data['start_datetime'],
@@ -183,8 +183,8 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             description=validated_data['description'],
             notification_time=validated_data['notification_time'],
             notification_required=validated_data['notification_required']
-         )
-         return appointments
+        )
+        return appointments
 
 
 
