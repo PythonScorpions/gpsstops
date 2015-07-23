@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'wp_jd0y3d+9_=(+ccf(gqz3uigk)sar6(mwclm@xr5*9#)o6#_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
@@ -44,6 +44,10 @@ INSTALLED_APPS = (
     'swampdragon',
     'swampdragon_auth',
     'swampdragon_notifications',
+
+    'push_notifications',
+
+    'django_cron',
 
     'maps',
     'appointments',
@@ -187,6 +191,9 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "GCM_API_KEY": "<your api key>"
+}
 
 CERT_FILE = BASE_DIR + '/certs/gpsstops_cer.pem'
 KEY_FILE = BASE_DIR + '/certs/agpsstops_key1.pem'
@@ -217,7 +224,9 @@ SWAMP_DRAGON_NOTIFICATIONS = {
 SWAMP_DRAGON_HEARTBEAT_ENABLED = True
 SWAMP_DRAGON_HEARTBEAT_FREQUENCY = 1000 * 30  # Five minutes
 
-
+CRON_CLASSES = [
+    "appointments.cron.NotificationsCronJob",
+]
 
 try:
     from local_settings import *

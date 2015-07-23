@@ -73,6 +73,14 @@ class EventView(View):
 
                 appointment.start_datetime = newdt
                 appointment.save()
+
+                try:
+                    notificaion = AppointmentNotification(appointment=appointment)
+                except:
+                    pass
+                else:
+                    notificaion.flag = False
+                    notificaion.save()
                 return HttpResponse('success')
         return HttpResponseServerError('object not found')
 event_view = EventView.as_view()
@@ -124,6 +132,14 @@ class TaskEventView(View):
             if form.is_valid():
                 task.due_date = form.cleaned_data['date']
                 task.save()
+
+                try:
+                    notificaion = TaskNotification(appointment=appointment)
+                except:
+                    pass
+                else:
+                    notificaion.flag = False
+                    notificaion.save()
                 return HttpResponse('success')
         return HttpResponseServerError('object not found')
 task_event_view = TaskEventView.as_view()

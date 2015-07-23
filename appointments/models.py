@@ -79,3 +79,16 @@ class Contacts(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
+
+
+class AppointmentNotification(models.Model):
+    appointment = models.ForeignKey(Appointments)
+    created_on = models.DateTimeField(auto_now_add=True)
+    flag = models.BooleanField(default=False)
+
+
+class TaskNotification(models.Model):
+    task = models.ForeignKey(Task)
+    created_on = models.DateTimeField(auto_now_add=True)
+    flag = models.BooleanField(default=False)
+
