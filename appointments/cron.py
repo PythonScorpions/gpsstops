@@ -49,7 +49,7 @@ class NotificationsCronJob(CronJobBase):
             print "Android Notification Error. %s", reg_token
             print sys.exc_info()
 
-    def _check_date(date_to_be_checked, given_timezone):
+    def _check_date(self, date_to_be_checked, given_timezone):
         cur_date = datetime.datetime.now(pytz.timezone(given_timezone)).date()
         if date_to_be_checked == cur_date:
             return True
