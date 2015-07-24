@@ -62,6 +62,7 @@ class CreateUser(APIView):
                           fail_silently=False)
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
+                print sys.exc_info()
                 try:
                     user_data.delete()
                     return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
