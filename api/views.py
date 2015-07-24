@@ -58,8 +58,8 @@ class CreateUser(APIView):
                 user_profile_data.save()
                 message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
-                send_mail('Verification Link', message, 'pparekh9999@gmail.com', [str(user_data.email)],
-                          fail_silently=False)
+                # send_mail('Verification Link', message, 'pparekh9999@gmail.com', [str(user_data.email)],
+                #           fail_silently=False)
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
                 print sys.exc_info()
