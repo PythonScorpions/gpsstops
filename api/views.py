@@ -574,12 +574,11 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
 
             appointments = Appointments.objects.filter(user__id=user)
             if date and self.request.method == 'GET':
-                appointments = appointments.filter(
-                                    user__id=user,
-                                    start_datetime__day=date.day,
-                                    start_datetime__month=date.month,
-                                    start_datetime__year=date.year,
-                                )
+                date_min = datetime.datetime.combine(date, datetime.time.min)
+                date_max = datetime.datetime.combine(date, datetime.time.max)
+                appointments = appointments \
+                                .filter(user__id=user) \
+                                .filter(start_datetime__range=(date_min, date_max))
             return appointments
         return Appointments.objects.none()
 
