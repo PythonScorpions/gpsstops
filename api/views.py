@@ -570,10 +570,12 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
         if form.is_valid():
             user = form.cleaned_data.get('user',0)
             date = form.cleaned_data.get('date', None)
+            print date
 
             appointments = Appointments.objects.filter(user__id=user)
             if date and self.request.method == 'GET':
                 appointments = appointments.filter(
+                                    user__id=user,
                                     start_datetime__day=date.day,
                                     start_datetime__month=date.month,
                                     start_datetime__year=date.year,
