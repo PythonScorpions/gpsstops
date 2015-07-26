@@ -58,7 +58,7 @@ class CreateUser(APIView):
                 user_profile_data.admin_status = 'enable'
                 user_profile_data.save()
 
-                url = '%s/verification/%s' % (settings.SERVER_URL, user_profile_data.token)
+                url = '%s/verification/%s/' % (settings.SERVER_URL, user_profile_data.token)
                 message = 'Please verify your email by clicking on this link %s' % (url,)
 
                 send_mail('Verification Link', message, settings.EMAIL_HOST_USER,
