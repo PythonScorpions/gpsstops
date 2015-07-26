@@ -230,6 +230,8 @@ CRON_CLASSES = [
     "appointments.cron.NotificationsCronJob",
 ]
 
+SERVER_URL = 'http://bennyapp.com'
+
 try:
     from local_settings import *
 except:

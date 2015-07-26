@@ -9,6 +9,7 @@ from django.shortcuts import render_to_response, redirect, render
 from django.template import loader, RequestContext, Context
 from django.views.generic import TemplateView, UpdateView, View
 from django.utils.decorators import method_decorator
+from django.conf import settings
 
 from accounts.forms import *
 from maps.models import *
@@ -48,13 +49,14 @@ def register(request):
         if form.is_valid():
             user = form.save()
             request.session['token'] = user.token
-            message = 'http://gpsstops.pythonanywhere.com/verification/'+user.token
+            message = settings.SERVER_URL + '/verification/' + user.token
             print user.user.email
 
             t = loader.get_template('verification.txt')
             c = Context({'varification_link': message})
-            send_mail('Welcome to gpsstops.com', t.render(c), 'pparekh9999@gmail.com', [str(user.user.email)],
-                      fail_silently=False)
+            send_mail('Welcome to gpsstops.com', t.render(c),
+                settings.EMAIL_HOST_USER, [str(user.user.email)],
+                fail_silently=False)
             print "yes sent"
             return redirect('email-sent')
         else:
