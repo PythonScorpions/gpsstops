@@ -49,7 +49,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             request.session['token'] = user.token
-            message = settings.SERVER_URL + '/verification/' + user.token
+            message = '%s/verification/%s/' % (settings.SERVER_URL, user.token)
             print user.user.email
 
             t = loader.get_template('verification.txt')
