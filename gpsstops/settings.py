@@ -169,8 +169,8 @@ REST_FRAMEWORK = {
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pparekh9999@gmail.com'
-EMAIL_HOST_PASSWORD = 'pawan99(('
+EMAIL_HOST_USER = 'bennyappservice@gmail.com'
+EMAIL_HOST_PASSWORD = 'benny@1234'
 EMAIL_PORT = 587
 
 
@@ -194,7 +194,7 @@ TEMPLATE_DIRS = (
 )
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-    "GCM_API_KEY": "<your api key>"
+    "GCM_API_KEY": "AIzaSyBTA_HmUCfTNxR_ugDTtubDJ8DG6rgspI0"
 }
 
 CERT_FILE = BASE_DIR + '/certs/gpsstops_cer.pem'

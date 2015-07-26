@@ -46,7 +46,7 @@ def register(request):
         print "yo"
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
+            user = form.save()
             request.session['token'] = user.token
             message = 'http://gpsstops.pythonanywhere.com/verification/'+user.token
             print user.user.email
@@ -56,12 +56,13 @@ def register(request):
             send_mail('Welcome to gpsstops.com', t.render(c), 'pparekh9999@gmail.com', [str(user.user.email)],
                       fail_silently=False)
             print "yes sent"
-            form.save(commit=True)
             return redirect('email-sent')
         else:
             print "errors", form.errors
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request),)
 
+# from django.core.mail import send_mail
+# send_mail('Welcome to gpsstops.com', 'Test Message', 'pparekh9999@gmail.com', ['mailprathamesh27@gmail.com'], fail_silently=False)
 
 class EmailSent(TemplateView):
     template_name = 'email_sent.html'
