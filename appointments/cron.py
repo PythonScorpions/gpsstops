@@ -22,7 +22,7 @@ class NotificationsCronJob(CronJobBase):
 
     def do(self):
         try:
-            print "reached....", datetime.datetime.now()
+            print "reached....%s IST" % datetime.datetime.now(pytz.timezone('Asia/Calcutta'))
             self._send_appointments_notifications()
             self._send_tasks_notifications()
         except:
@@ -49,8 +49,9 @@ class NotificationsCronJob(CronJobBase):
             print "Android Notification Error. %s", reg_token
             print sys.exc_info()
 
-    def _check_date(self, date_to_be_checked, given_timezone):
+    def _check_date(self, date_to_be_checked, given_timezone, notification_time):
         cur_date = datetime.datetime.now(pytz.timezone(given_timezone)).date()
+
         if date_to_be_checked == cur_date:
             return True
         return False
@@ -60,16 +61,22 @@ class NotificationsCronJob(CronJobBase):
         appointments = Appointments.objects \
                         .exclude(appointmentnotification__flag=True)
         for appointment in appointments:
-            print "Sending notification appointment.....", appointment.id, appointment.title
-            if not self._check_date(appointment.start_datetime.date(),
-                        appointment.timezone):
+            print "checking notification appointment.....", appointment.id, appointment.title
+            if not appointment.notification_required:
+                print "....notification not required."
+                continue
+
+            if not self._check_date(
+                        appointment.start_datetime,
+                        appointment.timezone,
+                        appointment.notification_time):
                 continue
 
             try:
                 notification = AppointmentNotification.objects \
                                 .get(appointment=appointment)
             except:
-                pass
+                print sys.exc_info()
             else:
                 if notification.flag:
                     continue
@@ -79,7 +86,7 @@ class NotificationsCronJob(CronJobBase):
                 device = RegistratedDevice.objects \
                             .get(user=appointment.user)
             except:
-                pass
+                print sys.exc_info()
             else:
                 message = "Appointment: %s, %s" % (appointment.title,
                             appointment.start_datetime)
@@ -90,11 +97,10 @@ class NotificationsCronJob(CronJobBase):
                     AppointmentNotification.objects \
                     .create(appointment=appointment, flag=True)
                 elif device.device_type.lower() == 'android':
-                    # self._send_android_notifications(message,
-                    #     device.device_token)
-                    # AppointmentNotification.objects \
-                    # .create(appointment=appointment, flag=True)
-                    pass
+                    self._send_android_notifications(message,
+                        device.device_token)
+                    AppointmentNotification.objects \
+                    .create(appointment=appointment, flag=True)
                 else:
                     print "Device type not found. Device: %s.... Appointment: %s" % (
                         device.device_type, appointment.id)
@@ -104,16 +110,21 @@ class NotificationsCronJob(CronJobBase):
         tasks = Task.objects \
                 .exclude(tasknotification__flag=True)
         for task in tasks:
-            print "Sending notification task.....", task.id, task.title
-            if not self._check_date(appointment.start_datetime.date(),
-                        task.timezone):
+            print "checking notification task.....", task.id, task.title
+            if not task.notification_required:
+                print "....notification not required."
+                continue
+
+            if not self._check_date(
+                        task.due_date,
+                        task.timezone,
+                        task.notification_time):
                 continue
 
             try:
-                notification = TaskNotification.objects \
-                                .get(appointment=appointment)
+                notification = TaskNotification.objects.get(task=task)
             except:
-                pass
+                print sys.exc_info()
             else:
                 if notification.flag:
                     continue
@@ -122,7 +133,7 @@ class NotificationsCronJob(CronJobBase):
             try:
                 device = RegistratedDevice.objects.get(user=task.user)
             except:
-                pass
+                print sys.exc_info()
             else:
                 message = "Task: %s, %s" % (task.title, task.start_datetime)
                 print message
