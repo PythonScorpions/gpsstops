@@ -53,7 +53,10 @@ class NotificationsCronJob(CronJobBase):
         cur_date = datetime.datetime.now(pytz.timezone(given_timezone)).date()
 
         if date_to_be_checked == cur_date:
+            print "Dates matched."
             return True
+
+        print "Dates not matched."
         return False
 
     def _send_appointments_notifications(self):
