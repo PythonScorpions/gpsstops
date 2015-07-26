@@ -101,6 +101,7 @@ class UpdateUser(APIView):
 
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been updated'})
             except:
+                print sys.exc_info()
                 return Response({'code': 0, 'status': 200, 'message': 'All fields are mandatory'})
 
 
