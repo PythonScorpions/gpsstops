@@ -9,6 +9,7 @@ from django.template import loader, RequestContext, Context
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django import forms
+from django.conf import settings
 
 from rest_framework import parsers, renderers, generics, authentication, viewsets
 from rest_framework.authtoken.models import Token
@@ -56,10 +57,12 @@ class CreateUser(APIView):
                 user_profile_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
                 user_profile_data.admin_status = 'enable'
                 user_profile_data.save()
-                message = 'Please verify your email by clicking on this link ' + 'http://gpsstops.pythonanywhere.com/verification/'+user_profile_data.token
 
-                # send_mail('Verification Link', message, 'pparekh9999@gmail.com', [str(user_data.email)],
-                #           fail_silently=False)
+                url = '%s/verification/%s' % (settings.SERVER_URL, user_profile_data.token)
+                message = 'Please verify your email by clicking on this link %s' % (url,)
+
+                send_mail('Verification Link', message, settings.EMAIL_HOST_USER,
+                    [str(user_data.email)], fail_silently=False)
                 return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'User has been created'})
             except:
                 print sys.exc_info()
