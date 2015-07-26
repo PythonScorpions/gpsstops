@@ -61,9 +61,6 @@ def register(request):
             print "errors", form.errors
     return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request),)
 
-# from django.core.mail import send_mail
-# send_mail('Welcome to gpsstops.com', 'Test Message', 'pparekh9999@gmail.com', ['mailprathamesh27@gmail.com'], fail_silently=False)
-
 class EmailSent(TemplateView):
     template_name = 'email_sent.html'
 
