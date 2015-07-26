@@ -46,15 +46,17 @@ def register(request):
         print "yo"
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
             request.session['token'] = user.token
             message = 'http://gpsstops.pythonanywhere.com/verification/'+user.token
             print user.user.email
+
             t = loader.get_template('verification.txt')
             c = Context({'varification_link': message})
             send_mail('Welcome to gpsstops.com', t.render(c), 'pparekh9999@gmail.com', [str(user.user.email)],
                       fail_silently=False)
             print "yes sent"
+            form.save(commit=True)
             return redirect('email-sent')
         else:
             print "errors", form.errors
