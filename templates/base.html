@@ -33,13 +33,10 @@
         {% if user.is_authenticated %}
         <!-- Swamp dragon -->
         {% swampdragon_settings %}
-        <script type="text/javascript" src="{% static 'swampdragon/js/dist/swampdragon.min.js?v=1' %}"></script>
+        <script type="text/javascript" src="{% static 'js/swampdragon/js/dist/swampdragon.min.js?v=1' %}"></script>
 
         <!-- Swamp dragon notifications -->
-        <script type="text/javascript" src="{% static 'js/dist/swampdragon-notifications.js?v=1' %}"></script>
-
-        <!-- App -->
-        <script type="text/javascript" src="{% static 'js/app.js?v=1' %}"></script>
+        <script type="text/javascript" src="{% static 'js/swampdragon/js/dist/swampdragon-notifications.js?v=1' %}"></script>
 
         {% endif %}
     </head>
