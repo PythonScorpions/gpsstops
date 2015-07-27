@@ -108,8 +108,8 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
 
 {% if user.is_authenticated %}
 <!-- App -->
-<script type="text/javascript" src="{% static 'js/notify.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/app.js?v=1' %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/notify.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/app.js"></script>
 
 {% endif %}
 
