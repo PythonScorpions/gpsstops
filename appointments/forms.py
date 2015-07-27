@@ -12,7 +12,7 @@ class AppointmentForm(forms.ModelForm):
 
     class Meta:
         model = Appointments
-        exclude = ('user',)
+        exclude = ('user','location', 'latitude', 'longitude')
 
 
 class TaskForm(forms.ModelForm):
