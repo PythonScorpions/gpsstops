@@ -143,7 +143,7 @@ class NotificationsCronJob(CronJobBase):
             except:
                 print sys.exc_info()
             else:
-                message = "Task: %s, %s" % (task.title, task.start_datetime)
+                message = "Task: %s, %s" % (task.title, task.due_date)
                 print message
                 if device.device_type.lower() == 'ios':
                     self._send_ios_notifications(message,
