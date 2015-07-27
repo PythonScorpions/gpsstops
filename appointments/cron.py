@@ -50,16 +50,19 @@ class NotificationsCronJob(CronJobBase):
             print sys.exc_info()
 
     def _check_date(self, dt_to_be_checked, given_timezone, notification_time):
-        cur_dt = datetime.datetime.now(pytz.timezone(given_timezone))
+        try:
+            cur_dt = datetime.datetime.now(pytz.timezone(given_timezone))
+        except:
+            pass
+        else:
+            cur_dt_in_secs = time.mktime(cur_dt.timetuple())
+            given_dt_in_secs = time.mktime(dt_to_be_checked.timetuple())
 
-        cur_dt_in_secs = time.mktime(cur_dt.timetuple())
-        given_dt_in_secs = time.mktime(dt_to_be_checked.timetuple())
-
-        if (given_dt_in_secs - cur_dt_in_secs) <= (notification_time * 60):
-            print "Dates matched."
-            return True
-
-        print "Dates not matched."
+            if (given_dt_in_secs - cur_dt_in_secs) <= (notification_time * 60):
+                print "Dates matched."
+                return True
+            else:
+                print "Dates not matched."
         return False
 
     def _send_appointments_notifications(self):
@@ -113,8 +116,7 @@ class NotificationsCronJob(CronJobBase):
 
     def _send_tasks_notifications(self):
         ''' Send tasks for all appointments '''
-        tasks = Task.objects \
-                .exclude(tasknotification__flag=True)
+        tasks = Task.objects.exclude(tasknotification__flag=True)
         for task in tasks:
             print "checking notification task.....", task.id, task.title
             if not task.notification_required:
