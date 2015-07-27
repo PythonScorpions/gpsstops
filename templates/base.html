@@ -30,15 +30,25 @@
 
 {#        <link href="{{STATIC_URL}}css/fullcalendar.css" rel="stylesheet" type="text/css" />#}
 
+        {% if user.is_authenticated %}
         <!-- Swamp dragon -->
         {% swampdragon_settings %}
-        <script type="text/javascript" src="{% static 'swampdragon/js/dist/swampdragon.js' %}"></script>
+        <script type="text/javascript" src="{% static 'swampdragon/js/dist/swampdragon.min.js?v=1' %}"></script>
 
         <!-- Swamp dragon notifications -->
-        <script type="text/javascript" src="{% static 'js/dist/swampdragon-notifications.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/dist/swampdragon-notifications.js?v=1' %}"></script>
+
+        <!-- App -->
+        <script type="text/javascript" src="{% static 'js/app.js?v=1' %}"></script>
+
+        {% endif %}
     </head>
 
     <body>
+        {% if user.is_authenticated %}
+        <input name="user_id" value="{{ user.id }}" type="hidden" />
+        {% endif %}
+
         <div class="menu">
             <div class="container">
                 <div class="row">
@@ -107,6 +117,11 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
 }
 </script>
 
+{% if user.is_authenticated %}
+<!-- App -->
+<script type="text/javascript" src="{% static 'js/app.js?v=1' %}"></script>
+
+{% endif %}
 
 </body>
 </html>
