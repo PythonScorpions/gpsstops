@@ -11,7 +11,7 @@ from push_notifications.models import GCMDevice
 from appointments.models import *
 from accounts.models import *
 
-import datetime, pytz, sys
+import datetime, time, pytz, sys
 
 
 class NotificationsCronJob(CronJobBase):
@@ -49,10 +49,13 @@ class NotificationsCronJob(CronJobBase):
             print "Android Notification Error. %s", reg_token
             print sys.exc_info()
 
-    def _check_date(self, date_to_be_checked, given_timezone, notification_time):
-        cur_date = datetime.datetime.now(pytz.timezone(given_timezone)).date()
+    def _check_date(self, dt_to_be_checked, given_timezone, notification_time):
+        cur_dt = datetime.datetime.now(pytz.timezone(given_timezone))
 
-        if date_to_be_checked == cur_date:
+        cur_dt_in_secs = time.mktime(cur_dt.timetuple())
+        given_dt_in_secs = time.mktime(dt_to_be_checked.timetuple())
+
+        if (given_dt_in_secs - cur_dt_in_secs) <= (notification_time * 60):
             print "Dates matched."
             return True
 
