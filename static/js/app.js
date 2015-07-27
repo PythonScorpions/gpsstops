@@ -5,33 +5,33 @@
 
 $(document).ready(function() {
 
-    notifications.onlineCount(function (count) {
-        setUserCount(count);
-    });
+    // notifications.onlineCount(function (count) {
+    //     setUserCount(count);
+    // });
 
 
-    notifications.onlineCountChange(function (count) {
-        setUserCount(count);
-    });
+    // notifications.onlineCountChange(function (count) {
+    //     setUserCount(count);
+    // });
 
 
-    function setUserCount(count) {
-        // document.getElementById("users-online").innerHTML = count;
-        console.log(count);
-    }
+    // function setUserCount(count) {
+    //     // document.getElementById("users-online").innerHTML = count;
+    //     console.log(count);
+    // }
 
-    notifications.onNotification(addNotification);
-    notifications.enableDesktopNotifications();
+    // notifications.onNotification(addNotification);
+    // notifications.enableDesktopNotifications();
 
 
-    function addNotification(notification) {
-        var li = document.createElement("li");
-        li.innerHTML = notification.name + ' - ' + notification.timestamp;
-        var notificationsList = document.getElementById("notifications");
-        notificationsList.insertBefore(li, notificationsList.firstChild);
+    // function addNotification(notification) {
+    //     var li = document.createElement("li");
+    //     li.innerHTML = notification.name + ' - ' + notification.timestamp;
+    //     var notificationsList = document.getElementById("notifications");
+    //     notificationsList.insertBefore(li, notificationsList.firstChild);
 
-        notifications.desktopNotification('New foo', {body: notification.name, icon: notification.icon, tag: 'foo'});
-    }
+    //     notifications.desktopNotification('New foo', {body: notification.name, icon: notification.icon, tag: 'foo'});
+    // }
 
     function getTodayAppointments () {
         var reqData = {
