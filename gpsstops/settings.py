@@ -197,6 +197,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     "GCM_API_KEY": "AIzaSyBTA_HmUCfTNxR_ugDTtubDJ8DG6rgspI0"
 }
 
+GCM_API_KEY = "AIzaSyBTA_HmUCfTNxR_ugDTtubDJ8DG6rgspI0"
 CERT_FILE = BASE_DIR + '/certs/gpsstops_cer.pem'
 KEY_FILE = BASE_DIR + '/certs/agpsstops_key1.pem'
 DEV_CERT_FILE = BASE_DIR + '/certs/gpsstops-dev.pem'
