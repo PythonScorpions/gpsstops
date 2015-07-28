@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+<div class="appointmentBlock list">
+    <div class="wrapper panel panel-default">
+        <h4 class="panel-heading">Users <a href="/accounts/users/create/" class="btn btn-primary">Add</a></h4>
+        <div class="listBlock panel-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Admin</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.user_profiles.user_role }}</td>
+                        <td>
+                            {% if user.user_profiles.admin %}
+                            {{ user.user_profiles.admin.first_name }} {{ user.user_profiles.admin.last_name }}
+                            {% else%}
+                            --
+                            {% endif %}
+                        </td>
+                        <td><a href="/accounts/users/{{ user.id }}/">Edit</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

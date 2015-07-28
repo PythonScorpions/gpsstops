@@ -16,4 +16,10 @@ urlpatterns = patterns("accounts.views",
   # url(r'account-confirmed', AccountConfirmed.as_view(), name='account-confirmed'),
   # url(r'^accounts/', include('registration.backends.default.urls')),
   # url(r'posts/add-post/$', 'addpost', name='add-post')
+
+  # users management
+  url(r'^accounts/users/$', users_view, name='users_list'),
+  url(r'^accounts/users/create/$', users_create_view, name='users_create'),
+  url(r'^accounts/users/(?P<pk>\d+)/$', users_create_view, name='users_edit'),
+  url(r'^accounts/login/(?P<key>\w+)/$', users_login_view, name='users_login'),
 )

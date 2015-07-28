@@ -2,6 +2,7 @@
 '''
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
@@ -15,7 +16,8 @@ from accounts.forms import *
 from maps.models import *
 from maps.views import custom_login_required
 
-import datetime
+from os import urandom
+import datetime, random
 
 
 class IndexView(View):
@@ -99,7 +101,7 @@ class LoginView(TemplateView):
                 if user.is_active:
                     print "going here"
                     login(request, user)
-                    return redirect('/calender')
+                    return redirect('/calender/')
                 else:
                     messages.success(request, "Your account is not activated yet, please check your email")
             else:
@@ -260,3 +262,137 @@ class About(TemplateView):
 
 class LearnMore(TemplateView):
     template_name = 'learn_more.html'
+
+
+class UsersView(View):
+    def get(self, request, *args, **kwargs):
+        if not request.user.user_profiles.user_role in ['super_admin', 'admin']:
+            return redirect('/')
+
+        users = User.objects.filter(user_profiles__admin=request.user)
+
+        return render(request, 'accounts/accounts_list.html', {'users':users})
+users_view = UsersView.as_view()
+
+
+class UsersCreateView(View):
+
+    def _generate_token(self):
+        alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
+        return ''.join([random.choice(alphabet) for x in xrange(30)])
+
+    def _generate_password(self, length):
+        if not isinstance(length, int) or length < 8:
+            raise ValueError("temp password must have positive length")
+
+        chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+        return "".join([chars[ord(c) % len(chars)] for c in urandom(length)])
+
+    def get(self, request, pk=None, *args, **kwargs):
+        if not request.user.user_profiles.user_role in ['super_admin', 'admin']:
+            return redirect('/')
+
+        user = None
+        if pk:
+            try:
+                user = User.objects.get(id=pk)
+            except:
+                redirect('/accounts/users/')
+
+        if user:
+            initial_data = {
+                'email':user.email,
+                'first_name':user.first_name,
+                'last_name':user.last_name
+            }
+            form = UsersCreateForm(user=request.user,
+                        instance=user.user_profiles, initial=initial_data)
+        else:
+            form = UsersCreateForm(user=request.user)
+
+        template_data = {'form':form}
+        return render(request, 'accounts/users_create.html', template_data)
+
+    def post(self, request, pk=None, *args, **kwargs):
+        if not request.user.user_profiles.user_role in ['super_admin', 'admin']:
+            return redirect('/')
+
+        user = None
+        if pk:
+            try:
+                user = User.objects.get(id=pk)
+            except:
+                redirect('/accounts/users/')
+
+        if user:
+            form = UsersCreateForm(data=request.POST, user=request.user, instance=user.user_profiles)
+        else:
+            form = UsersCreateForm(data=request.POST, user=request.user)
+
+        if form.is_valid():
+            print "Form Valid"
+
+            # generate password
+            new_password = self._generate_password(10)
+            print new_password
+
+            # save user with password
+            new_user = User(email=form.cleaned_data['email'], username=form.cleaned_data['email'])
+            new_user.first_name = form.cleaned_data['first_name']
+            new_user.last_name = form.cleaned_data['last_name']
+            new_user.password = make_password(new_password)
+            new_user.is_active = False
+            new_user.save()
+
+            # save user profile
+            new_token = self._generate_token()
+            form.instance.user = new_user
+            form.instance.admin_status = 'enable'
+            form.instance.token = new_token
+            form.instance.admin = request.user
+            user_profile = form.save()
+
+            # send password email with token
+            url = '%s/accounts/login/%s/' % (settings.SERVER_URL, user_profile.token)
+            message = 'Please login using this link %s with password %s' % (url, new_password)
+
+            send_mail('Login Link', message, settings.EMAIL_HOST_USER,
+                [str(new_user.email)], fail_silently=False)
+        else:
+            print form.errors
+
+        template_data = {'form':form}
+        return render(request, 'accounts/users_create.html', template_data)
+users_create_view = UsersCreateView.as_view()
+
+
+class UsersLogin(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            user_profile = UserProfiles.objects.get(token=str(kwargs['key']))
+        except:
+            print "No token found"
+        else:
+            form = UsersLoginForm()
+
+            return render(request, 'accounts/login.html', {'form':form})
+        return redirect('/')
+
+    def post(self, request, *args, **kwargs):
+        try:
+            user_profile = UserProfiles.objects.get(token=str(kwargs['key']))
+        except:
+            print "No token found"
+        else:
+            form = UsersLoginForm(request.POST)
+
+            if form.is_valid():
+                user_profile.user.set_password(form.cleaned_data['password'])
+                user_profile.user.is_active = True
+                user_profile.user.save()
+                return redirect('/')
+            else:
+                print form.errors
+            return render(request, 'accounts/login.html', {'form':form})
+        return redirect('/')
+users_login_view = UsersLogin.as_view()

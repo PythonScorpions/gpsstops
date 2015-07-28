@@ -17,6 +17,12 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class UserProfiles(models.Model):
 
+    ROLES_CHOICES = (
+        ('super_admin', 'Super Admin'),
+        ('admin', 'Admin'),
+        ('employee', 'Employee')
+    )
+
     user = models.OneToOneField(User, related_name='user_profiles')
     address = models.CharField(max_length=300)
     city = models.CharField(max_length=100)
@@ -31,6 +37,10 @@ class UserProfiles(models.Model):
     token = models.CharField('Token', max_length=200, blank=True, null=True)
     admin_status = models.CharField(max_length=50, blank=True, null=True)
 
+    user_role = models.CharField(max_length=50, choices=ROLES_CHOICES, blank=True, null=True)
+    admin = models.ForeignKey(User, blank=True, null=True)
+
+
     def __unicode(self):
         return u'%s' % self.user
 
@@ -40,7 +50,8 @@ class UserProfiles(models.Model):
 
     def save(self, *args, **kwargs):
         super(UserProfiles, self).save(*args, **kwargs)
-        self.token = self.random_key()
+        if not self.token:
+            self.token = self.random_key()
         super(UserProfiles, self).save(*args, ** kwargs)
 
 

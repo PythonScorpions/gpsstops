@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django import forms
 from django.conf import settings
+from django.db.models import Q
 
 from rest_framework import parsers, renderers, generics, authentication, viewsets
 from rest_framework.authtoken.models import Token
@@ -469,7 +470,8 @@ class Events(APIView):
         user_id = request.user.id
         events = []
 
-        routes = Route.objects.filter(user__id=user_id)
+        routes = Route.objects \
+                 .filter(Q(user=request.user) | Q(user__user_profiles__admin=request.user))
         for idx, rou in enumerate(routes):
             temp = dict()
             temp['id'] = str(rou.id)
@@ -501,7 +503,8 @@ class Events(APIView):
             temp['route'] = 'true'
             events.append(temp)
 
-        appointments = Appointments.objects.filter(user=request.user)
+        appointments = Appointments.objects \
+                        .filter(Q(user=request.user) | Q(user__user_profiles__admin=request.user))
         for appointment in appointments:
             temp = {}
             temp['id'] = appointment.id
@@ -512,7 +515,8 @@ class Events(APIView):
             temp['appointment'] = 'true'
             events.append(temp)
 
-        tasks = Task.objects.filter(user=request.user)
+        tasks = Task.objects \
+                .filter(Q(user=request.user) | Q(user__user_profiles__admin=request.user))
         for task in tasks:
             temp = {}
             temp['id'] = task.id

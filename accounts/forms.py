@@ -97,3 +97,37 @@ class ProfileUpdateForm(forms.ModelForm):
        proform.save()
        return proform
 
+
+class UsersCreateForm(forms.ModelForm):
+  first_name = forms.CharField()
+  last_name = forms.CharField()
+
+  email = forms.EmailField()
+  # password = forms.CharField(widget=forms.PasswordInput)
+  # confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+  def __init__(self, user, *args, **kwargs):
+    super(UsersCreateForm, self).__init__(*args, **kwargs)
+    self.user = user
+    if self.user.user_profiles.user_role == 'admin':
+      self.fields['user_role'].choices = [(u'employee','Employee')]
+    else:
+      self.fields['user_role'].choices = [(u'','------'), (u'admin','Admin'), (u'employee','Employee')]
+
+  class Meta:
+    model = UserProfiles
+    exclude = ('user', 'admin', 'token', 'admin_status')
+
+
+class UsersLoginForm(forms.Form):
+  old_password = forms.CharField(widget=forms.PasswordInput)
+  password = forms.CharField(widget=forms.PasswordInput)
+  confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+  def clean(self):
+    if any(self.errors):
+      return
+
+    if not self.cleaned_data['password'] == self.cleaned_data['confirm_password']:
+      raise forms.ValidationError('Password didn\'t match')
+    return self.cleaned_data

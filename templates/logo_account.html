@@ -27,6 +27,9 @@
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="/logout/">Log Out</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Account Settings</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change Password</a></li>
+                        {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="/accounts/users/">Users</a></li>
+                        {% endif %}
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact/">Contact</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact_group/">Contact Group</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sync with mobile app Options</a></li>
