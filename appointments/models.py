@@ -35,7 +35,7 @@ class Appointments(models.Model):
 class Task(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(max_length=100)
-    due_date = models.DateField()
+    due_date = models.DateTimeField()
     timezone = models.CharField(max_length=100, default='Asia/Kolkatta')
     note = models.TextField(blank=True, null=True)
     notification_required = models.BooleanField(default=False)

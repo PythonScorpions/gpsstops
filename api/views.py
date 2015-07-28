@@ -519,7 +519,8 @@ class Events(APIView):
             temp['title'] = task.title
             temp['url'] = '/appointments/task/%s/' % task.id
             temp['class'] = 'event-success task'
-            temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
+            if task.due_date:
+                temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
             temp['task'] = 'true'
             events.append(temp)
 
@@ -632,11 +633,10 @@ class TaskViewSet(viewsets.ModelViewSet):
 
             tasks = Task.objects.filter(user__id=user)
             if date and self.request.method == 'GET':
-                tasks = tasks.filter(
-                            due_date__day=date.day,
-                            due_date__month=date.month,
-                            due_date__year=date.year,
-                        )
+                date_min = datetime.datetime.combine(date, datetime.time.min)
+                date_max = datetime.datetime.combine(date, datetime.time.max)
+                tasks = tasks.filter(user__id=user) \
+                        .filter(due_date__range=(date_min, date_max))
             return tasks
         return Task.objects.none()
 

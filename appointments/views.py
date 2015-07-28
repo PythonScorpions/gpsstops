@@ -113,10 +113,13 @@ class TaskView(View):
             form = TaskForm(request.POST)
 
         if form.is_valid():
+            print form.cleaned_data
             form.instance.user = request.user
-            form.save();
-            return redirect('/calender/')
+            t = form.save();
+            print t.due_date
+            return redirect('.')
         else:
+            print form.errors
             return render(request, "calendar/task.html", {'form':form})
 task_view = TaskView.as_view()
 
