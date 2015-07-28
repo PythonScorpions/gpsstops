@@ -143,27 +143,27 @@ class NotificationsCronJob(CronJobBase):
 
             print "Checking device...."
             try:
-                device = RegistratedDevice.objects \
-                            .get(user=appointment.user)
+                devices = RegistratedDevice.objects.filter(user=appointment.user)
             except:
                 print sys.exc_info()
             else:
-                message = "Appointment: %s, %s" % (appointment.title,
-                            appointment.start_datetime)
-                print message
-                if device.device_type.lower() == 'ios':
-                    self._send_ios_notifications(message,
+                for device in devices:
+                    message = "Appointment: %s, %s" % (appointment.title,
+                                appointment.start_datetime)
+                    print message
+                    if device.device_type.lower() == 'ios':
+                        self._send_ios_notifications(message,
+                                device.device_token)
+                        AppointmentNotification.objects \
+                        .create(appointment=appointment, flag=True)
+                    elif device.device_type.lower() == 'android':
+                        self._send_android_notifications('Appointment', message,
                             device.device_token)
-                    AppointmentNotification.objects \
-                    .create(appointment=appointment, flag=True)
-                elif device.device_type.lower() == 'android':
-                    self._send_android_notifications('Appointment', message,
-                        device.device_token)
-                    AppointmentNotification.objects \
-                    .create(appointment=appointment, flag=True)
-                else:
-                    print "Device type not found. Device: %s.... Appointment: %s" % (
-                        device.device_type, appointment.id)
+                        AppointmentNotification.objects \
+                        .create(appointment=appointment, flag=True)
+                    else:
+                        print "Device type not found. Device: %s.... Appointment: %s" % (
+                            device.device_type, appointment.id)
 
     def _send_tasks_notifications(self):
         ''' Send tasks for all appointments '''

@@ -8,15 +8,97 @@
         <div class="form appointmentForm panel-body">
           <form method="post" name="appointmentForm">
             {% csrf_token %}
-            {% for field in form %}
             <div class="field-row">
-                <label>{{ field.label }}</label>
+                <label>{{ form.first_name.label }}</label>
                 <div class="field">
-                {{ field }}
-                {% if field.errors %}{{ field.errors }}{% endif %}
+                {{ form.first_name }}
+                {% if form.first_name.errors %}{{ form.first_name.errors }}{% endif %}
                 </div>
             </div>
-            {% endfor %}
+            <div class="field-row">
+                <label>{{ form.last_name.label }}</label>
+                <div class="field">
+                {{ form.last_name }}
+                {% if form.last_name.errors %}{{ form.last_name.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.email.label }}</label>
+                <div class="field">
+                {{ form.email }}
+                {% if form.email.errors %}{{ form.email.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.user_role.label }}</label>
+                <div class="field">
+                {{ form.user_role }}
+                {% if form.user_role.errors %}{{ form.user_role.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.phone_number.label }}</label>
+                <div class="field">
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}{{ form.phone_number.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.company_name.label }}</label>
+                <div class="field">
+                {{ form.company_name }}
+                {% if form.company_name.errors %}{{ form.company_name.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.occupation.label }}</label>
+                <div class="field">
+                {{ form.occupation }}
+                {% if form.occupation.errors %}{{ form.occupation.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.occupation.label }}</label>
+                <div class="field">
+                {{ form.occupation }}
+                {% if form.occupation.errors %}{{ form.occupation.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.address.label }}</label>
+                <div class="field">
+                {{ form.address }}
+                {% if form.address.errors %}{{ form.address.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.city.label }}</label>
+                <div class="field">
+                {{ form.city }}
+                {% if form.city.errors %}{{ form.city.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.state.label }}</label>
+                <div class="field">
+                {{ form.state }}
+                {% if form.state.errors %}{{ form.state.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.zip_code.label }}</label>
+                <div class="field">
+                {{ form.zip_code }}
+                {% if form.zip_code.errors %}{{ form.zip_code.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>{{ form.country.label }}</label>
+                <div class="field">
+                {{ form.country }}
+                {% if form.country.errors %}{{ form.country.errors }}{% endif %}
+                </div>
+            </div>
             <div class="field-row actions">
                 <input type="submit" />
             </div>
