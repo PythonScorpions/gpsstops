@@ -150,7 +150,7 @@ class NotificationsCronJob(CronJobBase):
                 for device in devices:
                     message = "Appointment: %s, %s" % (appointment.title,
                                 appointment.start_datetime)
-                    print "Sending %s to device type %s" % (message, device_type.device_type)
+                    print "Sending %s to device type %s" % (message, device.device_type)
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
