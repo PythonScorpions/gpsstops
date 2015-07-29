@@ -75,11 +75,5 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/task.js"></script>
-<script type="text/javascript">
-$(function() {
-    $("form field-row").addClass("form-group");
-    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
-    $("form input[type=submit]").addClass("btn btn-primary");
-});
-</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/appointment_utils.js"></script>
 {% endblock content %}

@@ -7,8 +7,9 @@ from appointments.models import *
 
 
 class AppointmentForm(forms.ModelForm):
-    start_datetime = forms.DateTimeField(
-        input_formats=["%b %d,%Y %I:%M %p"])
+    start_datetime = forms.DateTimeField(input_formats=["%b %d,%Y %I:%M %p"])
+    latitude = forms.FloatField(widget=forms.widgets.HiddenInput())
+    longitude = forms.FloatField(widget=forms.widgets.HiddenInput())
 
     def __init__(self, user, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
@@ -21,7 +22,7 @@ class AppointmentForm(forms.ModelForm):
 
     class Meta:
         model = Appointments
-        exclude = ('location', 'latitude', 'longitude', 'created_by')
+        exclude = ('location', 'created_by')
 
 
 class TaskForm(forms.ModelForm):

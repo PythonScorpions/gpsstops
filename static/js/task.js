@@ -4,8 +4,13 @@
 
 $(document).ready(function() {
 
+  $("[name=due_date]").val(
+    Date
+    .parseString($("[name=due_date]").val(), 'yyyy-MM-dd HH:mm:ss')
+    .format('NNN dd,yyyy HH:mm a')
+  );
+
   $("[name=due_date]").datetimepicker({
-    formatTime:'g:i A',
     format: 'M d,Y h:i A'
   });
 

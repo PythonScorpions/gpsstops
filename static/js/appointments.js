@@ -4,10 +4,19 @@
 
 $(document).ready(function() {
 
+  $("[name=start_datetime]").val(
+    Date
+    .parseString($("[name=start_datetime]").val(), 'yyyy-MM-dd HH:mm:ss')
+    .format('NNN dd,yyyy HH:mm a')
+  );
+
   $("[name=start_datetime]").datetimepicker({
-    formatTime:'g:i A',
+    // formatTime:'M d,Y h:i A',
+    // formatTime:'g:i A',
     format: 'M d,Y h:i A'
   });
+  //"%b %d,%Y %I:%M %p"
+  //Jul 30,2015 02:50 AM
 
   var searchBox = new google.maps.places.SearchBox($("[name=where]")[0]);
   google.maps.event.addListener(searchBox, 'places_changed', function() {

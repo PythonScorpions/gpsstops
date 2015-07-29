@@ -10,6 +10,13 @@ import json, datetime
 
 
 class AppointmentView(View):
+
+    def _check_editable_permission(self, appointment, user):
+        if (appointment.created_by == user) or \
+            (appointment.user == user and appointment.is_editable):
+                return True
+        return False
+
     def get(self, request, pk=None, *args, **kwargs):
         appointment = None
         try:
@@ -18,10 +25,14 @@ class AppointmentView(View):
             redirect('/appointments/create/')
 
         if appointment:
-            form = AppointmentForm(user=request.user, instance=appointment)
+            if self._check_editable_permission(appointment, request.user):
+                form = AppointmentForm(user=request.user, instance=appointment)
+            else:
+                context = {'appointment':appointment}
+                return render(request,
+                    "calendar/appointments_readonly.html", context)
         else:
             form = AppointmentForm(user=request.user)
-
         return render(request, "calendar/appointments.html", {'form':form})
 
     def post(self, request, pk=None, *args, **kwargs):
@@ -32,13 +43,22 @@ class AppointmentView(View):
             redirect('/appointments/create/')
 
         if appointment:
-            form = AppointmentForm(data=request.POST, user=request.user, instance=appointment)
+            if self._check_editable_permission(appointment, request.user):
+                form = AppointmentForm(data=request.POST, user=request.user,
+                        instance=appointment)
+            else:
+                context = {'appointment':appointment}
+                return render(request,
+                    "calendar/appointments_readonly.html", context)
         else:
             form = AppointmentForm(data=request.POST, user=request.user)
 
         if form.is_valid():
+            print form.cleaned_data
             form.instance.created_by = request.user
             form.instance.location = form.cleaned_data['where']
+            form.instance.latitude = form.cleaned_data['latitude']
+            form.instance.longitude = form.cleaned_data['longitude']
             form.save()
             # return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
             return redirect("/calender/")
@@ -86,6 +106,13 @@ class EventView(View):
 event_view = EventView.as_view()
 
 class TaskView(View):
+
+    def _check_editable_permission(self, task, user):
+        if (task.created_by == user) or \
+            (task.user == user and task.is_editable):
+                return True
+        return False
+
     def get(self, request, pk=None, *args, **kwargs):
         task = None
         try:
@@ -94,7 +121,11 @@ class TaskView(View):
             redirect('/task/create/')
 
         if task:
-            form = TaskForm(user=request.user, instance=task)
+            if self._check_editable_permission(task, request.user):
+                form = TaskForm(user=request.user, instance=task)
+            else:
+                context = {'task':task}
+                return render(request, "calendar/task_readonly.html", context)
         else:
             form = TaskForm(user=request.user)
 
@@ -108,7 +139,11 @@ class TaskView(View):
             redirect('/task/create/')
 
         if task:
-            form = TaskForm(data=request.POST, user=request.user, instance=task)
+            if self._check_editable_permission(task, request.user):
+                form = TaskForm(data=request.POST, user=request.user, instance=task)
+            else:
+                context = {'task':task}
+                return render(request, "calendar/task_readonly.html", context)
         else:
             form = TaskForm(data=request.POST, user=request.user)
 
