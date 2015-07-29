@@ -29,7 +29,7 @@ class TaskForm(forms.ModelForm):
         input_formats=["%b %d,%Y %I:%M %p"])
 
     def __init__(self, user, *args, **kwargs):
-        super(AppointmentForm, self).__init__(*args, **kwargs)
+        super(TaskForm, self).__init__(*args, **kwargs)
         self.user = user
 
         users_choices = [(self.user.id, 'Self')]
