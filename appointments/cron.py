@@ -190,20 +190,21 @@ class NotificationsCronJob(CronJobBase):
 
             print "Checking device...."
             try:
-                device = RegistratedDevice.objects.get(user=task.user)
+                devices = RegistratedDevice.objects.filter(user=task.user)
             except:
                 print sys.exc_info()
             else:
-                message = "Task: %s, %s" % (task.title, task.due_date)
-                print message
-                if device.device_type.lower() == 'ios':
-                    self._send_ios_notifications(message,
+                for device in devices:
+                    message = "Task: %s, %s" % (task.title, task.due_date)
+                    print "Sending %s to device type %s" % (message, device_type.device_type)
+                    if device.device_type.lower() == 'ios':
+                        self._send_ios_notifications(message,
+                                device.device_token)
+                        TaskNotification.objects.create(task=task, flag=True)
+                    elif device.device_type.lower() == 'android':
+                        self._send_android_notifications('Task', message,
                             device.device_token)
-                    TaskNotification.objects.create(task=task, flag=True)
-                elif device.device_type.lower() == 'android':
-                    self._send_android_notifications('Task', message,
-                        device.device_token)
-                    TaskNotification.objects.create(task=task, flag=True)
-                else:
-                    print "Device type not found. Device: %s.... Task: %s" % (
-                        device.device_type, task.id)
+                        TaskNotification.objects.create(task=task, flag=True)
+                    else:
+                        print "Device type not found. Device: %s.... Task: %s" % (
+                            device.device_type, task.id)
