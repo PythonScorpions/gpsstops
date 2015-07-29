@@ -1,11 +1,24 @@
 <div class="cal-month-day <%= cls %>">
     <span class="pull-right" data-cal-date="<%= data_day %>" data-cal-view="day" data-toggle="tooltip" title="<%= tooltip %>"><%= day %></span>
     <% if (events.length > 0) { %>
-        <% var evens = _.filter(events, function(event){ return event.route != null; }); %>
-        <% console.log(_.size(evens)); %>
-        <% evens = _.filter(events, function(event){ return event.appointment != null; }); %>
-        <% console.log(_.size(evens)); %>
         <div class="events-list" data-cal-start="<%= start %>" data-cal-end="<%= end %>">
+            <% var events_count = _.size(_.filter(events, function(event){ return event.route != null; })); %>
+            <% if (events_count) { %>
+            <a class="glyphicon glyphicon-map-marker pull-left route"><span class="badge"><%= events_count %></span></a>
+            <% } %>
+
+            <% var events_count = _.size(_.filter(events, function(event){ return event.appointment != null; })); %>
+            <% if (events_count) { %>
+            <a class="event event-warning pull-left appointment"><span class="badge"><%= events_count %></span></a>
+            <% } %>
+
+            <% var events_count = _.size(_.filter(events, function(event){ return event.task != null; })); %>
+            <% if (events_count) { %>
+            <a class="event event-success pull-left task"><span class="badge"><%= events_count %></span></a>
+            <% } %>
+        </div>
+
+        <!-- <div class="events-list" data-cal-start="<%= start %>" data-cal-end="<%= end %>">
             <% _.each(events, function(event) { %>
                 <% if (event.route) { %>
                 <a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>" data-event-class="<%= event['class'] %>"
@@ -20,7 +33,7 @@
                     data-toggle="tooltip" title="" data-original-title="<%= event.title %>"></a>
                 <% } %>
             <% }); %>
-        </div>
+        </div> -->
     <% } else { %>
         <div class="events-list" data-cal-start="<%= start %>" data-cal-end="<%= end %>"></div>
     <% } %>
