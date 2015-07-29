@@ -1066,22 +1066,27 @@ text-align:center;
 .page-header .actions .glyphicon {
     margin-top: 1px;
 }
+.cal-month-day .events-list a {
+	float: none !important;
+	display: inline-block;
+}
 .cal-month-day .route {
-    margin-top: 1rem;
-    margin-bottom: 0.8rem;
+    margin: 1rem 1rem 0.8rem 0;
+    clear: both;
 }
 .cal-month-day .route .badge {
-    float: right;
-    margin-top: -0.8rem;
-}
-.cal-month-day .event {
-    margin-top: 1rem;
-    margin-right: 2rem;
-}
-.cal-month-day .event .badge {
-    margin-left: 1rem;
-    margin-top: -1rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    padding: 1px 4px;
+    min-width: 13px;
+    height: 16px;
+    border: 2px solid #19AE19;
+    color: #413C3C;
+    background-color: #E8FDE7;
+    z-index: 100;
+
+    position: absolute;
+    left: 7px;
+    bottom: 5px;
 }
 #cal-slide-box #cal-slide-content {
     background: #fff;
