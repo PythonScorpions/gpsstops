@@ -12,6 +12,21 @@
             <input type="hidden" name="longitude" value=""/>
             <input type="hidden" name="location" value=""/>
             <input type="hidden" name="repeat_days" value="0"/>
+
+            <div class="field-row">
+                <label>Assign To</label>
+                <div class="field">
+                {{ form.user }}
+                {% if form.user.errors %}{{ form.user.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
+                <label>Editable</label>
+                <div class="field">
+                {{ form.is_editable }}
+                {% if form.is_editable.errors %}{{ form.is_editable.errors }}{% endif %}
+                </div>
+            </div>
             <div class="field-row">
                 <label>Title</label>
                 <div class="field">

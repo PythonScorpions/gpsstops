@@ -10,18 +10,36 @@ class AppointmentForm(forms.ModelForm):
     start_datetime = forms.DateTimeField(
         input_formats=["%b %d,%Y %I:%M %p"])
 
+    def __init__(self, user, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+        users_choices = [(self.user.id, 'Self')]
+        for u in User.objects.filter(user_profiles__admin=self.user):
+            users_choices.append((u.id, '%s %s' % (u.first_name, u.last_name)))
+        self.fields['user'].choices = users_choices
+
     class Meta:
         model = Appointments
-        exclude = ('user','location', 'latitude', 'longitude')
+        exclude = ('location', 'latitude', 'longitude', 'created_by')
 
 
 class TaskForm(forms.ModelForm):
     due_date = forms.DateTimeField(
         input_formats=["%b %d,%Y %I:%M %p"])
 
+    def __init__(self, user, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+        users_choices = [(self.user.id, 'Self')]
+        for u in User.objects.filter(user_profiles__admin=self.user):
+            users_choices.append((u.id, '%s %s' % (u.first_name, u.last_name)))
+        self.fields['user'].choices = users_choices
+
     class Meta:
         model = Task
-        exclude = ('user',)
+        exclude = ('created_by',)
 
 
 class ContactForm(forms.ModelForm):

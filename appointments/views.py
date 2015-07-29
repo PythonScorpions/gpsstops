@@ -18,9 +18,9 @@ class AppointmentView(View):
             redirect('/appointments/create/')
 
         if appointment:
-            form = AppointmentForm(instance=appointment)
+            form = AppointmentForm(user=request.user, instance=appointment)
         else:
-            form = AppointmentForm()
+            form = AppointmentForm(user=request.user)
 
         return render(request, "calendar/appointments.html", {'form':form})
 
@@ -32,12 +32,12 @@ class AppointmentView(View):
             redirect('/appointments/create/')
 
         if appointment:
-            form = AppointmentForm(request.POST, instance=appointment)
+            form = AppointmentForm(data=request.POST, user=request.user, instance=appointment)
         else:
-            form = AppointmentForm(request.POST)
+            form = AppointmentForm(data=request.POST, user=request.user)
 
         if form.is_valid():
-            form.instance.user = request.user
+            form.instance.created_by = request.user
             form.instance.location = form.cleaned_data['where']
             form.save()
             # return HttpResponse(json.dumps({'status':'success'}), content_type="application/json")
@@ -94,9 +94,9 @@ class TaskView(View):
             redirect('/task/create/')
 
         if task:
-            form = TaskForm(instance=task)
+            form = TaskForm(user=request.user, instance=task)
         else:
-            form = TaskForm()
+            form = TaskForm(user=request.user)
 
         return render(request, "calendar/task.html", {'form':form})
 
@@ -108,13 +108,13 @@ class TaskView(View):
             redirect('/task/create/')
 
         if task:
-            form = TaskForm(request.POST, instance=task)
+            form = TaskForm(data=request.POST, user=request.user, instance=task)
         else:
-            form = TaskForm(request.POST)
+            form = TaskForm(data=request.POST, user=request.user)
 
         if form.is_valid():
             print form.cleaned_data
-            form.instance.user = request.user
+            form.instance.created_by = request.user
             t = form.save();
             print t.due_date
             return redirect('.')

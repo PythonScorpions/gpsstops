@@ -25,6 +25,9 @@ class Appointments(models.Model):
     notification_required = models.BooleanField(default=False)
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
 
+    is_editable = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, related_name='appointment_created_by', null=True)
+
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 
@@ -40,6 +43,9 @@ class Task(models.Model):
     note = models.TextField(blank=True, null=True)
     notification_required = models.BooleanField(default=False)
     notification_time = models.IntegerField(choices=NOTIFICATIONS_TIME_CHOICES, default=0)
+
+    is_editable = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, related_name='task_created_by', null=True)
 
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
