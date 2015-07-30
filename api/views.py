@@ -476,13 +476,15 @@ class Events(APIView):
             temp = dict()
             temp['id'] = str(rou.id)
             title = ''
-            for index, loc in enumerate(Location.objects.filter(route=rou).order_by('id')):
+            locations = Location.objects.filter(route=rou).order_by('id')
+            for index, loc in enumerate(locations):
                 if index == 0:
                     title += loc.location_address.split(' ')[0][:-1]
                 else:
                     title += '-'
                     title += loc.location_address.split(' ')[0][:-1]
             temp['title'] = title
+            temp['locations_count'] = locations.count()
             temp['distance'] = rou.total_distance
             temp['time'] = rou.total_time
             temp['trip_title'] = rou.trip_title

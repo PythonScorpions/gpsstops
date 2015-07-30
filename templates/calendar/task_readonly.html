@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+<div class="appointmentBlock">
+    <div class="wrapper panel panel-default col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+        <h4 class="panel-heading">Task</h4>
+        <div class="form appointmentForm panel-body">
+            <table class="table table-bordered table-hover table-stripped">
+                <tbody>
+                    <tr>
+                        <th>Assigned To</th>
+                        <td>{{task.user.first_name}} {{task.user.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{task.title}}</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>{{task.due_date|date:'m/d/Y h:m A'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Timezone</th>
+                        <td>{{task.timezone}}</td>
+                    </tr>
+                    <tr>
+                        <th>Note</th>
+                        <td>{{task.note}}</td>
+                    </tr>
+                    {% if task.notification_required %}
+                    <tr>
+                        <th>Notification</th>
+                        <td>{{task.notification_time}} minutes</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <th>Notification</th>
+                        <td>Not enabled</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/task.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/appointment_utils.js"></script>
+{% endblock content %}
