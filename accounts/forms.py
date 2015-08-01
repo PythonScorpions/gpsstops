@@ -109,14 +109,23 @@ class UsersCreateForm(forms.ModelForm):
   def __init__(self, user, *args, **kwargs):
     super(UsersCreateForm, self).__init__(*args, **kwargs)
     self.user = user
-    if self.user.user_profiles.user_role == 'admin':
+    if self.user.is_authenticated() and self.user.user_profiles.user_role == 'admin':
       self.fields['user_role'].choices = [(u'employee','Employee')]
     else:
       self.fields['user_role'].choices = [(u'','------'), (u'admin','Admin'), (u'employee','Employee')]
 
+    def clean_email(self):
+        try:
+            user = User.objects.get(username=self.cleaned_data['email'])
+        except:
+            pass
+        else:
+            raise forms.ValidationError("Email already exists.")
+        return self.cleaned_data['email']
+
   class Meta:
     model = UserProfiles
-    exclude = ('user', 'admin', 'token', 'admin_status')
+    exclude = ('user', 'admin', 'token', 'admin_status', 'occupation', 'company_name')
 
 
 class UsersLoginForm(forms.Form):

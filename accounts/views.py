@@ -146,11 +146,23 @@ class ForgotPassword(TemplateView):
         if User.objects.filter(email=request.POST['email']).exists():
             email = User.objects.get(email=request.POST['email'])
             user = UserProfiles.objects.get(user=email)
-            site = Site.objects.get(pk=1)
+
+            site = settings.SERVER_URL
             t = loader.get_template('password.txt')
-            c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
-            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'pparekh9999@gmail.com',
-                      [email.email], fail_silently=False)
+            c = Context({
+                    'name': email.first_name,
+                    'email': email,
+                    'site': site,
+                    'token': user.token
+                })
+
+            send_mail(
+                '[%s] %s' % (site, 'New Contactus Request'),
+                t.render(c),
+                settings.EMAIL_HOST_USER,
+                [email.email],
+                fail_silently=False
+            )
             messages.success(request, 'Password reset link has been sent to your email')
 
         else:
@@ -289,8 +301,9 @@ class UsersCreateView(View):
         return "".join([chars[ord(c) % len(chars)] for c in urandom(length)])
 
     def get(self, request, pk=None, *args, **kwargs):
-        if not request.user.user_profiles.user_role in ['super_admin', 'admin']:
-            return redirect('/')
+        if request.user.is_authenticated() and \
+            (not request.user.user_profiles.user_role in ['super_admin', 'admin']):
+                return redirect('/')
 
         user = None
         if pk:
@@ -314,8 +327,9 @@ class UsersCreateView(View):
         return render(request, 'accounts/users_create.html', template_data)
 
     def post(self, request, pk=None, *args, **kwargs):
-        if not request.user.user_profiles.user_role in ['super_admin', 'admin']:
-            return redirect('/')
+        if request.user.is_authenticated() and \
+            (not request.user.user_profiles.user_role in ['super_admin', 'admin']):
+                return redirect('/')
 
         user = None
         if pk:
@@ -337,27 +351,35 @@ class UsersCreateView(View):
             print new_password
 
             # save user with password
-            new_user = User(email=form.cleaned_data['email'], username=form.cleaned_data['email'])
-            new_user.first_name = form.cleaned_data['first_name']
-            new_user.last_name = form.cleaned_data['last_name']
-            new_user.password = make_password(new_password)
-            new_user.is_active = False
-            new_user.save()
+            if user:
+                form.instance.user.first_name = form.cleaned_data['first_name']
+                form.instance.user.last_name = form.cleaned_data['last_name']
+                form.instance.user.save()
+            else:
+                new_user = User(email=form.cleaned_data['email'], username=form.cleaned_data['email'])
+                new_user.first_name = form.cleaned_data['first_name']
+                new_user.last_name = form.cleaned_data['last_name']
+                new_user.password = make_password(new_password)
+                new_user.is_active = False
+                new_user.save()
 
-            # save user profile
-            new_token = self._generate_token()
-            form.instance.user = new_user
-            form.instance.admin_status = 'enable'
-            form.instance.token = new_token
-            form.instance.admin = request.user
+                # save user profile
+                new_token = self._generate_token()
+                form.instance.user = new_user
+                form.instance.admin_status = 'enable'
+                form.instance.token = new_token
+                form.instance.admin = request.user
+                form.instance.company_name = " "
+                form.instance.occupation = " "
             user_profile = form.save()
 
-            # send password email with token
-            url = '%s/accounts/login/%s/' % (settings.SERVER_URL, user_profile.token)
-            message = 'Please login using this link %s with password %s' % (url, new_password)
+            if not form.instance.user:
+                # send password email with token
+                url = '%s/accounts/login/%s/' % (settings.SERVER_URL, user_profile.token)
+                message = 'Please login using this link %s with password %s' % (url, new_password)
 
-            send_mail('Login Link', message, settings.EMAIL_HOST_USER,
-                [str(new_user.email)], fail_silently=False)
+                send_mail('Login Link', message, settings.EMAIL_HOST_USER,
+                    [str(new_user.email)], fail_silently=False)
         else:
             print form.errors
 

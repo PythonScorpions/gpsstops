@@ -255,13 +255,24 @@ class ForgotPassword(APIView):
         if User.objects.filter(email=user_email).exists():
             email = User.objects.get(email=request.POST['email'])
             user = UserProfiles.objects.get(user=email)
-            site = Site.objects.get(pk=1)
-            t = loader.get_template('password.txt')
-            c = Context({'name': email.first_name, 'email': email, 'site': site.name, 'token': user.token})
-            send_mail('[%s] %s' % (site.name, 'New Contactus Request'), t.render(c), 'pparekh9999@gmail.com',
-                      [email.email], fail_silently=False)
-            return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
 
+            site = settings.SERVER_URL
+            t = loader.get_template('password.txt')
+            c = Context({
+                    'name': email.first_name,
+                    'email': email,
+                    'site': site.name,
+                    'token': user.token
+                })
+
+            send_mail(
+                '[%s] %s' % (site, 'New Contactus Request'),
+                t.render(c),
+                settings.EMAIL_HOST_USER,
+                [email.email],
+                fail_silently=False
+            )
+            return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
         else:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
 
