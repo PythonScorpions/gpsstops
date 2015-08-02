@@ -122,7 +122,7 @@ class Create_Route(View):
         OptimizedLocation(route=route_obj, location_address=end_search_address, location_near_address=end_near_address,
                           location_lat=latitude_last, location_long=longitude_last, location_note=end_note_location,
                           location_number=22).save()
-        url_to_redirect = '/maps/routes?day='+str(trip_datetime.day)+'&month='+str(trip_datetime.month)+'&year='+str(trip_datetime.year)
+        url_to_redirect = '/maps/routes/?day='+str(trip_datetime.day)+'&month='+str(trip_datetime.month)+'&year='+str(trip_datetime.year)
         return HttpResponseRedirect(url_to_redirect)
 
 
@@ -246,7 +246,7 @@ class Edit_Route(View):
         # trip_title = request.POST['trip_title']
         active = "maps"
         flag = "maps"
-        url_to_redirect = '/maps/routes?day='+str(trip_datetime.day)+'&month='+str(trip_datetime.month)+'&year='+str(trip_datetime.year)
+        url_to_redirect = '/maps/routes/?day='+str(trip_datetime.day)+'&month='+str(trip_datetime.month)+'&year='+str(trip_datetime.year)
         return HttpResponseRedirect(url_to_redirect)
 
 

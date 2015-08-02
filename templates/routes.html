@@ -5,7 +5,7 @@
 
 {% include "logo_account.html" %}
 
-{% load location_title_tags %}    
+{% load location_title_tags %}
 
 <style>
     .map-box{
@@ -118,7 +118,7 @@ function optimized_view(){
                             </a>
                         </li>
                         <li role="presentation" class="active">
-                            <a href="/maps/routes" class="right-tab"  aria-expanded="true">
+                            <a href="/maps/routes/" class="right-tab"  aria-expanded="true">
                                 <i class="glyphicon glyphicon-map-marker"></i> Route Map
                             </a>
                         </li>
@@ -243,13 +243,13 @@ $(function() {
 
     $('.previous_date').click(function () {
         todayDate.setDate(todayDate.getDate()-1);
-        post('/maps/routes', {"day":todayDate.getDate(),"month":todayDate.getMonth()+1,"year":todayDate.getFullYear(),
+        post('/maps/routes/', {"day":todayDate.getDate(),"month":todayDate.getMonth()+1,"year":todayDate.getFullYear(),
             'csrfmiddlewaretoken':getCookie('csrftoken')});
 
     });
     $('.next_date').click(function () {
         todayDate.setDate(todayDate.getDate()+1);
-        post('/maps/routes', {"day":todayDate.getDate(),"month":todayDate.getMonth()+1,"year":todayDate.getFullYear(),
+        post('/maps/routes/', {"day":todayDate.getDate(),"month":todayDate.getMonth()+1,"year":todayDate.getFullYear(),
             'csrfmiddlewaretoken':getCookie('csrftoken')});
     });
 });

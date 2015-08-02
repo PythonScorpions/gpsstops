@@ -35,9 +35,9 @@ class IndexView(View):
                     break
 
             if final_routes:
-                url_to_direct = '/maps/routes'
+                url_to_direct = '/maps/routes/'
             else:
-                url_to_direct = '/route/add'
+                url_to_direct = '/route/add/'
 
         return render(request, self.template_name, locals())
 
@@ -131,9 +131,9 @@ class Calender(TemplateView):
                     break
 
             if final_routes:
-                url_to_direct = '/maps/routes'
+                url_to_direct = '/maps/routes/'
             else:
-                url_to_direct = '/route/add'
+                url_to_direct = '/route/add/'
 
         return render(request, self.template_name, locals())
 
@@ -247,9 +247,9 @@ class Add_route_prime(View):
                     break
 
             if final_routes:
-                url_to_direct = '/maps/routes'
+                url_to_direct = '/maps/routes/'
             else:
-                url_to_direct = '/route/add'
+                url_to_direct = '/route/add/'
 
         active = "maps"
         flag="maps"
