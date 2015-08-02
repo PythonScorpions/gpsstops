@@ -500,7 +500,7 @@ class Events(APIView):
             temp['time'] = rou.total_time
             temp['trip_title'] = rou.trip_title
             temp['trip_datetime'] = rou.trip_datetime
-            temp['url'] = 'http://gpsstops.pythonanywhere.com/maps/edit_route/'+str(rou.id)
+            temp['url'] = '/maps/edit_route/' + str(rou.id)
             temp['class'] = 'event-info'
             temp['start'] = str((int(rou.trip_datetime.strftime("%s")) * 1000)-19800000)
             if rou.total_time[1] == ' ':
