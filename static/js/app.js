@@ -15,7 +15,7 @@ $(document).ready(function() {
             success: function(data, textStatus, jqXHR) {
                 if ( data.code == 1 ) {
                     for(var i=0, appointment; appointment = data.data[i]; i++) {
-                        console.log("Appointment: ", appointment.notification_required);
+                        console.log("Appointment: ", appointment);
                         if (appointment.notification_required) {
                             var cur_dt_in_secs = Math.floor((new Date()).getTime() / 1000);
                             var given_dt_in_secs = Math.floor((new Date(appointment.start_datetime)).getTime() / 1000);
@@ -23,8 +23,17 @@ $(document).ready(function() {
                             var diff = (given_dt_in_secs - cur_dt_in_secs);
                             var required_diff = (appointment.notification_time * 60);
 
-                            if ( diff >= 0 && diff <= required_diff ) {
-                                $.notify("You have an appointment " + appointment.title + " on " + appointment.start_datetime, 'info');
+                            console.log(diff, required_diff);
+                            if ( diff >= 0 ) {
+                                if ( diff <= required_diff ) {
+                                    $.notify("You have an appointment " + appointment.title + " on " + appointment.start_datetime, 'info');
+                                } else {
+                                    console.log((diff - required_diff)/60);
+                                    setTimeout(function(appointment){
+                                        console.log(appointment);
+                                        $.notify("You have an appointment " + appointment.title + " on " + appointment.start_datetime, 'info');
+                                    }, (diff - required_diff)*1000, appointment);
+                                }
                             }
                         } else {
                             console.log("Notification not required");
