@@ -316,8 +316,10 @@ class UsersCreateView(View):
             initial_data = {
                 'email':user.email,
                 'first_name':user.first_name,
-                'last_name':user.last_name
+                'last_name':user.last_name,
+                'is_active':user.is_active
             }
+            print initial_data
             form = UsersCreateForm(user=request.user,
                         instance=user.user_profiles, initial=initial_data)
         else:
@@ -344,23 +346,23 @@ class UsersCreateView(View):
             form = UsersCreateForm(data=request.POST, user=request.user)
 
         if form.is_valid():
-            print "Form Valid"
 
-            # generate password
-            new_password = self._generate_password(10)
-            print new_password
+            if not user:
+                # generate password
+                new_password = self._generate_password(10)
 
             # save user with password
             if user:
                 form.instance.user.first_name = form.cleaned_data['first_name']
                 form.instance.user.last_name = form.cleaned_data['last_name']
+                form.instance.user.is_active = form.cleaned_data.get('is_active', False)
                 form.instance.user.save()
             else:
                 new_user = User(email=form.cleaned_data['email'], username=form.cleaned_data['email'])
                 new_user.first_name = form.cleaned_data['first_name']
                 new_user.last_name = form.cleaned_data['last_name']
                 new_user.password = make_password(new_password)
-                new_user.is_active = False
+                new_user.is_active = form.cleaned_data.get('is_active', False)
                 new_user.save()
 
                 # save user profile
@@ -373,13 +375,15 @@ class UsersCreateView(View):
                 form.instance.occupation = " "
             user_profile = form.save()
 
-            if not form.instance.user:
+            if not user:
                 # send password email with token
                 url = '%s/accounts/login/%s/' % (settings.SERVER_URL, user_profile.token)
                 message = 'Please login using this link %s with password %s' % (url, new_password)
 
                 send_mail('Login Link', message, settings.EMAIL_HOST_USER,
                     [str(new_user.email)], fail_silently=False)
+
+            return redirect('/accounts/users/')
         else:
             print form.errors
 

@@ -37,6 +37,13 @@
                 </div>
             </div>
             <div class="field-row">
+                <label>{{ form.is_active.label }}</label>
+                <div class="field">
+                {{ form.is_active }}
+                {% if form.is_active.errors %}{{ form.is_active.errors }}{% endif %}
+                </div>
+            </div>
+            <div class="field-row">
                 <label>{{ form.phone_number.label }}</label>
                 <div class="field">
                 {{ form.phone_number }}

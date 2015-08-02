@@ -99,44 +99,39 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class UsersCreateForm(forms.ModelForm):
-  first_name = forms.CharField()
-  last_name = forms.CharField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    is_active = forms.BooleanField(required=False)
 
-  email = forms.EmailField()
-  # password = forms.CharField(widget=forms.PasswordInput)
-  # confirm_password = forms.CharField(widget=forms.PasswordInput)
-
-  def __init__(self, user, *args, **kwargs):
-    super(UsersCreateForm, self).__init__(*args, **kwargs)
-    self.user = user
-    if self.user.is_authenticated() and self.user.user_profiles.user_role == 'admin':
-      self.fields['user_role'].choices = [(u'employee','Employee')]
-    else:
-      self.fields['user_role'].choices = [(u'','------'), (u'admin','Admin'), (u'employee','Employee')]
+    def __init__(self, user, *args, **kwargs):
+        super(UsersCreateForm, self).__init__(*args, **kwargs)
+        self.user = user
+        if self.user.is_authenticated() and self.user.user_profiles.user_role == 'admin':
+          self.fields['user_role'].choices = [(u'employee','Employee')]
+        else:
+          self.fields['user_role'].choices = [(u'','------'), (u'admin','Admin'), (u'employee','Employee')]
 
     def clean_email(self):
-        try:
-            user = User.objects.get(username=self.cleaned_data['email'])
-        except:
-            pass
-        else:
+        email = self.cleaned_data.get("email", False)
+        if User.objects.filter(email=email).exists() and not self.user:
             raise forms.ValidationError("Email already exists.")
-        return self.cleaned_data['email']
+        return email
 
-  class Meta:
-    model = UserProfiles
-    exclude = ('user', 'admin', 'token', 'admin_status', 'occupation', 'company_name')
+    class Meta:
+        model = UserProfiles
+        exclude = ('user', 'admin', 'token', 'admin_status', 'occupation', 'company_name')
 
 
 class UsersLoginForm(forms.Form):
-  old_password = forms.CharField(widget=forms.PasswordInput)
-  password = forms.CharField(widget=forms.PasswordInput)
-  confirm_password = forms.CharField(widget=forms.PasswordInput)
+    old_password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
 
-  def clean(self):
-    if any(self.errors):
-      return
+    def clean(self):
+        if any(self.errors):
+          return
 
-    if not self.cleaned_data['password'] == self.cleaned_data['confirm_password']:
-      raise forms.ValidationError('Password didn\'t match')
-    return self.cleaned_data
+        if not self.cleaned_data['password'] == self.cleaned_data['confirm_password']:
+          raise forms.ValidationError('Password didn\'t match')
+        return self.cleaned_data
