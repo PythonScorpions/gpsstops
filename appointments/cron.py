@@ -1,8 +1,8 @@
 '''
 '''
 from django.conf import settings
-
 from django_cron import CronJobBase, Schedule
+from django.template import loader, Context
 
 from pyapns.apns import APNs, Frame, Payload
 
@@ -116,6 +116,20 @@ class NotificationsCronJob(CronJobBase):
                 print "Dates not matched."
         return False
 
+    def _send_email(self, template, context, title, email):
+        template = loader.get_template(template)
+        context = Context(context)
+        send_mail(title, template.render(context),
+            settings.EMAIL_HOST_USER, [str(email)], fail_silently=False)
+
+    def _send_appointment_email(self, appointment):
+        self._send_email('email/appointments.email', {'appointment':appointment},
+            'Appointment Notification', appointment.user.email)
+
+    def _send_task_email(self, task):
+        self._send_email('email/task.email', {'task':task},
+            'Task Notification', task.user.email)
+
     def _send_appointments_notifications(self):
         ''' Send notifications for all appointments '''
         appointments = Appointments.objects \
@@ -154,11 +168,13 @@ class NotificationsCronJob(CronJobBase):
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
+                        self._send_appointment_email(appointment)
                         AppointmentNotification.objects \
                         .create(appointment=appointment, flag=True)
                     elif device.device_type.lower() == 'android':
                         self._send_android_notifications('Appointment', message,
                             device.device_token)
+                        self._send_appointment_email(appointment)
                         AppointmentNotification.objects \
                         .create(appointment=appointment, flag=True)
                     else:
@@ -200,10 +216,12 @@ class NotificationsCronJob(CronJobBase):
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
+                        self._send_task_email(task)
                         TaskNotification.objects.create(task=task, flag=True)
                     elif device.device_type.lower() == 'android':
                         self._send_android_notifications('Task', message,
                             device.device_token)
+                        self._send_task_email(task)
                         TaskNotification.objects.create(task=task, flag=True)
                     else:
                         print "Device type not found. Device: %s.... Task: %s" % (

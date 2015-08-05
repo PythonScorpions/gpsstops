@@ -242,9 +242,11 @@ class Add_route_prime(View):
             today_routes = Route.objects.filter(user=request.user)
             final_routes = False
             for route in today_routes:
-                if route.trip_datetime.day == today.day and route.trip_datetime.year == today.year and route.trip_datetime.month == today.month:
-                    final_routes = True
-                    break
+                if route.trip_datetime.day == today.day and \
+                    route.trip_datetime.year == today.year and \
+                    route.trip_datetime.month == today.month:
+                        final_routes = True
+                        break
 
             if final_routes:
                 url_to_direct = '/maps/routes/'

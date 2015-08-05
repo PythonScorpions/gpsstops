@@ -1,0 +1,18 @@
+Dear {{appointment.user.first_name}},
+
+This is the notification for appointment:
+
+Appointment Title: {{appointment.title}}
+
+Appointment Date / Time:  {{appointment.start_date|date:'%F %n%S %Y'}}  / {{appointment.start_date|date:'%P'}}
+
+Time Zone:  {{appointment.timezone}}
+
+Where: {{appointment.location}}
+
+Description:  {{appointment.description}}
+
+
+Sincerely,
+DM Tech Solutions LLC
+info@dmtechsoltuions.com

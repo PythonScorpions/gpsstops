@@ -780,3 +780,44 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
         self.response.status_code = 200
         self.response.render()
         return self.response
+
+
+class AgendaView(APIView):
+    def get(self, request, *args, **kwargs):
+        form = QueryForm(self.request.query_params)
+
+        if form.is_valid():
+            user = form.cleaned_data.get('user',0)
+            given_date = form.cleaned_data.get('date', None)
+
+            if not given_date:
+                return Response({'code':0, 'status':'error',
+                            'message':'Invalid date format.'})
+
+            agenda = []
+
+            appointments = Appointments.objects \
+                            .filter(user=user) \
+                            .filter(start_datetime__gte=given_date)
+            for appointment in appointments:
+                agenda.append({
+                    'id':appointment.id,
+                    'title':appointment.title,
+                    'date':appointment.start_datetime.date(),
+                    'type':'appointments'
+                })
+
+            tasks = Task.objects \
+                      .filter(user=user) \
+                      .filter(due_date__gte=given_date)
+            for task in tasks:
+                agenda.append({
+                    'id':task.id,
+                    'title':task.title,
+                    'date':task.due_date.date(),
+                    'type':'task'
+                })
+
+            return Response({'code': 1, 'status': 200, 'data':agenda})
+        else:
+            return Response({'code':0, 'status':'error', 'message':form.errors})

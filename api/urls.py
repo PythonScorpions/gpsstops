@@ -35,4 +35,5 @@ urlpatterns = patterns("api.views",
 
 
    url(r'^', include(router.urls)),
+   url(r'agenda/$', AgendaView.as_view(), name='agendas')
 )

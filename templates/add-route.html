@@ -1494,7 +1494,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                         <form class="manual_view" name="create_route_form" action="{% url 'create_route' %}" method="POST">
                                         {% csrf_token %}
                                             <h3>Route / Trip Plan</h3>
-                                            <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
+                                            <a href="/route/add/" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
 
                                             <span class="error_msg" style="display:none; color: red; font-size: 13px;">

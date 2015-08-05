@@ -1,0 +1,16 @@
+Dear {{task.user.first_name}},
+
+This is the notification for Task:
+
+Task Title: {{task.title}}
+
+Due Date / Time:  {{task.due_date|date:'%F %n%S %Y'}} / {{task.due_date|date:'%P'}}
+
+Time Zone:  {{task.timezone}}
+
+Description:  {{task.note}}
+
+
+Sincerely,
+DM Tech Solutions LLC
+info@dmtechsoltuions.com
