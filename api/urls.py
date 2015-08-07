@@ -13,6 +13,7 @@ router.register(r'appointments', AppointmentsViewSet, base_name='Appointments')
 router.register(r'task', TaskViewSet, base_name='Task')
 router.register(r'contact', ContactViewSet, base_name='Contact')
 router.register(r'contact_group', ContactGroupViewSet, base_name='ContactGroup')
+router.register(r'users', UsersViewSet, base_name='Users')
 
 
 urlpatterns = patterns("api.views",

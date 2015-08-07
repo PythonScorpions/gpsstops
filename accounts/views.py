@@ -17,7 +17,7 @@ from maps.models import *
 from maps.views import custom_login_required
 
 from os import urandom
-import datetime, random
+import datetime, random, string
 
 
 class IndexView(View):

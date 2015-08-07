@@ -3,6 +3,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.hashers import make_password
+from django.core.mail import send_mail
+from django.conf import settings
 
 from rest_framework import serializers
 from rest_framework import exceptions, serializers
@@ -10,6 +13,9 @@ from rest_framework import exceptions, serializers
 from accounts.models import UserProfiles
 from appointments.models import *
 from maps.models import *
+
+from os import urandom
+import datetime, random, string
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -254,3 +260,136 @@ class ContactGroupSerializer(serializers.ModelSerializer):
         )
         return contact_group
 
+
+class UserObject(object):
+    def __init__(self, user=None, *args, **kwargs):
+        if user:
+            self.id = user.id
+            self.admin = user.user_profiles.admin.id
+            self.first_name = user.first_name
+            self.last_name = user.last_name
+            self.email = user.email
+            self.user_role = user.user_profiles.user_role
+            self.is_active = user.is_active
+            self.phone_number = user.user_profiles.phone_number
+            self.address = user.user_profiles.address
+            self.city = user.user_profiles.city
+            self.state = user.user_profiles.state
+            self.zip_code = user.user_profiles.zip_code
+            self.country = user.user_profiles.country.name
+        else:
+            self.admin = kwargs.get('admin', None)
+            self.first_name = kwargs.get('first_name', None)
+            self.last_name = kwargs.get('last_name', None)
+            self.email = kwargs.get('email', None)
+            self.user_role = kwargs.get('user_role', None)
+            self.is_active = kwargs.get('is_active', None)
+            self.phone_number = kwargs.get('phone_number', None)
+            self.address = kwargs.get('address', None)
+            self.city = kwargs.get('city', None)
+            self.state = kwargs.get('state', None)
+            self.zip_code = kwargs.get('zip_code', None)
+            self.country = kwargs.get('country', None)
+
+
+class UsersSerializer(serializers.Serializer):
+    admin = serializers.IntegerField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
+    user_role = serializers.CharField()
+    is_active = serializers.BooleanField()
+    phone_number = serializers.CharField()
+    address = serializers.CharField()
+    city = serializers.CharField()
+    state = serializers.CharField()
+    zip_code = serializers.CharField()
+    country = serializers.CharField()
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists() and not self.instance:
+            raise serializers.ValidationError("Email already exists.")
+        return value
+
+    def validate_admin(self, value):
+        try:
+            admin = User.objects.get(pk=value)
+        except:
+            pass
+        else:
+            if admin.user_profiles.user_role in ['super_admin','admin']:
+                return admin
+            else:
+                raise serializers.ValidationError("Admin doesn't have required permissions.")
+        raise serializers.ValidationError("Admin does not exists.")
+
+    def create(self, validated_data):
+        # generate password
+        new_password = self._generate_password(10)
+
+        # save user with password
+        new_user = User(email=validated_data['email'], username=validated_data['email'])
+        new_user.first_name = validated_data['first_name']
+        new_user.last_name = validated_data['last_name']
+        new_user.password = make_password(new_password)
+        new_user.is_active = validated_data.get('is_active', False)
+        new_user.save()
+        self.user = new_user
+
+        # save user profile
+        new_token = self._generate_token()
+        user_profile = UserProfiles(
+            user = new_user,
+            admin_status = 'enable',
+            token = new_token,
+            admin = validated_data['admin'],
+            company_name = " ",
+            occupation = " ",
+            user_role = validated_data['user_role'],
+            phone_number = validated_data['phone_number'],
+            address = validated_data['address'],
+            city = validated_data['city'],
+            state = validated_data['state'],
+            zip_code = validated_data['zip_code'],
+            country = validated_data['country']
+        )
+        user_profile.save()
+
+        # send password email with token
+        url = '%s/accounts/login/%s/' % (settings.SERVER_URL, user_profile.token)
+        message = 'Please login using this link %s with password %s' % (url, new_password)
+
+        send_mail('Login Link', message, settings.EMAIL_HOST_USER,
+            [str(new_user.email)], fail_silently=False)
+
+        return UserObject(new_user)
+
+    def update(self, instance, validated_data):
+        # print "update", instance.user_profiles
+        instance.first_name = validated_data['first_name']
+        instance.last_name = validated_data['last_name']
+        instance.is_active = validated_data['is_active']
+        instance.save()
+
+        user_profile = instance.user_profiles
+        user_profile.user_role = validated_data['user_role']
+        user_profile.phone_number = validated_data['phone_number']
+        user_profile.address = validated_data['address']
+        user_profile.city = validated_data['city']
+        user_profile.state = validated_data['state']
+        user_profile.zip_code = validated_data['zip_code']
+        user_profile.country = validated_data['country']
+        user_profile.save()
+
+        return UserObject(instance, validated_data)
+
+    def _generate_token(self):
+        alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
+        return ''.join([random.choice(alphabet) for x in xrange(30)])
+
+    def _generate_password(self, length):
+        if not isinstance(length, int) or length < 8:
+            raise ValueError("temp password must have positive length")
+
+        chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+        return "".join([chars[ord(c) % len(chars)] for c in urandom(length)])

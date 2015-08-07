@@ -821,3 +821,43 @@ class AgendaView(APIView):
             return Response({'code': 1, 'status': 200, 'data':agenda})
         else:
             return Response({'code':0, 'status':'error', 'message':form.errors})
+
+
+class UsersViewSet(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk,
+                        user_profiles__admin__id=request.query_params['admin'])
+        except:
+            pass
+        else:
+            data = UserObject(user).__dict__
+            return Response({'code':1, 'status':'success', 'data':data})
+        return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
+
+    def create(self, request):
+        serializer = UsersSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            data = serializer.data
+            data['id'] = serializer.user.id
+            return Response({'code':1, 'status':'success', 'data':data})
+        else:
+            return Response({'code':0, 'status':'error', 'data':serializer.errors})
+
+    def update(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk,
+                        user_profiles__admin__id=request.data['admin'])
+        except:
+            pass
+        else:
+            serializer = UsersSerializer(data=request.data, instance=user)
+            if serializer.is_valid():
+                serializer.save()
+                data = serializer.data
+                data['id'] = user.id
+                return Response({'code':1, 'status':'success', 'data':data})
+            else:
+                return Response({'code':0, 'status':'error', 'data':serializer.errors})
+        return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
