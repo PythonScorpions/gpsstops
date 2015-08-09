@@ -306,6 +306,9 @@ class UsersSerializer(serializers.Serializer):
     zip_code = serializers.CharField()
     country = serializers.CharField()
 
+    def to_representation(self, obj):
+        return UserObject(obj).__dict__
+
     def validate_email(self, value):
         if User.objects.filter(email=value).exists() and not self.instance:
             raise serializers.ValidationError("Email already exists.")
@@ -362,7 +365,7 @@ class UsersSerializer(serializers.Serializer):
         send_mail('Login Link', message, settings.EMAIL_HOST_USER,
             [str(new_user.email)], fail_silently=False)
 
-        return UserObject(new_user)
+        return new_user
 
     def update(self, instance, validated_data):
         # print "update", instance.user_profiles
@@ -381,7 +384,7 @@ class UsersSerializer(serializers.Serializer):
         user_profile.country = validated_data['country']
         user_profile.save()
 
-        return UserObject(instance, validated_data)
+        return instance
 
     def _generate_token(self):
         alphabet = [c for c in string.letters + string.digits if ord(c) < 128]

@@ -193,29 +193,41 @@ class GetAuthToken(APIView):
                     device_token=serializer.validated_data['device_token'],
                     device_type=serializer.validated_data['device_type'],
                 )
-                return Response({'code': 1, 'status': 200, 'Data': {'user_id': user.id},
-                                 'message': 'User is Logged In'})
+                return Response({'code': 1, 'status': 200,
+                    'data': UserObject(user).__dict__, 'message': 'User is Logged In'})
 
         return Response({'code': 0, 'status': 200, 'Data': 'Null',
                              'message': 'Wrong Credentials'})
 
 
 class CurrentUser(APIView):
-
     def get(self, request, *args, **kwargs):
-
-        user_id = self.kwargs['pk']
         try:
-            user_data = User.objects.get(id=int(user_id))
-            serializer = UserSerializer(user_data)
-            profile_data = UserProfiles.objects.get(user=user_data)
-            profile_serializer = UserProfileSerializer(profile_data)
-            final_data = dict(serializer.data.items() + profile_serializer.data.items())
-            final_data['name'] = user_data.first_name
-            final_data['user_id'] = user_data.id
-            return Response({'code': 1, 'status': 200, 'Data': final_data, 'message': 'current user details'})
+            user = User.objects.get(pk=self.kwargs['pk'])
         except:
-            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+            pass
+        else:
+            return Response({
+                'code': 1,
+                'status': 'success',
+                'data': UserObject(user).__dict__,
+                'message': 'current user details'
+            })
+        return Response({'code': 0, 'status': 'error', 'message': 'User does not exist'})
+
+        # user_id = self.kwargs['pk']
+        # try:
+        #     user_data = User.objects.get(id=int(user_id))
+        #     serializer = UserSerializer(user_data)
+        #     profile_data = UserProfiles.objects.get(user=user_data)
+        #     profile_serializer = UserProfileSerializer(profile_data)
+        #     final_data = dict(serializer.data.items() + profile_serializer.data.items())
+        #     final_data['name'] = user_data.first_name
+        #     final_data['user_id'] = user_data.id
+
+        #     return Response({'code': 1, 'status': 200, 'Data': final_data, 'message': 'current user details'})
+        # except:
+        #     return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
 
 
 class LogoutUser(APIView):
@@ -824,6 +836,18 @@ class AgendaView(APIView):
 
 
 class UsersViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+        try:
+            user = User.objects.get(pk=request.query_params.get('user'))
+        except:
+            pass
+        else:
+            queryset = User.objects.filter(user_profiles__admin=user)
+            serializer = UsersSerializer(queryset, many=True)
+            return Response({'code':1, 'status':'success', 'data':serializer.data})
+        return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
+
     def retrieve(self, request, pk=None):
         try:
             user = User.objects.get(pk=pk,
@@ -843,6 +867,7 @@ class UsersViewSet(viewsets.ViewSet):
             data['id'] = serializer.user.id
             return Response({'code':1, 'status':'success', 'data':data})
         else:
+            print serializer.errors
             return Response({'code':0, 'status':'error', 'data':serializer.errors})
 
     def update(self, request, pk=None):

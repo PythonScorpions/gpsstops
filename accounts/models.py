@@ -41,7 +41,7 @@ class UserProfiles(models.Model):
     admin = models.ForeignKey(User, blank=True, null=True)
 
 
-    def __unicode(self):
+    def __unicode__(self):
         return u'%s' % self.user
 
     def random_key(self):
@@ -60,3 +60,15 @@ class RegistratedDevice(models.Model):
     user = models.ForeignKey(User)
     device_token = models.CharField(max_length=300)
     device_type = models.CharField(max_length=100)
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.CharField(max_length=300, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    state = models.CharField(max_length=100, null=True, blank=True)
+    zip_code = models.CharField(max_length=30, null=True, blank=True)
+    country = CountryField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
