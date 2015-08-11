@@ -55,8 +55,11 @@ class RegisterForm(forms.ModelForm):
        user.is_active = False
        user.password = make_password(password)
        user.save()
+
        proform.user = user
        proform.admin_status = 'enable'
+       proform.admin = user
+       proform.user_role = 'super_admin'
        proform.save()
        return proform
 
@@ -105,6 +108,7 @@ class UsersCreateForm(forms.ModelForm):
     is_active = forms.BooleanField(required=False)
 
     def __init__(self, user, *args, **kwargs):
+
         super(UsersCreateForm, self).__init__(*args, **kwargs)
         self.user = user
         if self.user.is_authenticated() and self.user.user_profiles.user_role == 'admin':
@@ -140,3 +144,24 @@ class UsersLoginForm(forms.Form):
         if not self.cleaned_data['password'] == self.cleaned_data['confirm_password']:
           raise forms.ValidationError('Password didn\'t match')
         return self.cleaned_data
+
+
+class RouteAssignmentForm(forms.Form):
+    user = forms.IntegerField(widget=forms.widgets.Select())
+    is_editable = forms.BooleanField(initial=True)
+
+    def __init__(self, user, *args, **kwargs):
+        super(RouteAssignmentForm, self).__init__(*args, **kwargs)
+
+        users_choices = [(user.id, 'Self')]
+        for u in User.objects.filter(user_profiles__admin=user):
+            users_choices.append((u.id, '%s %s' % (u.first_name, u.last_name)))
+        self.fields['user'].widget.choices = users_choices
+
+    def clean_user(self):
+      try:
+        user = User.objects.get(pk=self.cleaned_data['user'])
+      except:
+        raise forms.ValidationError("Invalid user.")
+      else:
+        return user

@@ -1560,6 +1560,16 @@ function optimized_view(){
                                             <h3>Route / Trip Plan</h3>
                                             <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
+                                            {% if user.user_profiles.user_role == "super_admin" or user.user_profiles.user_role == "admin" %}
+                                            <div class="field">
+                                                <label>Assign to:</label>
+                                                {{form.user}}
+                                            </div>
+                                            <div class="field">
+                                                <label>Is editable:</label>
+                                                {{form.is_editable}}
+                                            </div>
+                                            {% endif %}
 
                                             <span class="error_msg" style="display:none; color: red; font-size: 13px;">
                                                One of your Locations is Invalid. Please Enter Valid Location

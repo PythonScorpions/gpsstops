@@ -15,6 +15,9 @@ class Route(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
+    is_editable = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, related_name='route_created_by', null=True)
+
     def __unicode(self):
         return u'%s' % self.trip_title
 

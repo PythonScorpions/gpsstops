@@ -90,6 +90,7 @@ class LoginView(TemplateView):
             # message = ''
             email = request.POST['email']
             password = request.POST['password']
+            print email, password
             user = authenticate(username=email, password=password)
 
             if user is not None:
@@ -252,6 +253,7 @@ class Add_route_prime(View):
                 url_to_direct = '/maps/routes/'
             else:
                 url_to_direct = '/route/add/'
+                form = RouteAssignmentForm(user=request.user)
 
         active = "maps"
         flag="maps"

@@ -1,14 +1,19 @@
+'''
+'''
 from django.shortcuts import render
 from django.views.generic import TemplateView, UpdateView, View
 from django.shortcuts import render_to_response, redirect, render
-from maps.models import *
-import datetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
 from django.contrib import messages
+
+from accounts.forms import *
+from maps.models import *
+
+import datetime
 
 
 def custom_login_required(f):
@@ -69,9 +74,18 @@ class Create_Route(View):
         end_note_location = request.POST['end_note_location']
         latitude_last = request.POST['latitude_last']
         longitude_last = request.POST['longitude_last']
-        route_obj = Route(user=request.user, trip_title=trip_title, trip_datetime=trip_datetime,
-                          total_distance=total_distance, total_time=total_time,
-                          optimized_total_distance=total_distance_opt, optimized_total_time=total_time_opt)
+
+        form = RouteAssignmentForm(data=request.POST, user=request.user)
+        if not form.is_valid():
+            return redirect('/maps/create_route/?message=' + str(form.errors))
+
+        route_obj = Route(
+            user=form.cleaned_data['user'], trip_title=trip_title,
+            trip_datetime=trip_datetime, total_distance=total_distance,
+            total_time=total_time, optimized_total_distance=total_distance_opt,
+            optimized_total_time=total_time_opt,
+            is_editable=form.cleaned_data['is_editable'],
+            created_by=request.user)
         route_obj.save()
 
         total_waypoint = int(request.POST['total_waypoint'])
@@ -132,6 +146,7 @@ class Edit_Route(View):
 
     @method_decorator(custom_login_required)
     def get(self, request, **kwargs):
+
         print "came in to get"
         id = int(self.kwargs['id'])
         route_obj = Route.objects.get(id=id)
@@ -149,10 +164,18 @@ class Edit_Route(View):
         today = datetime.date.today()
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=today).exclude(id=id)
 
+        form = RouteAssignmentForm(user=request.user,
+                    initial={'user':route_obj.user.id, 'is_editable':route_obj.is_editable})
+        print route_obj.user, route_obj.is_editable
+
         return render(request, self.template1, locals())
 
     @method_decorator(custom_login_required)
     def post(self, request, id):
+        form = RouteAssignmentForm(data=request.POST, user=request.user)
+        if not form.is_valid():
+            return redirect('?message=' + str(form.errors))
+
         print "came in POST"
         trip_title = request.POST['trip_title']
         trip_datetime = datetime.datetime.strptime(str(request.POST['trip_datetime']), "%b %d,%Y %I:%M %p")
@@ -188,6 +211,8 @@ class Edit_Route(View):
         route_obj.total_time = total_time
         route_obj.optimized_total_time = total_time_opt
         route_obj.optimized_total_distance = total_distance_opt
+        route_obj.user = form.cleaned_data['user']
+        route_obj.is_editable = form.cleaned_data['is_editable']
 
         route_obj.save()
 

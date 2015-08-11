@@ -48,12 +48,14 @@ class CreateUser(APIView):
                 user_data.password = make_password(request.data['password'])
                 user_data.is_active = False
                 user_data.save()
-                user_profile_data = UserProfiles(user=user_data, address=request.data['address'],
-                                                 city=request.data['city'], state=request.data['state'],
-                                                 zip_code=request.data['zip_code'], country=request.data['country'],
-                                                 phone_number=request.data['phone_number'],
-                                                 occupation=request.data['occupation'],
-                                                 company_name=request.data['company_name'], admin_status='enable')
+                user_profile_data = UserProfiles(
+                    user=user_data, address=request.data['address'],
+                    city=request.data['city'], state=request.data['state'],
+                    zip_code=request.data['zip_code'], country=request.data['country'],
+                    phone_number=request.data['phone_number'],
+                    occupation=request.data['occupation'],
+                    company_name=request.data['company_name'], admin_status='enable',
+                    admin=user_data, user_role='super_admin')
                 alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
                 user_profile_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
                 user_profile_data.admin_status = 'enable'
