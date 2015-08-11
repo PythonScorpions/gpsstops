@@ -154,7 +154,7 @@ class RouteAssignmentForm(forms.Form):
         super(RouteAssignmentForm, self).__init__(*args, **kwargs)
 
         users_choices = [(user.id, 'Self')]
-        for u in User.objects.filter(user_profiles__admin=user):
+        for u in User.objects.filter(user_profiles__admin=user).exclude(pk=user.id).distinct():
             users_choices.append((u.id, '%s %s' % (u.first_name, u.last_name)))
         self.fields['user'].widget.choices = users_choices
 
