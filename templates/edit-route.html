@@ -1565,7 +1565,7 @@ function optimized_view(){
                                                 <label>Assign to:</label>
                                                 {{form.user}}
                                             </div>
-                                            <div class="field">
+                                            <div class="field editable">
                                                 <label>Is editable:</label>
                                                 {{form.is_editable}}
                                             </div>
@@ -1771,6 +1771,16 @@ function optimized_view(){
         </div>
     </div>
 </div>
+
+{% if not route_obj.is_editable %}
+<script type="text/javascript">
+$(function() {
+    // alert("hello");
+    $(".editable, .add_more_waypoint").hide();
+    $("input, select, textarea").attr("disabled", "disabled");
+});
+</script>
+{% endif %}
 
 <script type="text/javascript">
 jQuery.browser = {};

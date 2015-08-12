@@ -148,7 +148,7 @@ class UsersLoginForm(forms.Form):
 
 class RouteAssignmentForm(forms.Form):
     user = forms.IntegerField(widget=forms.widgets.Select())
-    is_editable = forms.BooleanField(initial=True)
+    is_editable = forms.BooleanField(initial=True, required=False)
 
     def __init__(self, user, *args, **kwargs):
         super(RouteAssignmentForm, self).__init__(*args, **kwargs)
