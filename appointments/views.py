@@ -12,7 +12,9 @@ import json, datetime
 class AppointmentView(View):
 
     def _check_editable_permission(self, appointment, user):
-        if (appointment.created_by == user) or \
+        if (appointment.created_by == user.user_profiles.admin) or \
+            (appointment.created_by.user_profiles.admin == user) or \
+            (appointment.created_by == user) or \
             (appointment.user == user and appointment.is_editable):
                 return True
         return False
@@ -108,7 +110,9 @@ event_view = EventView.as_view()
 class TaskView(View):
 
     def _check_editable_permission(self, task, user):
-        if (task.created_by == user) or \
+        if (task.created_by == user.user_profiles.admin) or \
+            (task.created_by.user_profiles.admin == user) or \
+            (task.created_by == user) or \
             (task.user == user and task.is_editable):
                 return True
         return False

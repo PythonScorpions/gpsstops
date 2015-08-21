@@ -491,12 +491,30 @@ class OptimizedEditRouteApi(APIView):
 
 class Events(APIView):
 
+    def _get_objects(self, user, model_class):
+        if user.user_profiles.user_role == "super_admin":
+            objects = model_class.objects \
+                        .filter(
+                            Q(user=user) |
+                            Q(user__user_profiles__admin=user) |
+                            Q(user__user_profiles__admin__user_profiles__admin=user)
+                        )
+        elif user.user_profiles.user_role == "admin":
+            objects = model_class.objects \
+                        .filter(
+                            Q(user=user) |
+                            Q(user__user_profiles__admin=user) |
+                            Q(user__user_profiles__admin=user.user_profiles.admin)
+                        )
+        else:
+            objects = model_class.objects.filter(user=user)
+        return objects
+
     def get(self, request, *args, **kwargs):
         user_id = request.user.id
         events = []
 
-        routes = Route.objects \
-                 .filter(Q(user=request.user) | Q(user__user_profiles__admin=request.user))
+        routes = self._get_objects(request.user, Route)
         for idx, rou in enumerate(routes):
             temp = dict()
             temp['id'] = str(rou.id)
@@ -530,8 +548,7 @@ class Events(APIView):
             temp['route'] = 'true'
             events.append(temp)
 
-        appointments = Appointments.objects \
-                        .filter(Q(user=request.user) | Q(user__user_profiles__admin=request.user))
+        appointments = self._get_objects(request.user, Appointments)
         for appointment in appointments:
             temp = {}
             temp['id'] = appointment.id
@@ -542,8 +559,8 @@ class Events(APIView):
             temp['appointment'] = 'true'
             events.append(temp)
 
-        tasks = Task.objects \
-                .filter(Q(user=request.user) | Q(user__user_profiles__admin=request.user))
+
+        tasks = self._get_objects(request.user, Task)
         for task in tasks:
             temp = {}
             temp['id'] = task.id
