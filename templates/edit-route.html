@@ -1562,7 +1562,7 @@ function optimized_view(){
                                             <div>&nbsp;</div>
                                             <div class="field">
                                                 <label>Created By:</label>
-                                                {{route_by.created_by.first_name}} {{route_by.created_by.last_name}}
+                                                {{route_obj.created_by.first_name}} {{route_obj.created_by.last_name}}
                                             </div>
                                             {% if user.user_profiles.user_role == "super_admin" or user.user_profiles.user_role == "admin" %}
                                             <div class="field">
@@ -1776,7 +1776,7 @@ function optimized_view(){
     </div>
 </div>
 
-{% if not route_obj.is_editable %}
+{% if user.user_profiles.user_role == "employee" and not route_obj.is_editable %}
 <script type="text/javascript">
 $(function() {
     // alert("hello");
