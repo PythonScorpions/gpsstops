@@ -1170,7 +1170,7 @@ text-align:center;
 }
 .appointmentBlock.list .panel-body table thead tr th:first-child,
 .appointmentBlock.list .panel-body table tbody tr td:first-child {
-	width:50px;
+	width:58px;
 }
 .appointmentBlock.list .panel-body table tbody tr td {
     white-space: nowrap;
