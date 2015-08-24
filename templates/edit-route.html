@@ -1561,7 +1561,7 @@ function optimized_view(){
                                             <a href="/route/add" class="btn btn-primary margin-top15" role="button">Add New Route</a>
                                             <div>&nbsp;</div>
                                             <div class="field">
-                                                <label>Created By:</label>
+                                                <label>Created By: </label>
                                                 {{route_obj.created_by.first_name}} {{route_obj.created_by.last_name}}
                                             </div>
                                             {% if user.user_profiles.user_role == "super_admin" or user.user_profiles.user_role == "admin" %}
