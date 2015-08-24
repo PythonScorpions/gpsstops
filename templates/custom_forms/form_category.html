@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li role="presentation" class="active">
+                                <a href="{% url 'form-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Form Category
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="{% url 'forms-created' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Form Creation
+                                </a>
+                            </li>
+                        </ul>
+
+                        <br><br>
+                        <form method="post" name="categoryform">
+                        {% csrf_token %}
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px;">
+                                    <div class="field-row">
+                                        <label>Sr. No.</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 76px;">
+                                    <div class="field">
+                                        {{ serial_no|stringformat:"04d" }}
+{#                                        {{ form.serial_no }}#}
+{#                                        {% if form.serial_no.errors %}{{ form.serial_no.errors }}{% endif %}#}
+                                    </div>
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px;">
+                                    <div class="field-row">
+                                        <label>{{ form.category_name.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 21px;">
+                                    <div class="field">
+                                        {{ form.category_name }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.category_name.errors %}{{ form.category_name.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px;">
+                                    <div class="field-row">
+                                        <label>{{ form.remarks.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.remarks }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.remarks.errors %}{{ form.remarks.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li>
+
+                                </li>
+                                <li style="margin-left: 182px;">
+                                    <div class="field-row actions" style="width: 100px;">
+                <input type="submit" value="Save"/>
+            </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrapper panel panel-default" style="margin-left: 15px; margin-top: 20px;">
+        <h4 class="panel-heading">Categories</h4>
+        <div class="listBlock panel-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Category Name</th>
+                        <th>Remark</th>
+                        <th>Created on</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <td>{{ cat.serial_no|stringformat:"04d" }}</td>
+                        <td>{{ cat.category_name }}</td>
+                        <td>{{ cat.remarks }}</td>
+                        <td>{{ cat.created_at | date:'M dS Y'}}</td>
+                        <td><a href="{% url 'form-category-edit' cat.id %}">Edit</a>
+                            {% if cat.status == 'active' %}
+                                <a href="{% url 'form-category-status' cat.id %}">Deactive</a>
+                            {% else %}
+                                <a href="{% url 'form-category-status' cat.id %}">Active</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+{% load split_choices %}
+
+    <div class="appointmentBlock list">
+
+        {% if map_frm %}
+            <ul role="tablist" class="nav nav-tabs text-center">
+                <li style="font-size: 17px; font-weight: bold;">
+                    {{ map_from_name }}
+                </li>
+            </ul>
+            <div class="wrapper panel panel-default" style="margin-left: 5px; margin-top: 20px; margin-right: 5px; border-color: #A09C9C;">
+        {% endif %}
+
+        <div class="container" style="margin-top: 10px;">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-center">
+                            <li style="font-size: 17px; font-weight: bold;">
+                                {{ form_object.form_name }}
+                            </li>
+                        </ul>
+                        <br>
+
+                        <br>
+
+                        {% if user.user_profiles.get_user_role_display in form_object.input_assign_to.all|roles %}
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li style="margin-left: 20px;">
+                                <a role="button" class="btn btn-primary btn-1" href="{% url 'org-form-fields' form_object.id %}"
+                                               >Add New Entry
+                                </a>
+                            </li>
+                        </ul>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrapper panel panel-default" style="margin-left: 15px; margin-top: 20px; margin-right: 10px;">
+        <h4 class="panel-heading">Display Form Entries</h4>
+        <div class="listBlock panel-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">Sr. No.</th>
+                        {% for label in field_labels %}
+                            <th style="text-align: center">{{ label }}</th>
+                        {% endfor %}
+                        {% if form_object.allow_accept_reject == 'yes' %}
+                            <th style="text-align: center">Approved /Rejected By</th>
+                        {% endif %}
+                        {% if form_object.display_assign_allow == 'yes' or form_object.input_assign_allow == 'yes' %}
+                            <th style="text-align: center">Assigned to</th>
+                            <th style="text-align: center">Assigned By</th>
+                        {% endif %}
+                        <th style="text-align: center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in final_result.items %}
+                    <tr>
+                        <td style="white-space: inherit">{{ key|stringformat:"04d" }}</td>
+                        {% for val in value|slice:":-1" %}
+                        <td style="white-space: inherit">{{ val }}</td>
+                        {% endfor %}
+
+                        <td style="white-space: inherit">
+                            {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
+                                <a href="{% url 'edit-form-entry' value|last %}">Edit</a>
+                            {% endif %}
+                            <a href="{% url 'view-form-entry' value|last %}">View</a>
+                        </td>
+{#                            {% if frm.status == 'active' %}#}
+{#                                <a href="">Edit</a>#}
+{#                            {% else %}#}
+{#                                <a href="">View</a>#}
+{#                            {% endif %}#}
+{#                        </td>#}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if map_frm %}
+    </div>
+    {% endif %}
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}

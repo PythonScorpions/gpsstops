@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+{% load split_choices %}
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+                        <br><br>
+
+                        <div class="wrapper panel panel-default col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+
+                            <div class="form panel-body">
+                                <form method="post" name="formentry" class="org_form form-entry" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 50px; width: 34%">
+                                            <div class="field-row">
+                                                <label>Sr. No.</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 20px;">
+                                            <div class="field">
+                                                {{ serial_no|stringformat:"04d" }}
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    {% for frm_field in form_fields %}
+                                        <ul role="tablist" class="nav nav-tabs text-left">
+                                            <li style="margin-left: 50px; width: 34%">
+                                                <div class="field-row">
+                                                    <label>{{ frm_field.label }}{% if frm_field.required %}*{% endif %}</label>
+                                                </div>
+                                            </li>
+                                            <li style="margin-left: 20px; width: 27%">
+                                                <div class="field">
+                                                    {% if frm_field.field_type == 1 %}
+
+                                                        <!-- Signal Line Text -->
+                                                        <input id="id_form_name" name="field_value{{ forloop.counter0 }}" type="text"
+                                                               class="form-control required{{ forloop.counter0 }}">
+
+                                                    {% elif  frm_field.field_type == 2%}
+
+                                                        <!-- Multi Line Text -->
+                                                        <textarea name="field_value{{ forloop.counter0 }}"
+                                                                  class="form-control required{{ forloop.counter0 }}"></textarea>
+
+                                                    {% elif frm_field.field_type == 3 %}
+
+                                                        <!-- EMail -->
+                                                        <input name="field_value{{ forloop.counter0 }}" type="email"
+                                                               class="form-control required{{ forloop.counter0 }}">
+
+                                                    {% elif frm_field.field_type == 4 %}
+
+                                                        <!-- Checkboxes -->
+                                                        {% for choice in frm_field.choices|cho %}
+                                                            <input type="checkbox" name="field_value{{ forloop.parentloop.counter0 }}"
+                                                                   value="{{ choice }}"> {{ choice }} &nbsp;
+                                                        {% endfor %}
+
+                                                    {% elif frm_field.field_type == 5 %}
+
+                                                        <!-- Select box -->
+                                                        <select class="form-control required{{ forloop.counter0 }}" name="field_value{{ forloop.counter0 }}">
+                                                            {% for choice in frm_field.choices|cho %}
+                                                                <option value="{{ choice }}" class="form-control">{{ choice }}</option>
+                                                            {% endfor %}
+                                                        </select>
+
+                                                    {% elif frm_field.field_type == 6 %}
+
+                                                        <!-- Select Multiple Box -->
+                                                        <select class="form-control required{{ forloop.counter0 }}" name="field_value{{ forloop.counter0 }}"
+                                                                multiple>
+                                                            {% for choice in frm_field.choices|cho %}
+                                                                <option value="{{ choice }}" class="form-control">{{ choice }}</option>
+                                                            {% endfor %}
+                                                        </select>
+
+                                                    {% elif frm_field.field_type == 7 %}
+
+                                                        <!-- Radio Buttons -->
+                                                        {% for choice in frm_field.choices|cho %}
+                                                            <input type="checkbox" name="field_value{{ forloop.parentloop.counter0 }}"
+                                                                   value="{{ choice }}" class="radio_button"> {{ choice }} &nbsp;
+                                                        {% endfor %}
+
+                                                    {% elif frm_field.field_type == 8 %}
+
+                                                        <!-- File Upload Button -->
+                                                        <input type="file" name="field_value{{ forloop.counter0 }}"
+                                                               class="form-control required{{ forloop.counter0 }}">
+
+                                                    {% elif frm_field.field_type == 9 %}
+
+                                                        <!-- Datepicker -->
+                                                        <input type="text" name="field_value{{ forloop.counter0 }}"
+                                                               id="datepicker{{ forloop.counter0 }}"
+                                                               class="form-control required{{ forloop.counter0 }}" placeholder="Date"/>
+
+                                                    {% elif frm_field.field_type == 10 %}
+
+                                                        <!-- DateTime Picker -->
+                                                        <input type="text" name="field_value{{ forloop.counter0 }}"
+                                                               id="datetimepicker{{ forloop.counter0 }}"
+                                                               class="form-control required{{ forloop.counter0 }}"
+                                                               placeholder="Date / Time"/>
+
+                                                    {% elif frm_field.field_type == 11 %}
+
+                                                        <!-- Url Field -->
+                                                        <input type="url" name="field_value{{ forloop.counter0 }}"
+                                                               class="form-control required{{ forloop.counter0 }}">
+
+                                                    {% elif frm_field.field_type == 12 %}
+
+                                                        <!-- Number Field -->
+                                                        <input type="number" name="field_value{{ forloop.counter0 }}"
+                                                               class="form-control required{{ forloop.counter0 }}">
+
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            <li style="margin-left: 35px; width: 26%">
+                                                {% if frm_field.field_type in normal_fields %}
+                                                    <span class="error_{{ forloop.counter0 }}" style="display:none; color: red; font-size: 13px;">
+                                                        This Field cannot be blank
+                                                    </span>
+                                                {% elif frm_field.field_type in choice_fields %}
+                                                    <span class="error_{{ forloop.counter0 }}" style="display:none; color: red; font-size: 13px;">
+                                                        Atleast One Checkbox must be Selected
+                                                    </span>
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                        <br>
+                                    {% endfor %}
+
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li>
+
+                                        </li>
+                                        <li style="margin-left: 182px;">
+                                            <div class="field-row actions" style="width: 100px;">
+                                                <input type="button" onclick="check_validation()" class="btn save_route btn-primary btn-1"
+                                                       value="Save"/>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+var datepicker_fields = {{ date_pickers | safe }};
+var datetimepicker_fields = {{ datetime_pickers | safe }};
+var required_normal_fields = {{ required_normal_fields | safe }};
+var required_choice_fields = {{ required_choice_fields | safe }};
+
+function check_validation(){
+    var flag = false;
+    for(var k in required_normal_fields){
+        var class_name = '.required'+required_normal_fields[k];
+        var error_class = '.error_'+required_normal_fields[k];
+        if($(class_name).val() == '' || $(class_name).val() == null){
+            flag = true;
+            $(error_class).show();
+        }
+        else{
+            $(error_class).hide();
+        }
+    }
+    for(var l in required_choice_fields){
+        var error_choice_class = '.error_'+required_choice_fields[l];
+        var name_val = "input[name*=field_value"+required_choice_fields[l]+"]:checked";
+        if (($(name_val).length)<=0) {
+            flag = true;
+            $(error_choice_class).show();
+        }
+        else{
+            $(error_choice_class).hide();
+        }
+    }
+    if(flag == false){
+        $(".form-entry").submit();
+    }
+}
+
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+
+    $("input:checkbox").on('click', function() {
+    // in the handler, 'this' refers to the box clicked on
+        var $box = $(this);
+        if($box.attr("class") == 'radio_button') {
+            if ($box.is(":checked")) {
+
+                // the name of the box is retrieved using the .attr() method
+                // as it is assumed and expected to be immutable
+                var group = "input:checkbox[name='" + $box.attr("name") + "']";
+                // the checked state of the group/box on the other hand will change
+                // and the current value is retrieved using .prop() method
+                $(group).prop("checked", false);
+                $box.prop("checked", true);
+            } else {
+                $box.prop("checked", false);
+            }
+        }
+    });
+
+    for(i in datepicker_fields){
+        var date_id = "#datepicker"+datepicker_fields[i];
+        $(date_id).datetimepicker({
+            timepicker: false,
+            format: 'M d,Y'
+        });
+    }
+
+    for(j in datetimepicker_fields){
+        var datetime_id = "#datetimepicker"+datetimepicker_fields[j];
+        $(datetime_id).datetimepicker({
+            formatTime:'g:i A',
+            format: 'M d,Y h:i A'
+        });
+    }
+
+});
+</script>
+
+{% endblock content %}

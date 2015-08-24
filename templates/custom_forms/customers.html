@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+
+        <div class="wrapper panel panel-default" style="margin-left: 15px; margin-top: 20px;">
+        <h4 class="panel-heading">Customers</h4>
+        <div class="listBlock panel-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Customer Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cust in customers %}
+                    <tr>
+                        <td>{{ cust.name }}</td>
+                        <td><a href="{% url 'customer-forms' cust.id %}">Open Forms</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}
