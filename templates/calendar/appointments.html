@@ -13,6 +13,14 @@
             <input type="hidden" name="location" value=""/>
             <input type="hidden" name="repeat_days" value="0"/>
 
+            {% if form.instance %}
+            <div class="field-row">
+                <label>Created By</label>
+                <div class="field">
+                    {{form.instance.created_by.first_name}} {{form.instance.created_by.last_name}}
+                </div>
+            </div>
+            {% endif %}
             <div class="field-row">
                 <label>Assign To</label>
                 <div class="field">

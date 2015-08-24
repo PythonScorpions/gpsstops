@@ -11,6 +11,7 @@ from django.template import loader, RequestContext, Context
 from django.views.generic import TemplateView, UpdateView, View
 from django.utils.decorators import method_decorator
 from django.conf import settings
+from django.db.models import Q
 
 from accounts.forms import *
 from maps.models import *
@@ -284,12 +285,29 @@ class LearnMore(TemplateView):
     template_name = 'learn_more.html'
 
 
+def get_users_list(user):
+    if user.user_profiles.user_role == "super_admin":
+        users = User.objects \
+                .filter(
+                    Q(user_profiles__admin=user) |
+                    Q(user_profiles__admin__user_profiles__admin=user)
+                )
+    else:
+        users = User.objects \
+                .filter(
+                    Q(user_profiles__admin=user) |
+                    Q(user_profiles__admin=user.user_profiles.admin)
+                ) \
+                .filter(user_profiles__user_role="employee")
+
+    return users
+
 class UsersView(View):
     def get(self, request, *args, **kwargs):
         if not request.user.user_profiles.user_role in ['super_admin', 'admin']:
             return redirect('/')
 
-        users = User.objects.filter(user_profiles__admin=request.user)
+        users = get_users_list(request.user)
 
         return render(request, 'accounts/accounts_list.html', {'users':users})
 users_view = UsersView.as_view()
@@ -316,7 +334,8 @@ class UsersCreateView(View):
         user = None
         if pk:
             try:
-                user = User.objects.get(id=pk)
+                users = get_users_list(request.user)
+                user = users.get(id=pk)
             except:
                 redirect('/accounts/users/')
 
@@ -344,7 +363,8 @@ class UsersCreateView(View):
         user = None
         if pk:
             try:
-                user = User.objects.get(id=pk)
+                users = get_users_list(request.user)
+                user = users.get(id=pk)
             except:
                 redirect('/accounts/users/')
 

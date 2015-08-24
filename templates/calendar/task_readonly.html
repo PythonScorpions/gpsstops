@@ -9,6 +9,10 @@
             <table class="table table-bordered table-hover table-stripped">
                 <tbody>
                     <tr>
+                        <th>Created By</th>
+                        <td>{{task.çreated_by.first_name}} {{task.created_by.last_name}}</td>
+                    </tr>
+                    <tr>
                         <th>Assigned To</th>
                         <td>{{task.user.first_name}} {{task.user.last_name}}</td>
                     </tr>

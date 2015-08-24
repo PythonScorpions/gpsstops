@@ -9,6 +9,10 @@
             <table class="table table-bordered table-hover table-stripped">
                 <tbody>
                     <tr>
+                        <th>Created By</th>
+                        <td>{{appointment.created_by.first_name}} {{appointment.created_by.last_name}}</td>
+                    </tr>
+                    <tr>
                         <th>Assigned To</th>
                         <td>{{appointment.user.first_name}} {{appointment.user.last_name}}</td>
                     </tr>
