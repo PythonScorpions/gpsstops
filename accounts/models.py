@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save,pre_save,pre_delete
 from django.dispatch import receiver
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 
 @receiver(post_save, sender=User)
@@ -72,3 +73,131 @@ class Company(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Customer(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+
+
+class Organization(models.Model):
+    super_admin = models.OneToOneField(User, related_name='super_admin_role')
+    admins = models.ManyToManyField(User, related_name='admin_role', blank=True, null=True)
+    employees = models.ManyToManyField(User, related_name='employee_role', blank=True, null=True)
+
+
+class OrganizationRoles(models.Model):
+    role_name = models.CharField(max_length=100, blank=True, null=True)
+
+
+class CategoryForForm(models.Model):
+
+    STATUS_CHOICES = (
+        ('active', 'Activate'),
+        ('deactive', 'Deactivate'),
+    )
+
+    organization = models.ForeignKey(Organization)
+    serial_no = models.IntegerField()
+    category_name = models.CharField(max_length=200)
+    remarks = models.CharField(max_length=400)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class OrgForms(models.Model):
+
+    ASSIGN_ALLOW_CHOICES = (
+        ('yes', 'YES'),
+        ('no', 'NO'),
+    )
+
+    STATUS_CHOICES = (
+        ('active', 'Activate'),
+        ('deactive', 'Deactivate'),
+    )
+
+    form_cat = models.ForeignKey(CategoryForForm, related_name='org_category')
+    serial_no = models.IntegerField()
+    form_name = models.CharField(max_length=200)
+    input_assign_to = models.ManyToManyField(OrganizationRoles, related_name='input_assign', blank=True, null=True)
+    display_assign_to = models.ManyToManyField(OrganizationRoles, related_name='display_assign', blank=True, null=True)
+    allow_accept_reject = models.CharField(max_length=5, choices=ASSIGN_ALLOW_CHOICES, blank=True, null=True)
+    mapped_form = models.ForeignKey("self", blank=True, null=True, related_name='map_form')
+    input_assign_allow = models.CharField(max_length=5, choices=ASSIGN_ALLOW_CHOICES, blank=True, null=True)
+    display_assign_allow = models.CharField(max_length=5, choices=ASSIGN_ALLOW_CHOICES, blank=True, null=True)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+TEXT = 1
+TEXTAREA = 2
+EMAIL = 3
+CHECKBOX_MULTIPLE = 4
+SELECT = 5
+SELECT_MULTIPLE = 6
+RADIO_MULTIPLE = 7
+FILE = 8
+DATE = 9
+DATE_TIME = 10
+NUMBER = 12
+URL = 11
+
+# Names for all available field types.
+NAMES = (
+    (TEXT, _("Single line text")),
+    (TEXTAREA, _("Multi line text")),
+    (EMAIL, _("Email")),
+    (NUMBER, _("Number")),
+    (URL, _("URL")),
+    (CHECKBOX_MULTIPLE, _("Check boxes")),
+    (SELECT, _("Drop down")),
+    (SELECT_MULTIPLE, _("Multi select")),
+    (RADIO_MULTIPLE, _("Radio buttons")),
+    (FILE, _("File upload")),
+    (DATE, _("Date")),
+    (DATE_TIME, _("Date/time")),
+)
+
+
+class FormFields(models.Model):
+
+    org_form = models.ForeignKey(OrgForms, related_name='field-org-form')
+    label = models.CharField(max_length=100)
+    field_type = models.IntegerField(choices=NAMES)
+    required = models.BooleanField(default=True)
+    choices = models.CharField(max_length=5000, blank=True, null=True)
+    placeholder_text = models.CharField(null=True, blank=True, max_length=100)
+
+
+class FormEntries(models.Model):
+
+    STATUS_CHOICES = (
+        ('need_action', 'Need to take action'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+
+    org_form = models.ForeignKey(OrgForms, related_name='entry-org-form')
+    customer = models.ForeignKey(Customer, blank=True, null=True)
+    org_member = models.ForeignKey(User, blank=True, null=True, related_name='member_name')
+    serial_no = models.IntegerField()
+    entry_status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=True, null=True)
+    assigned_to = models.ForeignKey(User, blank=True, null=True, related_name='assigned_to_name')
+    assigned_by = models.ForeignKey(User, blank=True, null=True, related_name='assigned_by_name')
+    mapped_entry = models.ForeignKey("self", blank=True, null=True)
+
+
+class FormFieldEntries(models.Model):
+
+    form_entry = models.ForeignKey(FormEntries)
+    field_id = models.ForeignKey(FormFields)
+    text_value = models.CharField(max_length=500, blank=True, null=True)
+    email_value = models.EmailField(blank=True, null=True)
+    number_value = models.IntegerField(blank=True, null=True)
+    url_value = models.URLField(blank=True, null=True)
+    datetime_value = models.DateTimeField(blank=True, null=True)
+    date_value = models.DateField(blank=True, null=True)
+    file_value = models.FileField(blank=True, null=True)
+    choice_value = models.CharField(max_length=100, blank=True, null=True)

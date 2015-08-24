@@ -165,3 +165,53 @@ class RouteAssignmentForm(forms.Form):
         raise forms.ValidationError("Invalid user.")
       else:
         return user
+
+
+class CategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = CategoryForForm
+        exclude = ('status', 'created_at', 'updated_at', 'organization', 'serial_no')
+
+    # def save(self, request, **kwargs):
+    #     proform = super(CategoryForm, self).save(commit=False)
+    #     try:
+    #         last_serial_no = CategoryForForm.objects.last().serial_no
+    #         new_serial_no = last_serial_no + 1
+    #     except:
+    #         new_serial_no = 1
+    #     if request.user.user_profiles.user_role == 'admin':
+    #         org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
+    #     else:
+    #         org_obj = Organization.objects.get(super_admin__id=request.user.id)
+    #     new_category = CategoryForForm(category_name=self.cleaned_data['category_name'],
+    #                                    remarks=self.cleaned_data['remarks'],
+    #                                    organization=org_obj, status='active', serial_no=new_serial_no)
+    #     new_category.save()
+    #     return proform
+
+
+class FormForOrgForm(forms.ModelForm):
+    form_cat = forms.ChoiceField(label='Form Category')
+    mapped_form = forms.ChoiceField(label='Map with other form')
+
+    def __init__(self, user, *args, **kwargs):
+        super(FormForOrgForm, self).__init__(*args, **kwargs)
+
+        if user.user_profiles.user_role == 'admin':
+            org_obj = Organization.objects.get(super_admin=user.user_profiles.admin)
+        else:
+            org_obj = Organization.objects.get(super_admin__id=user.id)
+        cat_choices = []
+        for cat in CategoryForForm.objects.filter(organization=org_obj):
+            cat_choices.append((cat.id, cat.category_name))
+        self.fields['form_cat'].widget.choices = cat_choices
+        map_form_choices = [(0, 'None')]
+        for form_obj in OrgForms.objects.filter(form_cat__organization=org_obj):
+            map_form_choices.append((form_obj.id, form_obj.form_name))
+        self.fields['mapped_form'].widget.choices = map_form_choices
+
+    class Meta:
+        model = OrgForms
+        exclude = ('serial_no', 'status', 'created_at', 'updated_at', 'input_assign_to', 'display_assign_to',
+                   'allow_accept_reject', 'input_assign_allow', 'display_assign_allow')
