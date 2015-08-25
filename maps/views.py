@@ -11,6 +11,7 @@ from django.template import RequestContext, Context
 from django.contrib import messages
 
 from accounts.forms import *
+from accounts.utils import *
 from maps.models import *
 
 import datetime
@@ -281,12 +282,18 @@ class Routes(View):
     @method_decorator(custom_login_required)
     def get(self, request):
         if 'day' in request.GET:
-            date_selected = datetime.date(int(request.GET['year']), int(request.GET['month']), int(request.GET['day']))
+            date_selected = datetime.date(
+                int(request.GET['year']),
+                int(request.GET['month']),
+                int(request.GET['day']))
             messages.success(request, "Your Route has been saved")
         else:
             date_selected = datetime.date.today()
-        routes = Route.objects.filter(user=request.user, trip_datetime__startswith=date_selected)
+
+        routes = filter_objects_by_user(request.user, Route)
+        routes = routes.filter(trip_datetime__startswith=date_selected)
         print routes
+
         active = "maps"
         flag = "maps"
         return render_to_response(self.template1, locals(), context_instance=RequestContext(request))
@@ -323,6 +330,7 @@ class Optimized_Route(View):
         active = "maps"
         flag="maps"
         today = datetime.date.today()
+
         routes = Route.objects.filter(user=request.user, trip_datetime__startswith=today).exclude(id=id)
 
         return render(request, self.template1, locals())
