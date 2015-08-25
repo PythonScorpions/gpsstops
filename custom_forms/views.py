@@ -382,6 +382,10 @@ class DisplayFormEntries(View):
             form_object = temp_form_object.mapped_form
             map_frm = True
             map_from_name = temp_form_object.form_name
+        elif temp_form_object.map_form.all():
+            form_object = temp_form_object
+            map_frm = True
+            map_from_name = temp_form_object.map_form.all()[0].form_name
         else:
             form_object = temp_form_object
             map_frm = False
@@ -491,16 +495,17 @@ class ViewFormEntry(View):
 
     def post(self, request, pk=None, *args, **kwargs):
 
+        frm_object = FormEntries.objects.get(id=int(pk))
         try:
             assign_to_id = request.POST['assign_to']
-            frm_object = FormEntries.objects.get(id=int(pk))
             frm_object.assigned_to = User.objects.get(id=int(assign_to_id))
             frm_object.assigned_by = request.user
             frm_object.save()
         except:
             pass
 
-        return HttpResponseRedirect(reverse('display-forms'))
+        return HttpResponseRedirect(reverse('display-form-entries',
+                                            kwargs={'pk': frm_object.obj_form.id}))
 
 
 class EditFormEntry(View):
@@ -534,9 +539,12 @@ class EditFormEntry(View):
         if request.user.user_profiles.user_role == 'admin':
             print "yes it is admin who is logged in"
             org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        else:
+        elif request.user.user_profiles.user_role == 'super_admin':
             print "yes it is super admin who is logged in"
             org_obj = Organization.objects.get(super_admin__id=request.user.id)
+        else:
+            print "yes it is employee who is logged in"
+            org_obj = Organization.objects.get(employees=request.user)
 
         employees = org_obj.employees.all()
         print employees
@@ -641,7 +649,8 @@ class EditFormEntry(View):
         except:
             pass
 
-        return HttpResponseRedirect(reverse('display-forms'))
+        return HttpResponseRedirect(reverse('display-form-entries',
+                                            kwargs={'pk': field_entries[0].form_entry.org_form.id}))
 
 
 class InputForms(View):

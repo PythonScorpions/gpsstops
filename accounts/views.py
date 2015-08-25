@@ -403,15 +403,21 @@ class UsersCreateView(View):
                 form.instance.occupation = " "
 
                 # Save Admin or Employee
-                org_obj = Organization.objects.get(super_admin__id=request.user.id)
+                if request.user.user_profiles.user_role == 'admin':
+                    print "yes it is admin who is logged in"
+                    org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
+                else:
+                    print "yes it is super admin who is logged in"
+                    org_obj = Organization.objects.get(super_admin__id=request.user.id)
 
 
             user_profile = form.save()
             print user_profile.user_role
-            if user_profile.user_role == 'admin':
-                org_obj.admins.add(new_user)
-            else:
-                org_obj.employees.add(new_user)
+            if not user:
+                if user_profile.user_role == 'admin':
+                    org_obj.admins.add(new_user)
+                else:
+                    org_obj.employees.add(new_user)
 
             if not user:
                 # send password email with token
