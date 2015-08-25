@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+        {% for cat, org_form in forms_by_category.items %}
+
+            <div class="wrapper panel panel-default" style="margin-left: 15px; margin-top: 20px;">
+            <h4 class="panel-heading">Category : {{ cat }}</h4>
+                <div class="listBlock panel-body">
+                    <table class="table table-bordered table-striped table-hover">
+                        <tbody>
+                            {% for frm in org_form %}
+                            <tr>
+                                <td style="text-align: center; font-size: 18px; background-color: rgb(174, 185, 202)"><a href="{% url 'customer-form-fields' customer_id frm.id %}">{{ frm.form_name }}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}

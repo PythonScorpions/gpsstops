@@ -32,6 +32,12 @@
                         {% endif %}
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact/">Contact</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact_group/">Contact Group</a></li>
+                        {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'form-category' %}">Form Creation</a></li>
+                        {% endif %}
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'input-forms' %}">Input Forms</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'display-forms' %}">Display Forms</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'customers' %}">Customers</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sync with mobile app Options</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment Options</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment History</a></li>

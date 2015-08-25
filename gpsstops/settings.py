@@ -53,6 +53,7 @@ INSTALLED_APPS = (
 
     'maps',
     'appointments',
+    'custom_forms'
 
     # 'corsheaders',
 )
@@ -74,6 +75,10 @@ ROOT_URLCONF = 'gpsstops.urls'
 
 WSGI_APPLICATION = 'gpsstops.wsgi.application'
 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+
+MEDIA_URL = '/media/'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

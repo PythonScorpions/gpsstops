@@ -51,6 +51,10 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Organization Entry
+            user_obj = User.objects.get(id=user.user.id)
+            Organization(super_admin=user_obj).save()
+
             request.session['token'] = user.token
             message = '%s/verification/%s/' % (settings.SERVER_URL, user.token)
             print user.user.email
@@ -397,7 +401,17 @@ class UsersCreateView(View):
                 form.instance.admin = request.user
                 form.instance.company_name = " "
                 form.instance.occupation = " "
+
+                # Save Admin or Employee
+                org_obj = Organization.objects.get(super_admin__id=request.user.id)
+
+
             user_profile = form.save()
+            print user_profile.user_role
+            if user_profile.user_role == 'admin':
+                org_obj.admins.add(new_user)
+            else:
+                org_obj.employees.add(new_user)
 
             if not user:
                 # send password email with token
