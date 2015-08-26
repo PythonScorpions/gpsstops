@@ -129,7 +129,7 @@
                                         <span style="margin-left: 30px">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
                                         <br>
 
-                                        {% if user.user_profiles.get_user_role_display in field_entries.0.field_id.org_form.map_form.all.0.input_assign_to.all|roles and field_entries.0.form_entry.entry_status == 'accepted' and field_entries.0.form_entry.assigned_to == user %}
+                                        {% if user.user_profiles.get_user_role_display in field_entries.0.field_id.org_form.map_form.all.0.input_assign_to.all|roles and field_entries.0.form_entry.entry_status != 'rejected' and field_entries.0.form_entry.entry_status != 'need_action' and field_entries.0.form_entry.assigned_to == user %}
 
                                             <ul role="tablist" class="nav nav-tabs text-left">
                                                 <li>

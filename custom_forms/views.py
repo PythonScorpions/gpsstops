@@ -416,7 +416,7 @@ class DisplayFormEntries(View):
             map_frm = False
             map_from_name = ''
 
-        field_labels = [fld.label for fld in FormFields.objects.filter(org_form__id=int(pk))]
+        field_labels = [fld.label for fld in FormFields.objects.filter(org_form=form_object)]
 
         final_result = {}
         for entry in FormEntries.objects.filter(org_form=form_object):
@@ -479,13 +479,40 @@ class ViewFormEntry(View):
             print "yes it is employee who is logged in"
             org_obj = Organization.objects.get(employees=request.user)
 
-        employees = org_obj.employees.all()
-        print employees
+        frm_object = field_entries[0].form_entry.org_form
+
+        assign_to_roles = []
+
+        for inp in frm_object.input_assign_to.all():
+            if inp.role_name not in assign_to_roles:
+                assign_to_roles.append(inp.role_name)
+        for dis in frm_object.display_assign_to.all():
+            if dis.role_name not in assign_to_roles:
+                assign_to_roles.append(dis.role_name)
+
+        if frm_object.map_form.all():
+            for mapped_one in frm_object.map_form.all():
+                for inp in mapped_one.input_assign_to.all():
+                    if inp.role_name not in assign_to_roles:
+                        assign_to_roles.append(inp.role_name)
+                for dis in mapped_one.display_assign_to.all():
+                    if dis.role_name not in assign_to_roles:
+                        assign_to_roles.append(dis.role_name)
+
+        if 'Admin' in assign_to_roles and 'Employee' in assign_to_roles:
+            employees = org_obj.employees.all() | org_obj.admins.all()
+        elif 'Admin' in assign_to_roles:
+            employees = org_obj.admins.all()
+        elif 'Employee' in assign_to_roles:
+            employees = org_obj.employees.all()
+        else:
+            employees = []
 
         if field_entries[0].field_id.org_form.map_form.all():
             print True
             mapped_form_entries = FormEntries.objects.filter(mapped_entry__id=int(pk))
-            field_labels = [fld.label for fld in FormFields.objects.filter(org_form=mapped_form_entries[0].org_form)]
+            field_labels = [fld.label for fld in FormFields.objects.filter(
+                org_form=field_entries[0].form_entry.org_form.map_form.all()[0])]
             print field_labels
             final_result = {}
             for entry in mapped_form_entries:
@@ -511,6 +538,7 @@ class ViewFormEntry(View):
                 final_result[entry.serial_no] = temp
 
         else:
+            print False
             field_labels = []
             final_result = []
         return render_to_response(self.template_name, {'field_entries': field_entries, 'server_url': server_url,
