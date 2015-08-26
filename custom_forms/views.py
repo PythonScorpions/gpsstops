@@ -198,7 +198,32 @@ class FormAdd(View):
         return HttpResponseRedirect(reverse('forms-created'))
 
 
-class Customer_Data(View):
+class FormEdit(View):
+    template1 = 'custom_forms/form_edit.html'
+    # form_class = ProfileUpdateForm
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, key=None, *args, **kwargs):
+
+        org_form = OrgForms.objects.get(id=int(pk))
+
+        if request.user.user_profiles.user_role == 'admin':
+            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
+        else:
+            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+        # form = FormForOrgForm(user=request.user)
+        cat_choices = []
+        for cat in CategoryForForm.objects.filter(organization=org_obj):
+            cat_choices.append({'id': cat.id, 'name': cat.category_name})
+        map_form_choices = [{'id': 0, 'name': 'None'}]
+        for form_obj in OrgForms.objects.filter(form_cat__organization=org_obj):
+            map_form_choices.append({'id': form_obj.id, 'name': form_obj.form_name})
+        return render_to_response(self.template1, {'org_form': org_form, 'cat_choices': cat_choices,
+                                                   'map_form_choices': map_form_choices},
+                                  context_instance=RequestContext(request),)
+
+
+class CustomerData(View):
     template1 = 'custom_forms/customers.html'
     # form_class = ProfileUpdateForm
 
@@ -546,8 +571,34 @@ class EditFormEntry(View):
             print "yes it is employee who is logged in"
             org_obj = Organization.objects.get(employees=request.user)
 
-        employees = org_obj.employees.all()
-        print employees
+        frm_object = field_entries[0].form_entry.org_form
+
+        assign_to_roles = []
+
+        for inp in frm_object.input_assign_to.all():
+            if inp.role_name not in assign_to_roles:
+                assign_to_roles.append(inp.role_name)
+        for dis in frm_object.display_assign_to.all():
+            if dis.role_name not in assign_to_roles:
+                assign_to_roles.append(dis.role_name)
+
+        if frm_object.map_form.all():
+            for mapped_one in frm_object.map_form.all():
+                for inp in mapped_one.input_assign_to.all():
+                    if inp.role_name not in assign_to_roles:
+                        assign_to_roles.append(inp.role_name)
+                for dis in mapped_one.display_assign_to.all():
+                    if dis.role_name not in assign_to_roles:
+                        assign_to_roles.append(dis.role_name)
+
+        if 'Admin' in assign_to_roles and 'Employee' in assign_to_roles:
+            employees = org_obj.employees.all() | org_obj.admins.all()
+        elif 'Admin' in assign_to_roles:
+            employees = org_obj.admins.all()
+        elif 'Employee' in assign_to_roles:
+            employees = org_obj.employees.all()
+        else:
+            employees = []
 
         return render_to_response(self.template1, {'field_entries': field_entries, 'server_url': server_url,
                                                    'date_pickers': date_pickers, 'datetime_pickers': datetime_pickers,
@@ -730,7 +781,34 @@ class OrgFormFields(View):
             print "yes it is employee who is logged in"
             org_obj = Organization.objects.get(employees=request.user)
 
-        employees = org_obj.employees.all()
+        frm_object = OrgForms.objects.get(id=int(pk))
+
+        assign_to_roles = []
+
+        for inp in frm_object.input_assign_to.all():
+            if inp.role_name not in assign_to_roles:
+                assign_to_roles.append(inp.role_name)
+        for dis in frm_object.display_assign_to.all():
+            if dis.role_name not in assign_to_roles:
+                assign_to_roles.append(dis.role_name)
+
+        if frm_object.map_form.all():
+            for mapped_one in frm_object.map_form.all():
+                for inp in mapped_one.input_assign_to.all():
+                    if inp.role_name not in assign_to_roles:
+                        assign_to_roles.append(inp.role_name)
+                for dis in mapped_one.display_assign_to.all():
+                    if dis.role_name not in assign_to_roles:
+                        assign_to_roles.append(dis.role_name)
+
+        if 'Admin' in assign_to_roles and 'Employee' in assign_to_roles:
+            employees = org_obj.employees.all() | org_obj.admins.all()
+        elif 'Admin' in assign_to_roles:
+            employees = org_obj.admins.all()
+        elif 'Employee' in assign_to_roles:
+            employees = org_obj.employees.all()
+        else:
+            employees = []
 
         return render_to_response(self.template1, {'form_fields': form_fields, 'server_url': server_url,
                                                    'serial_no': new_serial_no, 'field_entries': field_entries,

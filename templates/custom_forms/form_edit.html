@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+{% load split_choices %}
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li role="presentation" class="">
+                                <a href="{% url 'form-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Form Category
+                                </a>
+                            </li>
+                            <li role="presentation" class="active">
+                                <a href="{% url 'forms-created' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Form Creation
+                                </a>
+                            </li>
+                        </ul>
+                        <br><br>
+
+                        <div class="wrapper panel panel-default col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                            <h4 class="panel-heading">Create New Form</h4>
+                            <div class="form panel-body">
+                                <form method="post" name="categoryform" class="org_form">
+                                {% csrf_token %}
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Sr. No.</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 234px;">
+                                            <div class="field">
+                                                {{ org_form.serial_no|stringformat:"04d" }}
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Form Category</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 177px;">
+                                            <div class="field">
+                                                <select id="id_form_cat" name="form_cat" class="form-control">
+                                                    {% for cat in cat_choices %}
+                                                        <option value="{{ cat.id }}" class="form-control"
+                                                                {% if org_form.form_cat.id == cat.id %} selected {% endif %}>
+                                                            {{ cat.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </li>
+                                        <li>
+{#                                            {% if form.form_cat.errors %}{{ form.form_cat.errors }}{% endif %}#}
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Form Name</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 202px;">
+                                            <div class="field">
+                                                <input id="id_form_name" maxlength="200" name="form_name" type="text"
+                                                       value="{{ org_form.form_name }}" class="form-control">
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="error_form_name" style="display:none; color: red; font-size: 13px;">
+                                               Please give it a name
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Input Assign to</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 180px;">
+                                            <div class="field">
+                                                <input type="checkbox" name="input_assign_to" value="1"
+                                                        {% if 'Customer' in org_form.input_assign_to.all|roles %} checked {% endif %}>
+                                                Customer &nbsp;
+                                                <input type="checkbox" name="input_assign_to" value="2"
+                                                        {% if 'Employee' in org_form.input_assign_to.all|roles %} checked {% endif %}>
+                                                Employee &nbsp;
+                                                <input type="checkbox" name="input_assign_to" value="3"
+                                                        {% if 'Admin' in org_form.input_assign_to.all|roles %} checked {% endif %}>
+                                                Admin &nbsp;
+                                                <input type="checkbox" name="input_assign_to" value="4"
+                                                       {% if 'Super Admin' in org_form.input_assign_to.all|roles %} checked {% endif %} >
+                                                Super Admin &nbsp;
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="error_input_assign" style="display:none; color: red; font-size: 13px;">
+                                                Atleast One must be Selected
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Display Assign to</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 164px;">
+                                            <div class="field">
+                                                <input type="checkbox" name="input_assign_to" value="1"
+                                                        {% if 'Customer' in org_form.display_assign_to.all|roles %} checked {% endif %}>
+                                                Customer &nbsp;
+                                                <input type="checkbox" name="input_assign_to" value="2"
+                                                        {% if 'Employee' in org_form.display_assign_to.all|roles %} checked {% endif %}>
+                                                Employee &nbsp;
+                                                <input type="checkbox" name="input_assign_to" value="3"
+                                                        {% if 'Admin' in org_form.display_assign_to.all|roles %} checked {% endif %}>
+                                                Admin &nbsp;
+                                                <input type="checkbox" name="input_assign_to" value="4"
+                                                       {% if 'Super Admin' in org_form.display_assign_to.all|roles %} checked {% endif %} >
+                                                Super Admin &nbsp;
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="error_display_assign" style="display:none; color: red; font-size: 13px;">
+                                                Atleast One must be Selected
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Map with other form</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 145px;">
+                                            <div class="field">
+                                                <select id="id_mapped_form" name="mapped_form" class="form-control">
+                                                    {% for map in map_form_choices %}
+                                                        <option value="{{ map.id }}" class="form-control"
+                                                                {% if org_form.mapped_form.id == map.id %} selected {% endif %}>
+                                                            {{ map.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </li>
+                                        <li>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Allow Accept/Reject ?</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 136px;">
+                                            <div class="field">
+                                                <input type="checkbox" name="accept_reject" value="yes"
+                                                        {% if org_form.allow_accept_reject == 'yes' %} checked {% endif %}> Yes &nbsp;
+                                                <input type="checkbox" name="accept_reject" value="no"
+                                                        {% if org_form.allow_accept_reject == 'no' %} checked {% endif %}> No &nbsp;
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="error_accept_reject" style="display:none; color: red; font-size: 13px;">
+                                                Atleast One Checkbox must be Selected
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Input Form Assign Allow to user?</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 58px;">
+                                            <div class="field">
+                                                <input type="checkbox" name="input_assign_allow" value="yes"
+                                                        {% if org_form.input_assign_allow == 'yes' %} checked {% endif %}> Yes &nbsp;
+                                                <input type="checkbox" name="input_assign_allow" value="no"
+                                                        {% if org_form.input_assign_allow == 'no' %} checked {% endif %}> No &nbsp;
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="error_input_allow" style="display:none; color: red; font-size: 13px;">
+                                                Atleast One Checkbox must be Selected
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li style="margin-left: 62px;">
+                                            <div class="field-row">
+                                                <label>Displayed Form Assign Allow to user?</label>
+                                            </div>
+                                        </li>
+                                        <li style="margin-left: 27px;">
+                                            <div class="field">
+                                                <input type="checkbox" name="display_assign_allow" value="yes"
+                                                        {% if org_form.display_assign_allow == 'yes' %} checked {% endif %}> Yes &nbsp;
+                                                <input type="checkbox" name="display_assign_allow" value="no"
+                                                        {% if org_form.display_assign_allow == 'no' %} checked {% endif %}> No &nbsp;
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="error_display_allow" style="display:none; color: red; font-size: 13px;">
+                                                Atleast One Checkbox must be Selected
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <br>
+
+                                    <div class="wrapper panel panel-default col-lg-11 col-lg-offset-0 col-md-11 col-md-offset-0 col-sm-12 col-xs-12">
+                                        <h4 class="panel-heading">Fields</h4>
+                                        <div class="form panel-body">
+
+                                            <table class="table table-bordered table-striped table-hover" id="fields">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 150px;">Field Label</th>
+                                                        <th style="width: 180px;">Field Type</th>
+                                                        <th style="width: 70px;">Required</th>
+                                                        <th style="width: 240px;">Choices</th>
+                                                        <th style="width: 130px;">PlaceHolder Text</th>
+                                                        <th style="width: 55px;">Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for field in org_form.fields_form.all %}
+                                                        <tr class='class1'>
+                                                            <td>
+                                                                <input class='controls form-control field-label' type='text'
+                                                                       name='field_label' value="{{ field.label }}">
+                                                            </td>
+                                                            <td>
+                                                                <select class='form-control' name='field_type'>
+                                                                    <option value='1' {% ifequal field.field_type 1 %} selected {% endifequal %}>
+                                                                        Single line text</option>
+                                                                    <option value='2' {% ifequal field.field_type 2 %} selected {% endifequal %}>
+                                                                        Multi line text</option>
+                                                                    <option value='3' {% ifequal field.field_type 3 %} selected {% endifequal %}>
+                                                                        Email</option>
+                                                                    <option value='4' {% ifequal field.field_type 4 %} selected {% endifequal %}>
+                                                                        Check Boxes</option>
+                                                                    <option value='5' {% ifequal field.field_type 5 %} selected {% endifequal %}>
+                                                                        DropDown</option>
+                                                                    <option value='6' {% ifequal field.field_type 6 %} selected {% endifequal %}>
+                                                                        DropDown Multi Select</option>
+                                                                    <option value='7' {% ifequal field.field_type 7 %} selected {% endifequal %}>
+                                                                        Radio Button</option>
+                                                                    <option value='8' {% ifequal field.field_type 8 %} selected {% endifequal %}>
+                                                                        File Upload</option>
+                                                                    <option value='9' {% ifequal field.field_type 9 %} selected {% endifequal %}>
+                                                                        Date</option>
+                                                                    <option value='10' {% ifequal field.field_type 10 %} selected {% endifequal %}>
+                                                                        DateTime</option>
+                                                                    <option value='11' {% ifequal field.field_type 11 %} selected {% endifequal %}>
+                                                                        URL</option>
+                                                                    <option value='12' {% ifequal field.field_type 12 %} selected {% endifequal %}>
+                                                                        Number</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <input type='checkbox' name='required"+req_counter+"' class='required'
+                                                                       {% if field.required %}checked {% endif %}>
+                                                            </td>
+                                                            <td>
+                                                                <input class='controls form-control' placeholder='Comma separated choices'
+                                                                       type='text' name='choices' value="{{ field.choices }}">
+                                                            </td>
+                                                            <td>
+                                                                <input class='controls form-control' type='text' name='placeholder'
+                                                                        value="{{ field.placeholder_text }}">
+                                                            </td>
+                                                            <td>
+                                                                <i class='glyphicon glyphicon-remove delete_field' style='color: #CD3C58;'></i>
+                                                            <td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            <span class="error_field_label" style="display:none; color: red; font-size: 13px;">
+                                                Please Specify Label to all Fields
+                                            </span><br>
+                                            <span id="error_no_fields" style="display:none; color: red; font-size: 13px;">
+                                                You have to specify atleast one Field
+                                            </span><br>
+                                            <a role="button" class="btn btn-primary btn-1 add_field" style="background-color: #70D2E4;
+                                            padding: 3px 10px;">
+                                                Add Field
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <ul role="tablist" class="nav nav-tabs text-left">
+                                        <li>
+
+                                        </li>
+                                        <li style="margin-left: 182px;">
+                                            <div class="field-row actions" style="width: 100px;">
+                                                <input type="button" onclick="check_validation()" class="btn save_route btn-primary btn-1"
+                                                       value="Save"/>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+var req_counter = 0;
+function check_validation() {
+    var flag = false;
+    $(".error_field_label").hide();
+    var no_fields = $("#error_no_fields");
+    no_fields.css('display', 'none');
+    if($('#id_form_name').val() == ''){
+        flag = true;
+        $(".error_form_name").show();
+    }
+    else{
+        $(".error_form_name").hide();
+    }
+    if (($("input[name*='input_assign_to']:checked").length)<=0) {
+        flag = true;
+        $(".error_input_assign").show();
+    }
+    else{
+        $(".error_input_assign").hide();
+    }
+    if (($("input[name*='display_assign_to']:checked").length)<=0) {
+        flag = true;
+        $(".error_display_assign").show();
+    }
+    else{
+        $(".error_display_assign").hide();
+    }
+    if (($("input[name*='accept_reject']:checked").length)<=0) {
+        flag = true;
+        $(".error_accept_reject").show();
+    }
+    else{
+        $(".error_accept_reject").hide();
+    }
+    if (($("input[name*='input_assign_allow']:checked").length)<=0) {
+        flag = true;
+        $(".error_input_allow").show();
+    }
+    else{
+        $(".error_input_allow").hide();
+    }
+    if (($("input[name*='display_assign_allow']:checked").length)<=0) {
+        flag = true;
+        $(".error_display_allow").show();
+    }
+    else{
+        $(".error_display_allow").hide();
+    }
+
+    $('.field-label').each(function(i, obj) {
+        if(obj.value == ''){
+            $(".error_field_label").show();
+            flag = true;
+        }
+    });
+    if($("#fields tr").length == 1){
+        flag = true;
+        no_fields.show();
+    }
+
+    if(flag==false){
+        $( ".org_form" ).submit();
+    }
+}
+
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+
+    $("input:checkbox").on('click', function() {
+    // in the handler, 'this' refers to the box clicked on
+        var $box = $(this);
+        if($box.attr("name") != 'input_assign_to' && $box.attr("name") != 'display_assign_to') {
+            if ($box.is(":checked")) {
+
+                // the name of the box is retrieved using the .attr() method
+                // as it is assumed and expected to be immutable
+                var group = "input:checkbox[name='" + $box.attr("name") + "']";
+                // the checked state of the group/box on the other hand will change
+                // and the current value is retrieved using .prop() method
+                $(group).prop("checked", false);
+                $box.prop("checked", true);
+            } else {
+                $box.prop("checked", false);
+            }
+        }
+    });
+
+    $('.add_field').on('click', function(){
+        req_counter += 1;
+        var tr_html = "<tr class='class1'><td><input class='controls form-control field-label' type='text' name='field_label'></td>" +
+                "<td><select class='form-control' name='field_type'><option value='1'>Single line text</option><option value='2'>Multi line text</option>" +
+                "<option value='3'>Email</option><option value='4'>Check Boxes</option><option value='5'>DropDown</option>" +
+                "<option value='6'>DropDown Multi Select</option><option value='7'>Radio Button</option>" +
+                "<option value='8'>File Upload</option><option value='9'>Date</option><option value='10'>DateTime</option>" +
+                "<option value='11'>URL</option><option value='12'>Number</option></select></td>" +
+                "<td><input type='checkbox' name='required"+req_counter+"' class='required' checked></td>" +
+                "<td><input class='controls form-control' placeholder='Comma separated choices' type='text' name='choices'></td>" +
+                "<td><input class='controls form-control' type='text' name='placeholder'></td>" +
+                "<td><i class='glyphicon glyphicon-remove delete_field' style='color: #CD3C58;'></i><td></tr>";
+
+        $('#fields tr:last').after(tr_html);
+
+    });
+
+});
+
+$(document).on("click",".delete_field", function() {
+    req_counter -= 1;
+    var $tr = $(this).closest('tr');
+    $tr.remove();
+    $('.class1').each(function(i, obj) {
+        var required = $(this).find(".required");
+        required.attr('name', 'required'+(i+1));
+    });
+});
+
+</script>
+
+{% endblock content %}

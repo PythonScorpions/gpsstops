@@ -112,7 +112,7 @@
                                                         <select class="form-control" name="assign_to">
                                                             {% for emp in employees %}
                                                                 <option value="{{ emp.id }}" class="form-control">
-                                                                        {{ emp.first_name }}</option>
+                                                                        {{ emp.first_name }} {{ emp.last_name }}</option>
                                                             {% endfor %}
                                                         </select>
                                                     {% else %}

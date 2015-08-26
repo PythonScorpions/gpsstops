@@ -63,7 +63,7 @@
                         <td style="white-space: inherit">{% for display in frm.display_assign_to.all %}{{ display.role_name }}, {% endfor %}</td>
                         <td style="white-space: inherit">{{ frm.get_allow_accept_reject_display }}</td>
                         <td style="white-space: inherit">{{ frm.mapped_form.form_name }}</td>
-                        <td style="white-space: inherit"><a href="">Edit</a>
+                        <td style="white-space: inherit"><a href="{% url 'form-edit' frm.id %}">Edit</a>
                             {% if frm.status == 'active' %}
                                 <a href="">Deactive</a>
                             {% else %}
