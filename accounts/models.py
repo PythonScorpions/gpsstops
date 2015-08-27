@@ -163,7 +163,7 @@ NAMES = (
 
 class FormFields(models.Model):
 
-    org_form = models.ForeignKey(OrgForms, related_name='field-org-form')
+    org_form = models.ForeignKey(OrgForms, related_name='fields_form')
     label = models.CharField(max_length=100)
     field_type = models.IntegerField(choices=NAMES)
     required = models.BooleanField(default=True)

@@ -112,7 +112,7 @@
                                                         <select class="form-control" name="assign_to">
                                                             {% for emp in employees %}
                                                                 <option value="{{ emp.id }}" class="form-control">
-                                                                        {{ emp.first_name }}</option>
+                                                                        {{ emp.first_name }} {{ emp.last_name }}</option>
                                                             {% endfor %}
                                                         </select>
                                                     {% else %}
@@ -128,19 +128,25 @@
 
                                         <span style="margin-left: 30px">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
                                         <br>
-                                        <ul role="tablist" class="nav nav-tabs text-left">
-                                            <li>
 
-                                            </li>
-                                            <li style="margin-left: 182px;">
-                                                <div class="field-row actions" style="width: 400px;">
-                                                    <a role="button" class="btn btn-primary btn-1"
-                                                       href="{% url 'org-form-fields' field_entries.0.field_id.org_form.map_form.all.0.id field_entries.0.form_entry.id %}">
-                                                        {{ field_entries.0.field_id.org_form.map_form.all.0.form_name }}
-                                                    </a>
-                                                </div>
-                                            </li>
-                                        </ul>
+                                        {% if user.user_profiles.get_user_role_display in field_entries.0.field_id.org_form.map_form.all.0.input_assign_to.all|roles and field_entries.0.form_entry.entry_status != 'rejected' and field_entries.0.form_entry.entry_status != 'need_action' and field_entries.0.form_entry.assigned_to == user %}
+
+                                            <ul role="tablist" class="nav nav-tabs text-left">
+                                                <li>
+
+                                                </li>
+                                                <li style="margin-left: 182px;">
+                                                    <div class="field-row actions" style="width: 400px;">
+                                                        <a role="button" class="btn btn-primary btn-1"
+                                                           href="{% url 'org-form-fields' field_entries.0.field_id.org_form.map_form.all.0.id field_entries.0.form_entry.id %}">
+                                                            {{ field_entries.0.field_id.org_form.map_form.all.0.form_name }}
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                        {% endif %}
+
                                         <div class="wrapper panel panel-default" style="margin-left: 50px; margin-top: 20px;
                                         margin-right: 10px;">
                                             <h4 class="panel-heading">{{ field_entries.0.field_id.org_form.map_form.all.0.form_name }}
@@ -153,10 +159,10 @@
                                                             {% for label in field_labels %}
                                                                 <th style="text-align: center">{{ label }}</th>
                                                             {% endfor %}
-                                                            {% if form_object.allow_accept_reject == 'yes' %}
+                                                            {% if field_entries.0.field_id.org_form.map_form.all.0.allow_accept_reject == 'yes' %}
                                                                 <th style="text-align: center">Approved /Rejected By</th>
                                                             {% endif %}
-                                                            {% if form_object.display_assign_allow == 'yes' %}
+                                                            {% if field_entries.0.field_id.org_form.map_form.all.0.display_assign_allow == 'yes' %}
                                                                 <th style="text-align: center">Assigned to</th>
                                                                 <th style="text-align: center">Assigned By</th>
                                                             {% endif %}
