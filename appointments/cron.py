@@ -119,14 +119,17 @@ class NotificationsCronJob(CronJobBase):
     def _send_email(self, template, context, title, email):
         template = loader.get_template(template)
         context = Context(context)
+        print "Sending email...", settings.EMAIL_HOST_USER, email
         send_mail(title, template.render(context),
             settings.EMAIL_HOST_USER, [str(email)], fail_silently=False)
 
     def _send_appointment_email(self, appointment):
+        print "Sending Appointment Email...."
         self._send_email('email/appointments.email', {'appointment':appointment},
             'Appointment Notification', appointment.user.email)
 
     def _send_task_email(self, task):
+        print "Sending Task Email...."
         self._send_email('email/task.email', {'task':task},
             'Task Notification', task.user.email)
 
