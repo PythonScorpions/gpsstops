@@ -360,6 +360,13 @@ class UsersCreateView(View):
             (not request.user.user_profiles.user_role in ['super_admin', 'admin']):
                 return redirect('/')
 
+        if request.user.user_profiles.user_role == 'admin':
+            print "yes it is admin who is logged in"
+            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
+        else:
+            print "yes it is super admin who is logged in"
+            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+
         user = None
         if pk:
             try:
@@ -369,6 +376,7 @@ class UsersCreateView(View):
                 redirect('/accounts/users/')
 
         if user:
+            user_current_role = user.user_profiles.user_role
             form = UsersCreateForm(data=request.POST, user=request.user, instance=user.user_profiles)
         else:
             form = UsersCreateForm(data=request.POST, user=request.user)
@@ -385,6 +393,15 @@ class UsersCreateView(View):
                 form.instance.user.last_name = form.cleaned_data['last_name']
                 form.instance.user.is_active = form.cleaned_data.get('is_active', False)
                 form.instance.user.save()
+                user_new_role = user.user_profiles.user_role
+                if user_current_role != user_new_role:
+                    if user_current_role == 'admin':
+                        org_obj.admins.remove(user)
+                        org_obj.employees.add(user)
+                    else:
+                        org_obj.employees.remove(user)
+                        org_obj.admins.add(user)
+
             else:
                 new_user = User(email=form.cleaned_data['email'], username=form.cleaned_data['email'])
                 new_user.first_name = form.cleaned_data['first_name']
@@ -402,17 +419,11 @@ class UsersCreateView(View):
                 form.instance.company_name = " "
                 form.instance.occupation = " "
 
-                # Save Admin or Employee
-                if request.user.user_profiles.user_role == 'admin':
-                    print "yes it is admin who is logged in"
-                    org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-                else:
-                    print "yes it is super admin who is logged in"
-                    org_obj = Organization.objects.get(super_admin__id=request.user.id)
 
 
             user_profile = form.save()
-            print user_profile.user_role
+            print "------------------------------------------------", user_profile.user_role
+
             if not user:
                 if user_profile.user_role == 'admin':
                     org_obj.admins.add(new_user)
