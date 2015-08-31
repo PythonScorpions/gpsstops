@@ -29,18 +29,20 @@
                 {% if form.email.errors %}{{ form.email.errors }}{% endif %}
                 </div>
             </div>
+            {% if form.admin %}
+            <div class="field-row">
+                <label>{{ form.admin.label }}</label>
+                <div class="field">
+                {{ form.admin }}
+                {% if form.admin.errors %}{{ form.admin.errors }}{% endif %}
+                </div>
+            </div>
+            {% endif %}
             <div class="field-row">
                 <label>{{ form.user_role.label }}</label>
                 <div class="field">
                 {{ form.user_role }}
                 {% if form.user_role.errors %}{{ form.user_role.errors }}{% endif %}
-                </div>
-            </div>
-            <div class="field-row">
-                <label>{{ form.is_active.label }}</label>
-                <div class="field">
-                {{ form.is_active }}
-                {% if form.is_active.errors %}{{ form.is_active.errors }}{% endif %}
                 </div>
             </div>
             <div class="field-row">

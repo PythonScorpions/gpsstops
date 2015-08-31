@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.hashers import make_password
-from accounts.models import *
 from django.contrib.auth.models import User
+
+from accounts.models import *
+from accounts.utils import *
 
 
 class RegisterForm(forms.ModelForm):
@@ -130,6 +132,42 @@ class UsersCreateForm(forms.ModelForm):
     class Meta:
         model = UserProfiles
         exclude = ('user', 'admin', 'token', 'admin_status', 'occupation', 'company_name')
+
+
+class UsersCreateSuperAdminForm(forms.ModelForm):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    is_active = forms.BooleanField(required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        super(UsersCreateSuperAdminForm, self).__init__(*args, **kwargs)
+
+        self.user = user
+        if self.user.is_authenticated() and self.user.user_profiles.user_role == 'admin':
+          self.fields['user_role'].choices = [(u'employee','Employee')]
+        else:
+          self.fields['user_role'].choices = [(u'','------'), (u'admin','Admin'), (u'employee','Employee')]
+
+        users_choices = [(self.user.id, 'Self')]
+        for u in get_users(self.user):
+            users_choices.append((u.id, '%s %s' % (u.first_name, u.last_name)))
+        self.fields['admin'].choices = users_choices
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email", False)
+        try:
+            u = self.instance.user
+        except:
+            u = None
+
+        if User.objects.filter(email=email).exists() and not u:
+            raise forms.ValidationError("Email already exists.")
+        return email
+
+    class Meta:
+        model = UserProfiles
+        exclude = ('user', 'token', 'admin_status', 'occupation', 'company_name')
 
 
 class UsersLoginForm(forms.Form):

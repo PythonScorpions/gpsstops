@@ -326,6 +326,14 @@ class UsersCreateView(View):
         chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
         return "".join([chars[ord(c) % len(chars)] for c in urandom(length)])
 
+    def _get_form_class(self, user):
+        print user.user_profiles.user_role
+        if user.user_profiles.user_role == "super_admin":
+            form_class = UsersCreateSuperAdminForm
+        else:
+            form_class = UsersCreateForm
+        return form_class
+
     def get(self, request, pk=None, *args, **kwargs):
         if request.user.is_authenticated() and \
             (not request.user.user_profiles.user_role in ['super_admin', 'admin']):
@@ -339,6 +347,8 @@ class UsersCreateView(View):
             except:
                 redirect('/accounts/users/')
 
+        form_class = self._get_form_class(request.user)
+
         if user:
             initial_data = {
                 'email':user.email,
@@ -346,11 +356,11 @@ class UsersCreateView(View):
                 'last_name':user.last_name,
                 'is_active':user.is_active
             }
-            print initial_data
-            form = UsersCreateForm(user=request.user,
+            # print initial_data
+            form = form_class(user=request.user,
                         instance=user.user_profiles, initial=initial_data)
         else:
-            form = UsersCreateForm(user=request.user)
+            form = form_class(user=request.user)
 
         template_data = {'form':form}
         return render(request, 'accounts/users_create.html', template_data)
@@ -375,11 +385,14 @@ class UsersCreateView(View):
             except:
                 redirect('/accounts/users/')
 
+        form_class = self._get_form_class(request.user)
+
         if user:
             user_current_role = user.user_profiles.user_role
-            form = UsersCreateForm(data=request.POST, user=request.user, instance=user.user_profiles)
+            form = form_class(data=request.POST,
+                        user=request.user, instance=user.user_profiles)
         else:
-            form = UsersCreateForm(data=request.POST, user=request.user)
+            form = form_class(data=request.POST, user=request.user)
 
         if form.is_valid():
 
@@ -418,8 +431,6 @@ class UsersCreateView(View):
                 form.instance.admin = request.user
                 form.instance.company_name = " "
                 form.instance.occupation = " "
-
-
 
             user_profile = form.save()
             print "------------------------------------------------", user_profile.user_role
