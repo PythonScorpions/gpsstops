@@ -25,6 +25,7 @@ from appointments.models import *
 from maps.models import *
 from api.serializers import *
 from accounts.models import *
+from accounts.utils import *
 
 from datetime import timedelta
 import string, random, datetime, sys
@@ -608,6 +609,7 @@ class QueryForm(forms.Form):
     date = forms.DateField(required=False)
     user = forms.IntegerField()
 
+
 class AppointmentsViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentsSerializer
 
@@ -623,16 +625,20 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
         if form.is_valid():
             user = form.cleaned_data.get('user',0)
             date = form.cleaned_data.get('date', None)
-            print date
 
-            appointments = Appointments.objects.filter(user__id=user)
-            if date and self.request.method == 'GET':
-                date_min = datetime.datetime.combine(date, datetime.time.min)
-                date_max = datetime.datetime.combine(date, datetime.time.max)
-                appointments = appointments \
-                                .filter(user__id=user) \
-                                .filter(start_datetime__range=(date_min, date_max))
-            return appointments
+            try:
+                user_obj = User.objects.get(pk=user)
+            except:
+                pass
+            else:
+                appointments = filter_objects_by_user(user_obj, Appointments)
+                # appointments = Appointments.objects.filter(user__id=user)
+                if date and self.request.method == 'GET':
+                    date_min = datetime.datetime.combine(date, datetime.time.min)
+                    date_max = datetime.datetime.combine(date, datetime.time.max)
+                    appointments = appointments \
+                                    .filter(start_datetime__range=(date_min, date_max))
+                return appointments
         return Appointments.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
@@ -679,7 +685,8 @@ class TaskViewSet(viewsets.ModelViewSet):
             user = form.cleaned_data.get('user',0)
             date = form.cleaned_data.get('date', None)
 
-            tasks = Task.objects.filter(user__id=user)
+            tasks = filter_objects_by_user(user_obj, Task)
+            # tasks = Task.objects.filter(user__id=user)
             if date and self.request.method == 'GET':
                 date_min = datetime.datetime.combine(date, datetime.time.min)
                 date_max = datetime.datetime.combine(date, datetime.time.max)

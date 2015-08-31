@@ -57,7 +57,8 @@ class AppointmentView(View):
 
         if form.is_valid():
             print form.cleaned_data
-            form.instance.created_by = request.user
+            if not appointment:
+                form.instance.created_by = request.user
             form.instance.location = form.cleaned_data['where']
             form.instance.latitude = form.cleaned_data['latitude']
             form.instance.longitude = form.cleaned_data['longitude']
