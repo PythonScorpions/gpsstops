@@ -131,7 +131,8 @@ class UsersCreateForm(forms.ModelForm):
 
     class Meta:
         model = UserProfiles
-        exclude = ('user', 'admin', 'token', 'admin_status', 'occupation', 'company_name')
+        exclude = ('user', 'admin', 'token', 'admin_status', 'occupation',
+                    'company_name', 'is_active')
 
 
 class UsersCreateSuperAdminForm(forms.ModelForm):
@@ -150,7 +151,7 @@ class UsersCreateSuperAdminForm(forms.ModelForm):
           self.fields['user_role'].choices = [(u'','------'), (u'admin','Admin'), (u'employee','Employee')]
 
         users_choices = [(self.user.id, 'Self')]
-        for u in get_users(self.user):
+        for u in get_users(self.user).filter(user_profiles__user_role='admin'):
             users_choices.append((u.id, '%s %s' % (u.first_name, u.last_name)))
         self.fields['admin'].choices = users_choices
 
@@ -167,7 +168,8 @@ class UsersCreateSuperAdminForm(forms.ModelForm):
 
     class Meta:
         model = UserProfiles
-        exclude = ('user', 'token', 'admin_status', 'occupation', 'company_name')
+        exclude = ('user', 'token', 'admin_status', 'occupation',
+                    'company_name', 'is_active')
 
 
 class UsersLoginForm(forms.Form):

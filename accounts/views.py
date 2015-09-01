@@ -404,7 +404,7 @@ class UsersCreateView(View):
             if user:
                 form.instance.user.first_name = form.cleaned_data['first_name']
                 form.instance.user.last_name = form.cleaned_data['last_name']
-                form.instance.user.is_active = form.cleaned_data.get('is_active', False)
+                # form.instance.user.is_active = form.cleaned_data.get('is_active', False)
                 form.instance.user.save()
                 user_new_role = user.user_profiles.user_role
                 if user_current_role != user_new_role:
@@ -420,7 +420,7 @@ class UsersCreateView(View):
                 new_user.first_name = form.cleaned_data['first_name']
                 new_user.last_name = form.cleaned_data['last_name']
                 new_user.password = make_password(new_password)
-                new_user.is_active = form.cleaned_data.get('is_active', False)
+                new_user.is_active = True
                 new_user.save()
 
                 # save user profile
@@ -488,3 +488,20 @@ class UsersLogin(View):
             return render(request, 'accounts/login.html', {'form':form})
         return redirect('/')
 users_login_view = UsersLogin.as_view()
+
+
+class UserActivatedView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        user = None
+        if pk:
+            try:
+                users = get_users_list(request.user)
+                user = users.get(id=pk)
+            except:
+                pass
+            else:
+                user.is_active = not user.is_active
+                user.save()
+
+        return redirect('/accounts/users/')
+users_enable_view = UserActivatedView.as_view()
