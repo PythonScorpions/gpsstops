@@ -79,10 +79,19 @@ class Customer(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
 
 
+class Theme(models.Model):
+    navigation_color = models.CharField(max_length=10)
+    active_button_color = models.CharField(max_length=10)
+    inactive_button_color = models.CharField(max_length=10)
+    logo_url = models.URLField()
+    background_color = models.CharField(max_length=10)
+
+
 class Organization(models.Model):
     super_admin = models.OneToOneField(User, related_name='super_admin_role')
     admins = models.ManyToManyField(User, related_name='admin_role', blank=True, null=True)
     employees = models.ManyToManyField(User, related_name='employee_role', blank=True, null=True)
+    theme = models.ForeignKey(Theme, null=True, blank=True)
 
 
 class OrganizationRoles(models.Model):

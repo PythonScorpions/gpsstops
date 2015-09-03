@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import Q
 
 from rest_framework import serializers
 from rest_framework import exceptions, serializers
@@ -162,22 +163,63 @@ class OptRouteSerializer(serializers.ModelSerializer):
         return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
 
-
 class AppointmentsSerializer(serializers.ModelSerializer):
     start_datetime = serializers.DateTimeField(
                         format="%m/%d/%Y %I:%M %p",
                         input_formats=["%m/%d/%Y %I:%M %p"])
+    assigned_user_id = serializers.IntegerField()
 
     class Meta:
         model = Appointments
         fields = ('id', 'user', 'title', 'start_datetime', 'timezone',
                     'location', 'latitude', 'longitude',
                     'repeat_days', 'description', 'notification_required',
-                    'notification_time')
+                    'notification_time', 'is_editable', 'assigned_user_id')
+
+    def to_representation(self, obj):
+        result = {
+            'id':obj.id,
+            'user':obj.created_by.id,
+            'title':obj.title,
+            'start_datetime':obj.start_datetime,
+            'timezone':obj.timezone,
+            'location':obj.location,
+            'latitude':obj.latitude,
+            'longitude':obj.longitude,
+            'repeat_days':obj.repeat_days,
+            'description':obj.description,
+            'notification_required':obj.notification_required,
+            'notification_time':obj.notification_time,
+            'is_editable':obj.is_editable,
+            'created_by':obj.created_by.id,
+        }
+        try:
+            if self.assigned_user:
+                result['assigned_user_id'] = self.assigned_user.id
+        except:
+            result['assigned_user_id'] = obj.user.id
+        return result
+
+
+    def validate(self, data):
+        try:
+            user = User.objects \
+                    .filter(
+                        Q(user_profiles__admin=data['user']) |
+                        Q(user_profiles__admin__user_profiles__admin=data['user'])
+                    ) \
+                    .get(pk=data['assigned_user_id'])
+        except:
+            raise serializers.ValidationError("Assigned user doesn't exists.")
+        else:
+            self.assigned_user = user
+        return data
 
     def create(self, validated_data):
         appointments = Appointments.objects.create(
-            user=validated_data['user'],
+            user=self.assigned_user,
+            created_by=validated_data['user'],
+            is_editable=validated_data['is_editable'],
             title=validated_data['title'],
             start_datetime=validated_data['start_datetime'],
             timezone=validated_data['timezone'],
@@ -192,21 +234,67 @@ class AppointmentsSerializer(serializers.ModelSerializer):
         )
         return appointments
 
+    def update(self, instance, validated_data):
+        appointment = super(AppointmentsSerializer, self).update(instance, validated_data)
+        # print appointment
+        appointment.user = self.assigned_user
+        appointment.save()
+        return appointment
+
 
 
 class TaskSerializer(serializers.ModelSerializer):
     due_date = serializers.DateTimeField(
                         format="%m/%d/%Y %I:%M %p",
                         input_formats=["%m/%d/%Y %I:%M %p"])
+    assigned_user_id = serializers.IntegerField()
 
     class Meta:
         model = Task
         fields = ('id', 'user', 'title', 'due_date', 'timezone', 'note',
-                    'notification_required', 'notification_time')
+                    'notification_required', 'notification_time',
+                    'is_editable', 'assigned_user_id')
+
+    def to_representation(self, obj):
+        result = {
+            'id':obj.id,
+            'user':obj.created_by.id,
+            'title':obj.title,
+            'due_date':obj.start_datetime,
+            'timezone':obj.timezone,
+            'note':obj.note,
+            'notification_required':obj.notification_required,
+            'notification_time':obj.notification_time,
+            'is_editable':obj.is_editable,
+            'created_by':obj.created_by.id,
+        }
+        try:
+            if self.assigned_user:
+                result['assigned_user_id'] = self.assigned_user.id
+        except:
+            result['assigned_user_id'] = obj.user.id
+        return result
+
+
+    def validate(self, data):
+        try:
+            user = User.objects \
+                    .filter(
+                        Q(user_profiles__admin=data['user']) |
+                        Q(user_profiles__admin__user_profiles__admin=data['user'])
+                    ) \
+                    .get(pk=data['assigned_user_id'])
+        except:
+            raise serializers.ValidationError("Assigned user doesn't exists.")
+        else:
+            self.assigned_user = user
+        return data
 
     def create(self, validated_data):
         task = Task.objects.create(
-            user=validated_data['user'],
+            user=self.assigned_user,
+            created_by=validated_data['user'],
+            is_editable=validated_data['is_editable'],
             title=validated_data['title'],
             due_date=validated_data['due_date'],
             timezone=validated_data['timezone'],

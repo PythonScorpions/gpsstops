@@ -31,7 +31,12 @@
                             --
                             {% endif %}
                         </td>
-                        <td><a href="/accounts/users/{{ user.id }}/">Edit</a></td>
+                        <td>
+                            <a href="/accounts/users/{{ user.id }}/">Edit</a>
+                            <a href="/accounts/users/{{ user.id }}/active/toggle/">
+                            {% if user.is_active %}Disable{% else %}Enable{% endif %}
+                            </a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

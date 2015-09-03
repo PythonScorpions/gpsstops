@@ -1,3 +1,5 @@
+'''
+'''
 from django.conf.urls import patterns, include, url
 from accounts.views import *
 
@@ -21,5 +23,6 @@ urlpatterns = patterns("accounts.views",
   url(r'^accounts/users/$', users_view, name='users_list'),
   url(r'^accounts/users/create/$', users_create_view, name='users_create'),
   url(r'^accounts/users/(?P<pk>\d+)/$', users_create_view, name='users_edit'),
+  url(r'^accounts/users/(?P<pk>\d+)/active/toggle/$', users_enable_view, name='users_enable'),
   url(r'^accounts/login/(?P<key>\w+)/$', users_login_view, name='users_login'),
 )

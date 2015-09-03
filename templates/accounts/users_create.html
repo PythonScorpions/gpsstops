@@ -6,7 +6,7 @@
     <div class="wrapper panel panel-default col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
         <h4 class="panel-heading">User Creation</h4>
         <div class="form appointmentForm panel-body">
-          <form method="post" name="appointmentForm">
+          <form method="post" name="appointmentForm" data-user="{{user.id}}">
             {% csrf_token %}
             <div class="field-row">
                 <label>{{ form.first_name.label }}</label>
@@ -29,18 +29,20 @@
                 {% if form.email.errors %}{{ form.email.errors }}{% endif %}
                 </div>
             </div>
+            {% if form.admin %}
+            <div class="field-row">
+                <label>{{ form.admin.label }}</label>
+                <div class="field">
+                {{ form.admin }}
+                {% if form.admin.errors %}{{ form.admin.errors }}{% endif %}
+                </div>
+            </div>
+            {% endif %}
             <div class="field-row">
                 <label>{{ form.user_role.label }}</label>
                 <div class="field">
                 {{ form.user_role }}
                 {% if form.user_role.errors %}{{ form.user_role.errors }}{% endif %}
-                </div>
-            </div>
-            <div class="field-row">
-                <label>{{ form.is_active.label }}</label>
-                <div class="field">
-                {{ form.is_active }}
-                {% if form.is_active.errors %}{{ form.is_active.errors }}{% endif %}
                 </div>
             </div>
             <div class="field-row">
@@ -100,6 +102,19 @@ $(function() {
     $("form field-row").addClass("form-group");
     $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
     $("form input[type=submit]").addClass("btn btn-primary");
+
+    $("select[name=admin]").change(function(event) {
+        var selValue = $(this).val(),
+            userId = $("form[name=appointmentForm]").data("user");
+        console.log(selValue, userId);
+
+        if (selValue != userId) {
+            $("select[name=user_role]").val("");
+            $("select[name=user_role] option[value=admin]").hide();
+        } else {
+            $("select[name=user_role] option[value=admin]").show();
+        }
+    });
 });
 </script>
 {% endblock content %}
