@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from collections import defaultdict
 import datetime
 from gpsstops import settings
+from custom_forms.utils import *
 
 
 class FormCategory(View):
@@ -28,12 +29,16 @@ class FormCategory(View):
             new_serial_no = cat_obj.serial_no
         elif key:
             cat_obj = CategoryForForm.objects.get(id=int(key))
+            forms_this_category = OrgForms.objects.filter(form_cat=cat_obj)
             if cat_obj.status == 'active':
                 cat_obj.status = 'deactive'
                 cat_obj.save()
+                forms_this_category.update(status='deactive')
             else:
                 cat_obj.status = 'active'
                 cat_obj.save()
+                forms_this_category.update(status='active')
+
             form = CategoryForm()
             try:
                 last_serial_no = CategoryForForm.objects.latest('id').serial_no
@@ -47,10 +52,9 @@ class FormCategory(View):
                 new_serial_no = last_serial_no + 1
             except:
                 new_serial_no = 1
-        if request.user.user_profiles.user_role == 'admin':
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        else:
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+
+        org_obj = retrieve_organization(request)
+
         categories = CategoryForForm.objects.filter(organization=org_obj)
 
         return render_to_response(self.template_name, {'form': form, 'serial_no': new_serial_no,
@@ -67,10 +71,7 @@ class FormCategory(View):
         except:
             new_serial_no = 1
 
-        if request.user.user_profiles.user_role == 'admin':
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        else:
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+        org_obj = retrieve_organization(request)
 
         categories = CategoryForForm.objects.filter(organization=org_obj)
 
@@ -97,6 +98,22 @@ class FormCategory(View):
                                   context_instance=RequestContext(request),)
 
 
+class ChangeFormStatus(View):
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, *args, **kwargs):
+
+        frm_obj = OrgForms.objects.get(id=int(pk))
+        if frm_obj.status == 'active':
+            frm_obj.status = 'deactive'
+            frm_obj.save()
+        else:
+            frm_obj.status = 'active'
+            frm_obj.save()
+
+        return HttpResponseRedirect(reverse('forms-created'))
+
+
 class FormsCreated(View):
     template_name = 'custom_forms/forms_created.html'
     # form_class = ProfileUpdateForm
@@ -104,19 +121,10 @@ class FormsCreated(View):
     @method_decorator(custom_login_required)
     def get(self, request, pk=None, key=None, *args, **kwargs):
 
-        if request.user.user_profiles.user_role == 'admin':
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        else:
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+        org_obj = retrieve_organization(request)
         organization_forms = OrgForms.objects.filter(form_cat__organization=org_obj)
 
         return render_to_response(self.template_name, {'org_forms': organization_forms},
-                                  context_instance=RequestContext(request),)
-
-    @method_decorator(custom_login_required)
-    def post(self, request, pk=None, key=None, *args, **kwargs):
-
-        return render_to_response(self.template_name,
                                   context_instance=RequestContext(request),)
 
 
@@ -133,10 +141,8 @@ class FormAdd(View):
             new_serial_no = last_serial_no + 1
         except:
             new_serial_no = 1
-        if request.user.user_profiles.user_role == 'admin':
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        else:
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+        org_obj = retrieve_organization(request)
+
         # form = FormForOrgForm(user=request.user)
         cat_choices = []
         for cat in CategoryForForm.objects.filter(organization=org_obj):
@@ -206,21 +212,80 @@ class FormEdit(View):
     def get(self, request, pk=None, key=None, *args, **kwargs):
 
         org_form = OrgForms.objects.get(id=int(pk))
-
-        if request.user.user_profiles.user_role == 'admin':
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        else:
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
+        total_fields_number = FormFields.objects.filter(org_form=org_form, is_exist=True).count()
+        org_obj = retrieve_organization(request)
         # form = FormForOrgForm(user=request.user)
         cat_choices = []
         for cat in CategoryForForm.objects.filter(organization=org_obj):
             cat_choices.append({'id': cat.id, 'name': cat.category_name})
         map_form_choices = [{'id': 0, 'name': 'None'}]
         for form_obj in OrgForms.objects.filter(form_cat__organization=org_obj):
-            map_form_choices.append({'id': form_obj.id, 'name': form_obj.form_name})
+            if form_obj.id != org_form.id:
+                map_form_choices.append({'id': form_obj.id, 'name': form_obj.form_name})
         return render_to_response(self.template1, {'org_form': org_form, 'cat_choices': cat_choices,
-                                                   'map_form_choices': map_form_choices},
+                                                   'map_form_choices': map_form_choices,
+                                                   'req_counter': total_fields_number},
                                   context_instance=RequestContext(request),)
+
+    @method_decorator(custom_login_required)
+    def post(self, request, pk=None, key=None, *args, **kwargs):
+
+        print "yes coming here", pk
+        org_form = OrgForms.objects.get(id=int(pk))
+        org_form.form_cat = CategoryForForm.objects.get(id=int(request.POST['form_cat']))
+        org_form.form_name = request.POST['form_name']
+
+        org_form.allow_accept_reject = request.POST['accept_reject']
+        org_form.input_assign_allow = request.POST['input_assign_allow']
+        org_form.display_assign_allow = request.POST['display_assign_allow']
+
+        if request.POST['mapped_form'] != '0':
+            org_form.mapped_form = OrgForms.objects.get(id=int(request.POST['mapped_form']))
+        else:
+            org_form.mapped_form = None
+
+        org_form.save()
+
+        org_form.input_assign_to.clear()
+        org_form.display_assign_to.clear()
+
+        for input_assign in request.POST.getlist('input_assign_to'):
+            role_obj = OrganizationRoles.objects.get(id=int(input_assign))
+            org_form.input_assign_to.add(role_obj)
+
+        for display_assign in request.POST.getlist('display_assign_to'):
+            role_obj = OrganizationRoles.objects.get(id=int(display_assign))
+            org_form.display_assign_to.add(role_obj)
+
+        field_labels = request.POST.getlist('field_label')
+        field_types = request.POST.getlist('field_type')
+        choices = request.POST.getlist('choices')
+        placeholders = request.POST.getlist('placeholder')
+
+        existing_fields = [field.id for field in FormFields.objects.filter(org_form=org_form, is_exist=True)]
+        for i, (label, ftype, choice, placeholder) in enumerate(zip(field_labels, field_types, choices, placeholders), 1):
+            required = 'required'+`i`
+            print required
+            try:
+                temp = request.POST[required]
+                req = True
+            except:
+                req = False
+            if FormFields.objects.filter(org_form=org_form, label=label, field_type=ftype, is_exist=True):
+                not_exist_field = FormFields.objects.get(org_form=org_form, label=label, field_type=ftype,
+                                                         is_exist=True)
+                not_exist_field.required = req
+                not_exist_field.choices = choice
+                not_exist_field.placeholder_text = placeholder
+                not_exist_field.save()
+                existing_fields.remove(not_exist_field.id)
+            else:
+                FormFields(org_form=org_form, label=label, field_type=ftype, required=req, choices=choice,
+                           placeholder_text=placeholder).save()
+
+        FormFields.objects.filter(id__in=existing_fields).update(is_exist=False)
+
+        return HttpResponseRedirect(reverse('forms-created'))
 
 
 class CustomerData(View):
@@ -246,7 +311,8 @@ class CustomerFormsData(View):
         customer_inputs = OrganizationRoles.objects.get(role_name='Customer').input_assign.all()
         forms_by_category = defaultdict(list)
         for cust_input in customer_inputs:
-            forms_by_category[cust_input.form_cat.category_name].append(cust_input)
+            if cust_input.status == 'active':
+                forms_by_category[cust_input.form_cat.category_name].append(cust_input)
         return render_to_response(self.template1, {'forms_by_category': dict(forms_by_category), 'customer_id': pk},
                                   context_instance=RequestContext(request),)
 
@@ -265,7 +331,7 @@ class CustomerFormFields(View):
         except:
             new_serial_no = 1
 
-        form_fields = FormFields.objects.filter(org_form__id=int(key))
+        form_fields = FormFields.objects.filter(org_form__id=int(key), is_exist=True)
 
         normal_fields = [1, 2, 3, 5, 6, 8, 9, 10, 11, 12]
         choice_fields = [4, 7]
@@ -290,7 +356,6 @@ class CustomerFormFields(View):
                                                    'normal_fields': normal_fields, 'choice_fields': choice_fields},
                                   context_instance=RequestContext(request),)
 
-
     @method_decorator(custom_login_required)
     def post(self, request, pk=None, key=None, *args, **kwargs):
 
@@ -311,7 +376,7 @@ class CustomerFormFields(View):
                                       entry_status=entry_status)
         form_entry_data.save()
 
-        form_fields = FormFields.objects.filter(org_form__id=int(key))
+        form_fields = FormFields.objects.filter(org_form__id=int(key), is_exist=True)
 
         for i, field in enumerate(form_fields):
             field_val = 'field_value'+str(i)
@@ -374,18 +439,23 @@ class DisplayForms(View):
     @method_decorator(custom_login_required)
     def get(self, request, *args, **kwargs):
 
-        if request.user.user_profiles.user_role == 'admin':
-            print "yes it is admin who is logged in"
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-            display_forms = OrgForms.objects.filter(form_cat__organization=org_obj, display_assign_to__id=3)
-        elif request.user.user_profiles.user_role == 'super_admin':
-            print "yes it is super admin who is logged in"
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
-            display_forms = OrgForms.objects.filter(form_cat__organization=org_obj, display_assign_to__id=4)
-        else:
-            print "yes it is employee who is logged in"
-            org_obj = Organization.objects.get(employees=request.user)
-            display_forms = OrgForms.objects.filter(form_cat__organization=org_obj, display_assign_to__id=2)
+        org_obj, display_forms = retrieve_organization(request, entries_type='display')
+
+        forms_by_category = defaultdict(list)
+        for frm in display_forms:
+            forms_by_category[frm.form_cat.category_name].append(frm)
+        return render_to_response(self.template_name, {'forms_by_category': dict(forms_by_category)},
+                                  context_instance=RequestContext(request),)
+
+
+class InputForms(View):
+    template_name = 'custom_forms/input_forms.html'
+    # form_class = ProfileUpdateForm
+
+    @method_decorator(custom_login_required)
+    def get(self, request, *args, **kwargs):
+
+        org_obj, display_forms = retrieve_organization(request, entries_type='input')
 
         forms_by_category = defaultdict(list)
         for frm in display_forms:
@@ -416,33 +486,41 @@ class DisplayFormEntries(View):
             map_frm = False
             map_from_name = ''
 
-        field_labels = [fld.label for fld in FormFields.objects.filter(org_form=form_object)]
+        field_labels = [fld.label for fld in FormFields.objects.filter(org_form=form_object)
+                        if FormFieldEntries.objects.filter(field_id=fld)]
 
         final_result = {}
+
         for entry in FormEntries.objects.filter(org_form=form_object):
             temp = []
-            for field_entry in FormFieldEntries.objects.filter(form_entry=entry):
-                if field_entry.field_id.field_type in [1, 2, 5, 7]:
-                    temp.append(field_entry.text_value)
-                if field_entry.field_id.field_type in [4, 6]:
-                    temp.append(field_entry.choice_value)
-                if field_entry.field_id.field_type == 3:
-                    temp.append(field_entry.email_value)
-                if field_entry.field_id.field_type == 8:
-                    temp.append(str(field_entry.file_value))
-                if field_entry.field_id.field_type == 11:
-                    temp.append(field_entry.url_value)
-                if field_entry.field_id.field_type == 12:
-                    temp.append(field_entry.number_value)
-                if field_entry.field_id.field_type == 9:
-                    temp.append(field_entry.date_value)
-                if field_entry.field_id.field_type == 10:
-                    temp.append(field_entry.datetime_value)
+
+            for label in field_labels:
+                try:
+                    field_entry = FormFieldEntries.objects.get(form_entry=entry, field_id__label=label)
+                    if field_entry.field_id.field_type in [1, 2, 5, 7]:
+                        temp.append(field_entry.text_value)
+                    if field_entry.field_id.field_type in [4, 6]:
+                        temp.append(field_entry.choice_value)
+                    if field_entry.field_id.field_type == 3:
+                        temp.append(field_entry.email_value)
+                    if field_entry.field_id.field_type == 8:
+                        temp.append(str(field_entry.file_value))
+                    if field_entry.field_id.field_type == 11:
+                        temp.append(field_entry.url_value)
+                    if field_entry.field_id.field_type == 12:
+                        temp.append(field_entry.number_value)
+                    if field_entry.field_id.field_type == 9:
+                        temp.append(field_entry.date_value)
+                    if field_entry.field_id.field_type == 10:
+                        temp.append(field_entry.datetime_value)
+                except:
+                    temp.append('')
+
             if form_object.allow_accept_reject == 'yes':
                 temp.append(entry.get_entry_status_display())
             if form_object.display_assign_allow == 'yes' or form_object.input_assign_allow == 'yes':
                 if entry.assigned_to:
-                    temp.append(entry.assigned_to.first_name)
+                    temp.append(entry.assigned_to.first_name + ' ' + entry.assigned_to.last_name)
                     temp.append(entry.assigned_by.first_name)
                 else:
                     temp.append(None)
@@ -468,72 +546,54 @@ class ViewFormEntry(View):
 
         server_url = settings.SERVER_URL
 
-        # For Assign to Field
-        if request.user.user_profiles.user_role == 'admin':
-            print "yes it is admin who is logged in"
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        elif request.user.user_profiles.user_role == 'super_admin':
-            print "yes it is super admin who is logged in"
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
-        else:
-            print "yes it is employee who is logged in"
-            org_obj = Organization.objects.get(employees=request.user)
+        org_obj = retrieve_organization(request)
 
         frm_object = field_entries[0].form_entry.org_form
-
-        assign_to_roles = []
-
-        for inp in frm_object.input_assign_to.all():
-            if inp.role_name not in assign_to_roles:
-                assign_to_roles.append(inp.role_name)
-        for dis in frm_object.display_assign_to.all():
-            if dis.role_name not in assign_to_roles:
-                assign_to_roles.append(dis.role_name)
-
-        if frm_object.map_form.all():
-            for mapped_one in frm_object.map_form.all():
-                for inp in mapped_one.input_assign_to.all():
-                    if inp.role_name not in assign_to_roles:
-                        assign_to_roles.append(inp.role_name)
-                for dis in mapped_one.display_assign_to.all():
-                    if dis.role_name not in assign_to_roles:
-                        assign_to_roles.append(dis.role_name)
-
-        if 'Admin' in assign_to_roles and 'Employee' in assign_to_roles:
-            employees = org_obj.employees.all() | org_obj.admins.all()
-        elif 'Admin' in assign_to_roles:
-            employees = org_obj.admins.all()
-        elif 'Employee' in assign_to_roles:
-            employees = org_obj.employees.all()
-        else:
-            employees = []
 
         if field_entries[0].field_id.org_form.map_form.all():
             print True
             mapped_form_entries = FormEntries.objects.filter(mapped_entry__id=int(pk))
-            field_labels = [fld.label for fld in FormFields.objects.filter(
-                org_form=field_entries[0].form_entry.org_form.map_form.all()[0])]
-            print field_labels
+
+            field_labels = [fld.label for fld in FormFields.objects.filter(org_form=field_entries[0].form_entry.
+                                                                           org_form.map_form.all()[0])
+                            if FormFieldEntries.objects.filter(field_id=fld)]
+
             final_result = {}
             for entry in mapped_form_entries:
                 temp = []
-                for field_entry in FormFieldEntries.objects.filter(form_entry=entry):
-                    if field_entry.field_id.field_type in [1, 2, 5, 7]:
-                        temp.append(field_entry.text_value)
-                    if field_entry.field_id.field_type in [4, 6]:
-                        temp.append(field_entry.choice_value)
-                    if field_entry.field_id.field_type == 3:
-                        temp.append(field_entry.email_value)
-                    if field_entry.field_id.field_type == 8:
-                        temp.append(str(field_entry.file_value))
-                    if field_entry.field_id.field_type == 11:
-                        temp.append(field_entry.url_value)
-                    if field_entry.field_id.field_type == 12:
-                        temp.append(field_entry.number_value)
-                    if field_entry.field_id.field_type == 9:
-                        temp.append(field_entry.date_value)
-                    if field_entry.field_id.field_type == 10:
-                        temp.append(field_entry.datetime_value)
+
+                for label in field_labels:
+                    try:
+                        field_entry = FormFieldEntries.objects.get(form_entry=entry, field_id__label=label)
+                        if field_entry.field_id.field_type in [1, 2, 5, 7]:
+                            temp.append(field_entry.text_value)
+                        if field_entry.field_id.field_type in [4, 6]:
+                            temp.append(field_entry.choice_value)
+                        if field_entry.field_id.field_type == 3:
+                            temp.append(field_entry.email_value)
+                        if field_entry.field_id.field_type == 8:
+                            temp.append(str(field_entry.file_value))
+                        if field_entry.field_id.field_type == 11:
+                            temp.append(field_entry.url_value)
+                        if field_entry.field_id.field_type == 12:
+                            temp.append(field_entry.number_value)
+                        if field_entry.field_id.field_type == 9:
+                            temp.append(field_entry.date_value)
+                        if field_entry.field_id.field_type == 10:
+                            temp.append(field_entry.datetime_value)
+                    except:
+                        temp.append('')
+
+                if mapped_form_entries[0].org_form.allow_accept_reject == 'yes':
+                    temp.append(entry.get_entry_status_display())
+                if mapped_form_entries[0].org_form.display_assign_allow == 'yes' \
+                        or mapped_form_entries[0].org_form.input_assign_allow == 'yes':
+                    if entry.assigned_to:
+                        temp.append(entry.assigned_to.first_name + ' ' + entry.assigned_to.last_name)
+                        temp.append(entry.assigned_by.first_name)
+                    else:
+                        temp.append(None)
+                        temp.append(None)
                 temp.append(entry.id)
                 final_result[entry.serial_no] = temp
 
@@ -541,24 +601,10 @@ class ViewFormEntry(View):
             print False
             field_labels = []
             final_result = []
+
         return render_to_response(self.template_name, {'field_entries': field_entries, 'server_url': server_url,
-                                                       'employees': employees, 'field_labels': field_labels,
-                                                       'final_result': final_result},
+                                                       'field_labels': field_labels, 'final_result': final_result},
                                   context_instance=RequestContext(request),)
-
-    def post(self, request, pk=None, *args, **kwargs):
-
-        frm_object = FormEntries.objects.get(id=int(pk))
-        try:
-            assign_to_id = request.POST['assign_to']
-            frm_object.assigned_to = User.objects.get(id=int(assign_to_id))
-            frm_object.assigned_by = request.user
-            frm_object.save()
-        except:
-            pass
-
-        return HttpResponseRedirect(reverse('display-form-entries',
-                                            kwargs={'pk': frm_object.obj_form.id}))
 
 
 class EditFormEntry(View):
@@ -588,45 +634,11 @@ class EditFormEntry(View):
             if entry.field_id.required and entry.field_id.field_type in choice_fields:
                 required_choice_fields.append(i)
 
-        # For Assign to Field
-        if request.user.user_profiles.user_role == 'admin':
-            print "yes it is admin who is logged in"
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        elif request.user.user_profiles.user_role == 'super_admin':
-            print "yes it is super admin who is logged in"
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
-        else:
-            print "yes it is employee who is logged in"
-            org_obj = Organization.objects.get(employees=request.user)
+        org_obj = retrieve_organization(request)
 
         frm_object = field_entries[0].form_entry.org_form
 
-        assign_to_roles = []
-
-        for inp in frm_object.input_assign_to.all():
-            if inp.role_name not in assign_to_roles:
-                assign_to_roles.append(inp.role_name)
-        for dis in frm_object.display_assign_to.all():
-            if dis.role_name not in assign_to_roles:
-                assign_to_roles.append(dis.role_name)
-
-        if frm_object.map_form.all():
-            for mapped_one in frm_object.map_form.all():
-                for inp in mapped_one.input_assign_to.all():
-                    if inp.role_name not in assign_to_roles:
-                        assign_to_roles.append(inp.role_name)
-                for dis in mapped_one.display_assign_to.all():
-                    if dis.role_name not in assign_to_roles:
-                        assign_to_roles.append(dis.role_name)
-
-        if 'Admin' in assign_to_roles and 'Employee' in assign_to_roles:
-            employees = org_obj.employees.all() | org_obj.admins.all()
-        elif 'Admin' in assign_to_roles:
-            employees = org_obj.admins.all()
-        elif 'Employee' in assign_to_roles:
-            employees = org_obj.employees.all()
-        else:
-            employees = []
+        employees = retrieve_employees(frm_object, org_obj)
 
         return render_to_response(self.template1, {'field_entries': field_entries, 'server_url': server_url,
                                                    'date_pickers': date_pickers, 'datetime_pickers': datetime_pickers,
@@ -711,9 +723,10 @@ class EditFormEntry(View):
                 entry.datetime_value = field_posted_val
                 entry.save()
 
+        frm_object = FormEntries.objects.get(id=int(pk))
         try:
             action = request.POST['approve_reject']
-            frm_object = FormEntries.objects.get(id=int(pk))
+
             frm_object.entry_status = action
             frm_object.save()
         except:
@@ -721,8 +734,11 @@ class EditFormEntry(View):
 
         try:
             assign_to_id = request.POST['assign_to']
-            frm_object = FormEntries.objects.get(id=int(pk))
-            frm_object.assigned_to = User.objects.get(id=int(assign_to_id))
+            print "------------------------", assign_to_id
+            if assign_to_id == 'none':
+                frm_object.assigned_to = None
+            else:
+                frm_object.assigned_to = User.objects.get(id=int(assign_to_id))
             frm_object.assigned_by = request.user
             frm_object.save()
         except:
@@ -732,40 +748,11 @@ class EditFormEntry(View):
                                             kwargs={'pk': field_entries[0].form_entry.org_form.id}))
 
 
-class InputForms(View):
-    template_name = 'custom_forms/input_forms.html'
-    # form_class = ProfileUpdateForm
-
-    @method_decorator(custom_login_required)
-    def get(self, request, *args, **kwargs):
-
-        if request.user.user_profiles.user_role == 'admin':
-            print "yes it is admin who is logged in"
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-            display_forms = OrgForms.objects.filter(form_cat__organization=org_obj, input_assign_to__id=3)
-        elif request.user.user_profiles.user_role == 'super_admin':
-            print "yes it is super admin who is logged in"
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
-            display_forms = OrgForms.objects.filter(form_cat__organization=org_obj, input_assign_to__id=4)
-        else:
-            print "yes it is employee who is logged in"
-            org_obj = Organization.objects.get(employees=request.user)
-            display_forms = OrgForms.objects.filter(form_cat__organization=org_obj, input_assign_to__id=2)
-
-        forms_by_category = defaultdict(list)
-        for frm in display_forms:
-            forms_by_category[frm.form_cat.category_name].append(frm)
-        return render_to_response(self.template_name, {'forms_by_category': dict(forms_by_category)},
-                                  context_instance=RequestContext(request),)
-
-
 class OrgFormFields(View):
     template1 = 'custom_forms/org_form_entry.html'
 
     @method_decorator(custom_login_required)
     def get(self, request, pk=None, key=None, *args, **kwargs):
-
-        print "------------------------------------------------------------", key
 
         try:
             last_serial_no = FormEntries.objects.filter(org_form__id=int(pk)).latest('id').serial_no
@@ -773,7 +760,7 @@ class OrgFormFields(View):
         except:
             new_serial_no = 1
 
-        form_fields = FormFields.objects.filter(org_form__id=int(pk))
+        form_fields = FormFields.objects.filter(org_form__id=int(pk), is_exist=True)
 
         if key:
             field_entries = FormFieldEntries.objects.filter(form_entry__id=int(key))
@@ -798,45 +785,11 @@ class OrgFormFields(View):
             if field.required and field.field_type in choice_fields:
                 required_choice_fields.append(i)
 
-        # For Assign to Field
-        if request.user.user_profiles.user_role == 'admin':
-            print "yes it is admin who is logged in"
-            org_obj = Organization.objects.get(super_admin=request.user.user_profiles.admin)
-        elif request.user.user_profiles.user_role == 'super_admin':
-            print "yes it is super admin who is logged in"
-            org_obj = Organization.objects.get(super_admin__id=request.user.id)
-        else:
-            print "yes it is employee who is logged in"
-            org_obj = Organization.objects.get(employees=request.user)
+        org_obj = retrieve_organization(request)
 
         frm_object = OrgForms.objects.get(id=int(pk))
 
-        assign_to_roles = []
-
-        for inp in frm_object.input_assign_to.all():
-            if inp.role_name not in assign_to_roles:
-                assign_to_roles.append(inp.role_name)
-        for dis in frm_object.display_assign_to.all():
-            if dis.role_name not in assign_to_roles:
-                assign_to_roles.append(dis.role_name)
-
-        if frm_object.map_form.all():
-            for mapped_one in frm_object.map_form.all():
-                for inp in mapped_one.input_assign_to.all():
-                    if inp.role_name not in assign_to_roles:
-                        assign_to_roles.append(inp.role_name)
-                for dis in mapped_one.display_assign_to.all():
-                    if dis.role_name not in assign_to_roles:
-                        assign_to_roles.append(dis.role_name)
-
-        if 'Admin' in assign_to_roles and 'Employee' in assign_to_roles:
-            employees = org_obj.employees.all() | org_obj.admins.all()
-        elif 'Admin' in assign_to_roles:
-            employees = org_obj.admins.all()
-        elif 'Employee' in assign_to_roles:
-            employees = org_obj.employees.all()
-        else:
-            employees = []
+        employees = retrieve_employees(frm_object, org_obj)
 
         return render_to_response(self.template1, {'form_fields': form_fields, 'server_url': server_url,
                                                    'serial_no': new_serial_no, 'field_entries': field_entries,
@@ -879,7 +832,7 @@ class OrgFormFields(View):
 
         form_entry_data.save()
 
-        form_fields = FormFields.objects.filter(org_form__id=int(pk))
+        form_fields = FormFields.objects.filter(org_form__id=int(pk), is_exist=True)
 
         for i, field in enumerate(form_fields):
             field_val = 'field_value'+str(i)

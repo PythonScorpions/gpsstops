@@ -7,6 +7,7 @@ urlpatterns = patterns("custom_forms.views",
                        url(r'change_status/(?P<key>\d+)$', FormCategory.as_view(), name='form-category-status'),
 
                        url(r'forms_created', FormsCreated.as_view(), name='forms-created'),
+                       url(r'change_form_status/(?P<pk>\d+)$', ChangeFormStatus.as_view(), name='change-form-status'),
                        url(r'create_form', FormAdd.as_view(), name='form-add'),
                        url(r'edit_form/(?P<pk>\d+)', FormEdit.as_view(), name='form-edit'),
                        url(r'customers', CustomerData.as_view(), name='customers'),

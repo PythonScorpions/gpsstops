@@ -65,3 +65,5 @@ local_settings.py
 migrations
 
 dump.rdb
+
+media

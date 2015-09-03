@@ -169,6 +169,7 @@ class FormFields(models.Model):
     required = models.BooleanField(default=True)
     choices = models.CharField(max_length=5000, blank=True, null=True)
     placeholder_text = models.CharField(null=True, blank=True, max_length=100)
+    is_exist = models.BooleanField(default=True)
 
 
 class FormEntries(models.Model):

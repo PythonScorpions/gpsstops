@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                     {% for frm in org_forms %}
-                    <tr>
+                    <tr {% if frm.status != 'active' %} style="background-color: #BDB7B7;" {% endif %}>
                         <td style="white-space: inherit">{{ frm.serial_no|stringformat:"04d" }}</td>
                         <td style="white-space: inherit">{{ frm.form_cat.category_name }}</td>
                         <td style="white-space: inherit">{{ frm.form_name }}</td>
@@ -65,9 +65,9 @@
                         <td style="white-space: inherit">{{ frm.mapped_form.form_name }}</td>
                         <td style="white-space: inherit"><a href="{% url 'form-edit' frm.id %}">Edit</a>
                             {% if frm.status == 'active' %}
-                                <a href="">Deactive</a>
+                                <a href="{% url 'change-form-status' frm.id %}">Deactivate</a>
                             {% else %}
-                                <a href="">Active</a>
+                                <a href="{% url 'change-form-status' frm.id %}">Activate</a>
                             {% endif %}
                         </td>
                     </tr>

@@ -116,8 +116,14 @@
 
                                                         <!-- File Upload Button -->
                                                         <input type="file" name="field_value{{ forloop.counter0 }}"
-                                                               class="form-control required{{ forloop.counter0 }}">  <a href="{{ server_url }}/media/{{ entry.file_value }}">
-                                                            {{ entry.file_value }}</a>
+                                                               class="form-control required{{ forloop.counter0 }}">
+                                                        <a href="{{ server_url }}/media/{{ entry.file_value }}" target="_blank">
+                                                            {% if entry.file_value|filetypecheck %}
+                                                                <img src="{{ server_url }}/media/{{ entry.file_value }}" height="100px" width="160px">
+                                                            {% else %}
+                                                                {{ entry.file_value }}
+                                                            {% endif %}
+                                                        </a>
 
                                                     {% elif entry.field_id.field_type == 9 %}
 
@@ -179,11 +185,14 @@
                                             <li style="margin-left: 20px;">
                                                 <div class="field">
                                                     <select class="form-control" name="approve_reject">
-                                                        <option value="need_action" class="form-control">
+                                                        <option value="need_action" class="form-control"
+                                                                {% ifequal field_entries.0.form_entry.entry_status 'need_action' %} selected {% endifequal %}>
                                                                     Need to take action</option>
-                                                        <option value="accepted" class="form-control">
+                                                        <option value="accepted" class="form-control"
+                                                                {% ifequal field_entries.0.form_entry.entry_status 'accepted' %} selected {% endifequal %}>
                                                                     Accept</option>
-                                                        <option value="rejected" class="form-control">
+                                                        <option value="rejected" class="form-control"
+                                                                {% ifequal field_entries.0.form_entry.entry_status 'rejected' %} selected {% endifequal %}>
                                                                     Reject</option>
                                                     </select>
                                                 </div>
@@ -203,8 +212,10 @@
                                             <li style="margin-left: 20px;">
                                                 <div class="field">
                                                     <select class="form-control" name="assign_to">
+                                                        <option value="none" class="form-control">None</option>
                                                         {% for emp in employees %}
-                                                            <option value="{{ emp.id }}" class="form-control">
+                                                            <option value="{{ emp.id }}" class="form-control"
+                                                                    {% ifequal field_entries.0.form_entry.assigned_to.id emp.id %} selected {% endifequal %}>
                                                                     {{ emp.first_name }} {{ emp.last_name }}</option>
                                                         {% endfor %}
                                                     </select>

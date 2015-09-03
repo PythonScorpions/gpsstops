@@ -24,7 +24,7 @@
                         <br><br>
 
                         <div class="wrapper panel panel-default col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                            <h4 class="panel-heading">Create New Form</h4>
+                            <h4 class="panel-heading">Edit Form</h4>
                             <div class="form panel-body">
                                 <form method="post" name="categoryform" class="org_form">
                                 {% csrf_token %}
@@ -119,16 +119,16 @@
                                         </li>
                                         <li style="margin-left: 164px;">
                                             <div class="field">
-                                                <input type="checkbox" name="input_assign_to" value="1"
+                                                <input type="checkbox" name="display_assign_to" value="1"
                                                         {% if 'Customer' in org_form.display_assign_to.all|roles %} checked {% endif %}>
                                                 Customer &nbsp;
-                                                <input type="checkbox" name="input_assign_to" value="2"
+                                                <input type="checkbox" name="display_assign_to" value="2"
                                                         {% if 'Employee' in org_form.display_assign_to.all|roles %} checked {% endif %}>
                                                 Employee &nbsp;
-                                                <input type="checkbox" name="input_assign_to" value="3"
+                                                <input type="checkbox" name="display_assign_to" value="3"
                                                         {% if 'Admin' in org_form.display_assign_to.all|roles %} checked {% endif %}>
                                                 Admin &nbsp;
-                                                <input type="checkbox" name="input_assign_to" value="4"
+                                                <input type="checkbox" name="display_assign_to" value="4"
                                                        {% if 'Super Admin' in org_form.display_assign_to.all|roles %} checked {% endif %} >
                                                 Super Admin &nbsp;
                                             </div>
@@ -241,7 +241,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for field in org_form.fields_form.all %}
+                                                    {% for field in org_form.fields_form.all|exist_fields %}
                                                         <tr class='class1'>
                                                             <td>
                                                                 <input class='controls form-control field-label' type='text'
@@ -276,7 +276,7 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <input type='checkbox' name='required"+req_counter+"' class='required'
+                                                                <input type='checkbox' name='required{{ forloop.counter }}' class='required'
                                                                        {% if field.required %}checked {% endif %}>
                                                             </td>
                                                             <td>
@@ -329,7 +329,7 @@
     </div>
 
 <script type="text/javascript">
-var req_counter = 0;
+var req_counter = parseInt({{ req_counter }});
 function check_validation() {
     var flag = false;
     $(".error_field_label").hide();
@@ -402,7 +402,7 @@ $(function() {
     $("input:checkbox").on('click', function() {
     // in the handler, 'this' refers to the box clicked on
         var $box = $(this);
-        if($box.attr("name") != 'input_assign_to' && $box.attr("name") != 'display_assign_to') {
+        if($box.attr("name") == 'accept_reject' || $box.attr("name") == 'input_assign_allow' || $box.attr("name") == 'display_assign_allow') {
             if ($box.is(":checked")) {
 
                 // the name of the box is retrieved using the .attr() method

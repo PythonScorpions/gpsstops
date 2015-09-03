@@ -72,8 +72,13 @@
 
                                                     {% elif entry.field_id.field_type == 8 %}
 
-                                                        <a href="{{ server_url }}/media/{{ entry.file_value }}">
-                                                            {{ entry.file_value }}</a>
+                                                        <a href="{{ server_url }}/media/{{ entry.file_value }}" target="_blank">
+                                                            {% if entry.file_value|filetypecheck %}
+                                                                <img src="{{ server_url }}/media/{{ entry.file_value }}" height="100px" width="160px">
+                                                            {% else %}
+                                                                {{ entry.file_value }}
+                                                            {% endif %}
+                                                        </a>
 
                                                     {% elif entry.field_id.field_type == 11 %}
 
@@ -98,6 +103,23 @@
                                         <br>
                                     {% endfor %}
 
+                                    {% if field_entries.0.field_id.org_form.allow_accept_reject == 'yes' %}
+
+                                        <ul role="tablist" class="nav nav-tabs text-left">
+                                            <li style="margin-left: 50px; width: 34%">
+                                                <div class="field-row">
+                                                    <label>Approve/Reject Action</label>
+                                                </div>
+                                            </li>
+                                            <li style="margin-left: 20px;">
+                                                <div class="field">
+                                                    {{ field_entries.0.form_entry.get_entry_status_display }}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    <br>
+                                    {% endif %}
+
                                     {% if field_entries.0.field_id.org_form.display_assign_allow == 'yes' or field_entries.0.field_id.org_form.input_assign_allow == 'yes' %}
 
                                         <ul role="tablist" class="nav nav-tabs text-left">
@@ -108,16 +130,11 @@
                                             </li>
                                             <li style="margin-left: 20px;">
                                                 <div class="field">
-                                                    {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
-                                                        <select class="form-control" name="assign_to">
-                                                            {% for emp in employees %}
-                                                                <option value="{{ emp.id }}" class="form-control">
-                                                                        {{ emp.first_name }} {{ emp.last_name }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    {% else %}
-                                                        {{ field_entries.0.form_entry.assigned_to.first_name }}
-                                                    {% endif %}
+                                                        {% if field_entries.0.form_entry.assigned_to.first_name %}
+                                                            {{ field_entries.0.form_entry.assigned_to.first_name }} {{ field_entries.0.form_entry.assigned_to.last_name }}
+                                                        {% else %}
+                                                            None
+                                                        {% endif %}
                                                 </div>
                                             </li>
                                         </ul>
@@ -129,7 +146,7 @@
                                         <span style="margin-left: 30px">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
                                         <br>
 
-                                        {% if user.user_profiles.get_user_role_display in field_entries.0.field_id.org_form.map_form.all.0.input_assign_to.all|roles and field_entries.0.form_entry.entry_status != 'rejected' and field_entries.0.form_entry.entry_status != 'need_action' and field_entries.0.form_entry.assigned_to == user %}
+                                        {% if user.user_profiles.get_user_role_display in field_entries.0.field_id.org_form.map_form.all.0.input_assign_to.all|roles and field_entries.0.field_id.org_form.status == 'active' and field_entries.0.form_entry.entry_status != 'rejected' and field_entries.0.form_entry.entry_status != 'need_action' and field_entries.0.form_entry.assigned_to == user %}
 
                                             <ul role="tablist" class="nav nav-tabs text-left">
                                                 <li>
@@ -180,6 +197,7 @@
                                                             <td style="white-space: inherit">
 
                                                                     <a href="{% url 'edit-form-entry' value|last %}">Edit</a>
+                                                                    <a href="{% url 'view-form-entry' value|last %}">View</a>
 
                                                             </td>
                                     {#                            {% if frm.status == 'active' %}#}
@@ -199,19 +217,19 @@
 
 
                                     {% endif %}
-                                    {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
-                                        <ul role="tablist" class="nav nav-tabs text-left">
-                                            <li>
-
-                                            </li>
-                                            <li style="margin-left: 182px;">
-                                                <div class="field-row actions" style="width: 100px;">
-                                                    <input type="submit" class="btn save_route btn-primary btn-1"
-                                                           value="Save"/>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    {% endif %}
+{#                                    {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}#}
+{#                                        <ul role="tablist" class="nav nav-tabs text-left">#}
+{#                                            <li>#}
+{##}
+{#                                            </li>#}
+{#                                            <li style="margin-left: 182px;">#}
+{#                                                <div class="field-row actions" style="width: 100px;">#}
+{#                                                    <input type="submit" class="btn save_route btn-primary btn-1"#}
+{#                                                           value="Save"/>#}
+{#                                                </div>#}
+{#                                            </li>#}
+{#                                        </ul>#}
+{#                                    {% endif %}#}
                                 </form>
 
                             </div>

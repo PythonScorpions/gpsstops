@@ -103,7 +103,7 @@
                 </thead>
                 <tbody>
                     {% for cat in categories %}
-                    <tr>
+                    <tr {% if cat.status != 'active' %} style="background-color: #BDB7B7;" {% endif %}>
                         <td>{{ cat.serial_no|stringformat:"04d" }}</td>
                         <td>{{ cat.category_name }}</td>
                         <td>{{ cat.remarks }}</td>
