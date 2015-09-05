@@ -912,3 +912,46 @@ class UsersViewSet(viewsets.ViewSet):
             else:
                 return Response({'code':0, 'status':'error', 'data':serializer.errors})
         return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
+
+
+class ThemeView(APIView):
+    def get(self, request, *args, **kwargs):
+        form = QueryForm(self.request.query_params)
+
+        if form.is_valid():
+            user_id = form.cleaned_data.get('user',0)
+
+            try:
+                user = User.objects.get(pk=user_id)
+            except:
+                return Response({'code':0, 'status':'error',
+                    'message':'User not found.'})
+
+            try:
+                if user.user_profiles.user_role == "super_admin":
+                    organization = Organization.objects.get(super_admin=user)
+                elif user.user_profiles.user_role == "admin":
+                    organization = Organization.objects.get(admin=user)
+                elif user.user_profiles.user_role == "employee":
+                    organization = Organization.objects.get(employees=user)
+            except:
+                organization = None
+
+            if not organization:
+                return Response({'code':0, 'status':'error',
+                    'message':'No matching organization'})
+
+            if organization.theme:
+                return Response({
+                    'code': 1, 'status': 200,
+                    'active_button_color':organization.theme.active_button_color,
+                    'background_color':organization.theme.background_color,
+                    'inactive_button_color':organization.theme.inactive_button_color,
+                    'logo_url':organization.theme.logo_url,
+                    'navigation_color':organization.theme.navigation_color
+                })
+            else:
+                return Response({'code':0, 'status':'error',
+                    'message':'No theme set yet.'})
+        else:
+            return Response({'code':0, 'status':'error', 'message':form.errors})

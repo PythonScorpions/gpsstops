@@ -36,5 +36,6 @@ urlpatterns = patterns("api.views",
 
 
    url(r'^', include(router.urls)),
-   url(r'agenda/$', AgendaView.as_view(), name='agendas')
+   url(r'agenda/$', AgendaView.as_view(), name='agendas'),
+   url(r'theme/$', ThemeView.as_view(), name='theme_view')
 )
