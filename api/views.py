@@ -875,7 +875,7 @@ class UsersViewSet(viewsets.ViewSet):
             pass
         else:
             queryset = get_users(user)
-            if request.query_params.get('admin_only') == 1:
+            if request.query_params.get('admin_only') == "1":
                 queryset = queryset.filter(user)
             serializer = UsersSerializer(queryset, many=True)
             return Response({'code':1, 'status':'success', 'data':serializer.data})
