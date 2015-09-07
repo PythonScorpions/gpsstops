@@ -915,9 +915,11 @@ class UsersViewSet(viewsets.ViewSet):
             return Response({'code':0, 'status':'error', 'data':'Invalid admin user id.'})
 
         users = get_users(admin)
+        print users
         try:
             user = users.get(pk=pk)
         except:
+            print sys.exc_info();
             pass
         else:
             serializer = UsersSerializer(data=request.data, instance=user)
