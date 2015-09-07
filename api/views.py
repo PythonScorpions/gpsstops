@@ -932,7 +932,7 @@ class UsersViewSet(viewsets.ViewSet):
     @detail_route(methods=['post'])
     def change_status(self, request, pk=None):
         try:
-            admin = User.objects.get(pk=request.query_params['admin'])
+            admin = User.objects.get(pk=request.POST.get('admin'))
         except:
             return Response({'code':0, 'status':'error', 'data':'Invalid admin user id.'})
 
@@ -942,13 +942,19 @@ class UsersViewSet(viewsets.ViewSet):
         except:
             pass
         else:
-            status = request.POST.get('is_active', -1)
+            try:
+                status = int(request.POST.get('is_active', -1))
+            except:
+                status = -1
+
             if status == 0:
                 user.is_active = False
                 user.save()
             elif status == 1:
-                user.is_active = False
+                user.is_active = True
                 user.save()
+            else:
+                return Response({'code':0, 'status':'error', 'data':'Value of is_active is invalid.'})
 
             data = UserObject(user).__dict__
             return Response({'code':1, 'status':'success', 'data':data})
