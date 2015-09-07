@@ -210,10 +210,14 @@ class CurrentUser(APIView):
         except:
             pass
         else:
+            data = UserObject(user).__dict__
+            data['occupation'] = user.user_profiles.occupation
+            data['company_name'] = user.user_profiles.company_name
+
             return Response({
                 'code': 1,
                 'status': 'success',
-                'data': UserObject(user).__dict__,
+                'data': data,
                 'message': 'current user details'
             })
         return Response({'code': 0, 'status': 'error', 'message': 'User does not exist'})
@@ -869,7 +873,9 @@ class UsersViewSet(viewsets.ViewSet):
         except:
             pass
         else:
-            queryset = User.objects.filter(user_profiles__admin=user)
+            queryset = get_users(user)
+            if request.query_params.get('admin_only') == 1:
+
             serializer = UsersSerializer(queryset, many=True)
             return Response({'code':1, 'status':'success', 'data':serializer.data})
         return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})

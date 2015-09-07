@@ -353,7 +353,14 @@ class UserObject(object):
     def __init__(self, user=None, *args, **kwargs):
         if user:
             self.id = user.id
-            self.admin = user.user_profiles.admin.id
+            if user.user_profiles.user_role == "super_admin":
+                self.admin = user.id
+                self.admin_first_name = user.first_name
+                self.admin_last_name = user.last_name
+            else:
+                self.admin = user.user_profiles.admin.id
+                self.admin_first_name = user.user_profiles.admin.first_name
+                self.admin_last_name = user.user_profiles.admin.last_name
             self.first_name = user.first_name
             self.last_name = user.last_name
             self.email = user.email
@@ -365,6 +372,7 @@ class UserObject(object):
             self.state = user.user_profiles.state
             self.zip_code = user.user_profiles.zip_code
             self.country = user.user_profiles.country.name
+            self.country_code = user.user_profiles.country.code
         else:
             self.admin = kwargs.get('admin', None)
             self.first_name = kwargs.get('first_name', None)
@@ -395,7 +403,8 @@ class UsersSerializer(serializers.Serializer):
     country = serializers.CharField()
 
     def to_representation(self, obj):
-        return UserObject(obj).__dict__
+        data = UserObject(obj).__dict__
+        return data
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists() and not self.instance:
