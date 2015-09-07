@@ -91,7 +91,8 @@ class UpdateUser(APIView):
                 user_data = User.objects.get(id=int(user_id))
                 user_data.first_name = request.data['name']
                 user_data.email = request.data['email']
-                if request.data['password'] != '' and request.data['password'] != 'Null':
+                password = request.data.get('password', None)
+                if password:
                     user_data.password = make_password(request.data['password'])
                 user_data.save()
                 user_profile_data = UserProfiles.objects.get(user=user_data)
