@@ -875,15 +875,20 @@ class UsersViewSet(viewsets.ViewSet):
         else:
             queryset = get_users(user)
             if request.query_params.get('admin_only') == 1:
-
+                queryset = queryset.filter(user)
             serializer = UsersSerializer(queryset, many=True)
             return Response({'code':1, 'status':'success', 'data':serializer.data})
         return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
 
     def retrieve(self, request, pk=None):
         try:
-            user = User.objects.get(pk=pk,
-                        user_profiles__admin__id=request.query_params['admin'])
+            admin = User.objects.get(pk=request.query_params['admin'])
+        except:
+            return Response({'code':0, 'status':'error', 'data':'Invalid admin user id.'})
+
+        users = get_users(admin)
+        try:
+            user = users.get(pk=pk)
         except:
             pass
         else:
@@ -904,8 +909,13 @@ class UsersViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         try:
-            user = User.objects.get(pk=pk,
-                        user_profiles__admin__id=request.data['admin'])
+            admin = User.objects.get(pk=request.query_params['admin'])
+        except:
+            return Response({'code':0, 'status':'error', 'data':'Invalid admin user id.'})
+
+        users = get_users(admin)
+        try:
+            user = users.get(pk=pk)
         except:
             pass
         else:
@@ -917,6 +927,31 @@ class UsersViewSet(viewsets.ViewSet):
                 return Response({'code':1, 'status':'success', 'data':data})
             else:
                 return Response({'code':0, 'status':'error', 'data':serializer.errors})
+        return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
+
+    @detail_route(methods=['post'])
+    def change_status(self, request, pk=None):
+        try:
+            admin = User.objects.get(pk=request.query_params['admin'])
+        except:
+            return Response({'code':0, 'status':'error', 'data':'Invalid admin user id.'})
+
+        users = get_users(admin)
+        try:
+            user = users.get(pk=pk)
+        except:
+            pass
+        else:
+            status = request.POST.get('is_active', -1)
+            if status == 0:
+                user.is_active = False
+                user.save()
+            elif status == 1:
+                user.is_active = False
+                user.save()
+
+            data = UserObject(user).__dict__
+            return Response({'code':1, 'status':'success', 'data':data})
         return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
 
 
