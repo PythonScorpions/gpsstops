@@ -876,7 +876,7 @@ class UsersViewSet(viewsets.ViewSet):
         else:
             queryset = get_users(user)
             if request.query_params.get('admin_only') == "1":
-                queryset = queryset.filter(user)
+                queryset = queryset.filter(user_profiles__user_role='admin')
             serializer = UsersSerializer(queryset, many=True)
             return Response({'code':1, 'status':'success', 'data':serializer.data})
         return Response({'code':0, 'status':'error', 'data':'Invalid user id.'})
