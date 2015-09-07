@@ -910,7 +910,7 @@ class UsersViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         try:
-            admin = User.objects.get(pk=request.query_params['admin'])
+            admin = User.objects.get(pk=request.data.get('admin'))
         except:
             return Response({'code':0, 'status':'error', 'data':'Invalid admin user id.'})
 
