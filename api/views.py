@@ -639,10 +639,7 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
                 appointments = filter_objects_by_user(user_obj, Appointments)
                 # appointments = Appointments.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
-                    date_min = datetime.datetime.combine(date, datetime.time.min)
-                    date_max = datetime.datetime.combine(date, datetime.time.max)
-                    appointments = appointments \
-                                    .filter(start_datetime__range=(date_min, date_max))
+                    appointments = appointments.filter(start_datetime__contains=date)
                 return appointments
         return Appointments.objects.none()
 
@@ -669,6 +666,7 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
             'message': message,
             'data': self.response.data
         }
+
         self.response.status_code = 200
         self.response.render()
         return self.response
@@ -690,14 +688,19 @@ class TaskViewSet(viewsets.ModelViewSet):
             user = form.cleaned_data.get('user',0)
             date = form.cleaned_data.get('date', None)
 
-            tasks = filter_objects_by_user(user_obj, Task)
-            # tasks = Task.objects.filter(user__id=user)
-            if date and self.request.method == 'GET':
-                date_min = datetime.datetime.combine(date, datetime.time.min)
-                date_max = datetime.datetime.combine(date, datetime.time.max)
-                tasks = tasks.filter(user__id=user) \
-                        .filter(due_date__range=(date_min, date_max))
-            return tasks
+            try:
+                user_obj = User.objects.get(pk=user)
+            except:
+                pass
+            else:
+                tasks = filter_objects_by_user(user_obj, Task)
+                # tasks = Task.objects.filter(user__id=user)
+                if date and self.request.method == 'GET':
+                    date_min = datetime.datetime.combine(date, datetime.time.min)
+                    date_max = datetime.datetime.combine(date, datetime.time.max)
+                    tasks = tasks.filter(user__id=user) \
+                            .filter(due_date__range=(date_min, date_max))
+                return tasks
         return Task.objects.none()
 
     def dispatch(self, request, *args, **kwargs):
@@ -749,7 +752,10 @@ class ContactViewSet(viewsets.ModelViewSet):
         response = super(ContactViewSet, self).list(request)
         queryset = self.get_queryset()
         for i in range(queryset.count()):
-            response.data[i]['group_name'] = queryset[i].group.name
+            if queryset[i].group:
+                response.data[i]['group_name'] = queryset[i].group.name
+            else:
+                response.data[i]['group_name'] = ""
         return response
 
     def dispatch(self, request, *args, **kwargs):

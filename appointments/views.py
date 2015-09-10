@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseServerError
 
+from accounts.utils import *
 from appointments.forms import *
 
 import json, datetime
@@ -285,13 +286,12 @@ class AgendaView(View):
     def get(self, request, *args, **kwargs):
         agenda = {'appointments':[], 'tasks':[]}
 
-        agenda['appointments'] = Appointments.objects \
-                                .filter(user=request.user) \
-                                .filter(start_datetime__gt=datetime.date.today())
+        agenda['appointments'] = filter_objects_by_user(request.user, Appointments) \
+                                 .filter(start_datetime__gte=datetime.date.today())
 
-        agenda['tasks'] = Task.objects \
-                          .filter(user=request.user) \
-                          .filter(due_date__gt=datetime.date.today())
+        agenda['tasks'] = filter_objects_by_user(request.user, Task) \
+                          .filter(due_date__gte=datetime.date.today())
+
         return render(request, "calendar/agenda.html", {'agenda':agenda})
 agenda_view = AgendaView.as_view()
 

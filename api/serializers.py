@@ -181,7 +181,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'start_datetime':obj.start_datetime,
+            'start_datetime':obj.start_datetime.strftime("%m/%d/%Y %H:%M %p"),
             'timezone':obj.timezone,
             'location':obj.location,
             'latitude':obj.latitude,
@@ -192,12 +192,18 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             'notification_time':obj.notification_time,
             'is_editable':obj.is_editable,
             'created_by':obj.created_by.id,
+            'created_by_first_name':obj.created_by.first_name,
+            'created_by_last_name':obj.created_by.last_name
         }
         try:
             if self.assigned_user:
                 result['assigned_user_id'] = self.assigned_user.id
+                result['assigned_user_first_naem'] = self.assigned_user.first_name
+                result['assigned_user_last_name'] = self.assigned_user.last_name
         except:
             result['assigned_user_id'] = obj.user.id
+            result['assigned_user_first_name'] = obj.user.first_name
+            result['assigned_user_last_name'] = obj.user.last_name
         return result
 
 
@@ -260,19 +266,25 @@ class TaskSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'due_date':obj.start_datetime,
+            'due_date':obj.start_datetime.strftime("%m/%d/%Y %H:%M %p"),
             'timezone':obj.timezone,
             'note':obj.note,
             'notification_required':obj.notification_required,
             'notification_time':obj.notification_time,
             'is_editable':obj.is_editable,
             'created_by':obj.created_by.id,
+            'created_by_first_name':obj.created_by.first_name,
+            'created_by_last_name':obj.created_by.last_name
         }
         try:
             if self.assigned_user:
                 result['assigned_user_id'] = self.assigned_user.id
+                result['assigned_user_first_name'] = self.assigned_user.first_name
+                result['assigned_user_last_name'] = self.assigned_user.last_name
         except:
             result['assigned_user_id'] = obj.user.id
+            result['assigned_user_first_name'] = obj.user.first_name
+            result['assigned_user_last_name'] = obj.user.last_name
         return result
 
 
