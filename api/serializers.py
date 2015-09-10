@@ -266,7 +266,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'due_date':obj.start_datetime.strftime("%m/%d/%Y %H:%M %p"),
+            'due_date':obj.due_date.strftime("%m/%d/%Y %H:%M %p"),
             'timezone':obj.timezone,
             'note':obj.note,
             'notification_required':obj.notification_required,
