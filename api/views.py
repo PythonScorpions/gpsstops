@@ -372,16 +372,24 @@ class CreateRouteApi(APIView):
 
 
 class RouteListApi(APIView):
-
     def get(self, request, *args, **kwargs):
         try:
             user_id = int(self.kwargs['pk'])
         except:
-            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+            return Response({
+                'code':0,
+                'status':200,
+                'message':'User does not exist'
+            })
+
         routes = Route.objects.filter(user__id=user_id)
         serializer = RouteSerializer(routes, many=True)
-
-        return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'All routes Data'})
+        return Response({
+            'code':1,
+            'status':200,
+            'Data':serializer.data,
+            'message':'All routes Data'
+        })
 
 
 class OptimizedRouteListApi(APIView):

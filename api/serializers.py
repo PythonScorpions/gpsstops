@@ -102,30 +102,37 @@ class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
 
+    def to_representation(self, obj):
+        result = super(RouteSerializer, self).to_representation(obj)
+        result['assigned_first_name'] = obj.user.first_name
+        result['assigned_last_name'] = obj.user.last_name
+        result['created_by_first_name'] = obj.created_by.first_name
+        result['created_by_last_name'] = obj.created_by.last_name
+        return result
+
     @staticmethod
     def get_locations(obj):
-
         all_locations = Location.objects.filter(route=obj)
         location_data = LocationSerializer(all_locations, many=True)
         return location_data.data
 
     @staticmethod
     def get_created_at(obj):
-
-        created = str(obj.created_at).split(' ')
-        return created[0].replace('-', '/') + ' ' + created[1][:5]
+        return obj.created_at.strftime("%m/%d/%Y %H:%M %p")
+        # created = str(obj.created_at).split(' ')
+        # return created[0].replace('-', '/') + ' ' + created[1][:5]
 
     @staticmethod
     def get_updated_at(obj):
-
-        updated = str(obj.updated_at).split(' ')
-        return updated[0].replace('-', '/') + ' ' + updated[1][:5]
+        return obj.updated_at.strftime("%m/%d/%Y %H:%M %p")
+        # updated = str(obj.updated_at).split(' ')
+        # return updated[0].replace('-', '/') + ' ' + updated[1][:5]
 
     @staticmethod
     def get_trip_datetime(obj):
-
-        triptime = str(obj.trip_datetime).split(' ')
-        return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
+        return obj.trip_datetime.strftime("%m/%d/%Y %H:%M %p")
+        # triptime = str(obj.trip_datetime).split(' ')
+        # return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
 
 class OptRouteSerializer(serializers.ModelSerializer):
@@ -137,6 +144,14 @@ class OptRouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
 
+    def to_representation(self, obj):
+        result = super(RouteSerializer, self).to_representation(obj)
+        result['assigned_first_name'] = obj.user.first_name
+        result['assigned_last_name'] = obj.user.last_name
+        result['created_by_first_name'] = obj.created_by.first_name
+        result['created_by_last_name'] = obj.created_by.last_name
+        return result
+
     @staticmethod
     def get_locations(obj):
 
@@ -146,21 +161,21 @@ class OptRouteSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_created_at(obj):
-
-        created = str(obj.created_at).split(' ')
-        return created[0].replace('-', '/') + ' ' + created[1][:5]
+        return obj.created_at.strftime("%m/%d/%Y %H:%M %p")
+        # created = str(obj.created_at).split(' ')
+        # return created[0].replace('-', '/') + ' ' + created[1][:5]
 
     @staticmethod
     def get_updated_at(obj):
-
-        updated = str(obj.updated_at).split(' ')
-        return updated[0].replace('-', '/') + ' ' + updated[1][:5]
+        return obj.updated_at.strftime("%m/%d/%Y %H:%M %p")
+        # updated = str(obj.updated_at).split(' ')
+        # return updated[0].replace('-', '/') + ' ' + updated[1][:5]
 
     @staticmethod
     def get_trip_datetime(obj):
-
-        triptime = str(obj.trip_datetime).split(' ')
-        return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
+        return obj.trip_datetime.strftime("%m/%d/%Y %H:%M %p")
+        # triptime = str(obj.trip_datetime).split(' ')
+        # return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
 
 class AppointmentsSerializer(serializers.ModelSerializer):
