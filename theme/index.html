@@ -1,27 +1,86 @@
-
-{% extends 'base.html' %}
-
-{% block content %}
-
-<!-- {% include "logo_account.html" %} -->
-<div class="page">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Benny App</title>
+    
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.1.0/css/font-awesome.min.css">
+    <link href="css/media.css" rel="stylesheet" type="text/css">
+    <link href="css/jv-jquery-mobile-menu.css" rel="stylesheet" type="text/css">
+    <link href="css/animate.css" rel="stylesheet" type="text/css">
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+              <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+              <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+            <![endif]-->
+</head>
+<body>
+<div class="top-header">
+     <div class="mobile-nav">
+      <div class="gw-sidebar">
+  <div id="gw-sidebar" class="gw-sidebar">
+    <div class="nano-content">
+      <ul class="gw-nav gw-nav-list">
+        <li class="init-un-active"> <a href="javascript:void(0)"> <span class="gw-menu-text">Home</span> </a> </li>
+        <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">Downloads</span> <b class="gw-arrow"></b> </a>
+          <ul class="gw-submenu">
+            <li> <a href="javascript:void(0)">Menu 1</a> </li>
+          </ul>
+        </li>
+        <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">Support</span> <b class="gw-arrow icon-arrow-up8"></b> </a>
+          <ul class="gw-submenu">
+            <li> <a href="javascript:void(0)">Menu 1</a> </li>
+            <li> <a href="javascript:void(0)">Menu 2</a> </li>
+            <li> <a href="javascript:void(0)">Menu 3</a> </li>
+          </ul>
+        </li>
+        <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">About Us</span> <b></b> </a>
+          <ul class="gw-submenu">
+            <li> <a href="javascript:void(0)">Menu 1</a> </li>
+            <li> <a href="javascript:void(0)">Menu 2</a> </li>
+            
+          </ul>
+        </li>
+        <li class="init-un-active"> <a href="javascript:void(0)"> <span class="gw-menu-text">Contact Us</span> </a> </li>
+      </ul>
+    </div>
+  </div>
+</div>
+    </div>
+    <div class="logo"> <img src="images/logo.jpg" class="img-responsive" alt="Benny App" > </div>
+    <div class="header-link">
+      <ul class="list-inline">
+        <li><a href="#">800-466-0992 </a></li>
+        <li><a href="#">Login </a></li>
+        <li><a href="#" class="btn btn-primary">Sign up </a></li>
+      </ul>
+    </div>
+ </div>
+<div class="page"> 
 <div id="front-banner" class="front-banner">
-      <div class="row">
-          <div class="col-md-6 col-sm-6 col-xs-12 banner-top">
-             <img src="/static/images/theme/banner-hand.png" class="img-responsive animated slideInLeft" alt="Benny app img">
+  		<div class="row">
+        	<div class="col-md-6 col-sm-6 col-xs-12 banner-top">
+             <img src="images/banner-hand.png" class="img-responsive animated slideInLeft" alt="Benny app img">
             </div>
-          <div class="col-md-6 col-sm-6 col-xs-12 banner-content">
-              <h2 class="animated slideInRight">Create A mobile App<br><span class="bold"> In Minutes</span></h2>
+        	<div class="col-md-6 col-sm-6 col-xs-12 banner-content">
+            	<h2 class="animated slideInRight">Create A mobile App<br><span class="bold"> In Minutes</span></h2>
                 <h4 class="animated slideInRight">For your BUSINESS. ORGANIZATION. GROUP.</h4>
-        <h3 class="animated slideInRight">IT’S <span class="bold">FAST</span>   IT’S <span class="bold">EASY</span>   IT’S <span class="bold">FLEXIBLE</span></h3>
+				<h3 class="animated slideInRight">IT’S <span class="bold">FAST</span>   IT’S <span class="bold">EASY</span>   IT’S <span class="bold">FLEXIBLE</span></h3>
                 <h6 class="animated slideInRight">No coding or programming necessary -Instant updates and changes</h6>
                 <ul class="list-inline">
-                  <li><a href="#"><img class="img-responsive  animated fadeInUpBig" src="/static/images/theme/iphone_app.png" alt="Beeny App iphone"></a></li>
-                    <li><a href="#"><img class="img-responsive animated fadeInUpBig" src="/static/images/theme/android_app.png" alt="Beeny App android"></a></li>
+                	<li><a href="#"><img class="img-responsive  animated fadeInUpBig" src="images/iphone_app.png" alt="Beeny App iphone"></a></li>
+                    <li><a href="#"><img class="img-responsive animated fadeInUpBig" src="images/android_app.png" alt="Beeny App android"></a></li>
                 </ul>
-
+            
             </div>
-
+            
         </div>
 </div>
 <div class="top-feature blue-container ">
@@ -31,80 +90,80 @@
       <div class="carousel slide feature" data-ride="carousel" data-type="multi" data-interval="3000" id="myCarousel">
         <div class="carousel-inner">
           <div class="item active">
-            <div class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="services">
               <p class="uppercase normal about-head">sell products and services</p>
               </a> </div>
           </div>
           <div class="item">
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="monthly_pricing">
               <p class="uppercase normal about-head">low monthly pricing </p>
               </a> </div>
           </div>
           <div class="item">
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="contact_form">
               <p class="uppercase normal about-head">create unlimited customer contact forms</p>
               </a> </div>
           </div>
           <div class="item">
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="custom">
               <p class="uppercase normal about-head">customizable</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="calendar">
               <p class="uppercase normal about-head">integrated calendar</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="retrieve_data">
               <p class="uppercase normal about-head">store and retrieve data</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="route">
               <p class="uppercase normal about-head">dispatch and route planning</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="mobile_network">
               <p class="uppercase normal about-head">private mobile network</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="#" class="contact">
               <p class="uppercase normal about-head">manage contacts</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="pc">
               <p class="uppercase normal about-head">pc access</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="task">
               <p class="uppercase normal about-head">task manager</p>
               </a> </div>
           </div>
           <div class="item" >
-            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible">
+            <div data-animation-delay="100" data-animation="fadeIn" class="col-md-3 col-sm-6 col-xs-12  animated fadeIn visible"> 
               <a href="javascript:void(0)" class="emp">
               <p class="uppercase normal about-head">communicate with employees</p>
               </a> </div>
           </div>
         </div>
         <a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
-        <a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a> 
       </div>
     </div>
   </div>
@@ -113,20 +172,20 @@
     <div class="container">
       <div class="row">
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInLeft">
-        <h3 >Scheduling & Manage Contact</h3>
+      	<h3 >Scheduling & Manage Contact</h3>
         <h5>A calendar that integrates seamlessly with your operations</h5>
-    <ul class="list-unstyled">
-          <li>Fully functioning calendar, tasks, and contacts module similar to
-        Outlook and Google calendar</li>
+		<ul class="list-unstyled">
+        	<li>Fully functioning calendar, tasks, and contacts module similar to  
+				Outlook and Google calendar</li>
             <li>Reminders, alerts, recurring appointments, multiple views, etc.</li>
             <li>Maintain multiple individual route schedules in one place</li>
             <li>Each user receives only their route on their mobile devices</li>
           </ul>
       </div>
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInRight">
-        <img src="/static/images/theme/Scheduling.png" class="img-responsive" alt="Scheduling & Manage Contact">
+      	<img src="images/Scheduling.png" class="img-responsive" alt="Scheduling & Manage Contact">
       </div>
-
+        
       </div>
     </div>
 </div>
@@ -134,19 +193,19 @@
     <div class="container">
       <div class="row">
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInUp">
-        <img src="/static/images/theme/mobile_app.png" class="img-responsive" alt="Mobile Store to sell Product & Service">
+      	<img src="images/mobile_app.png" class="img-responsive" alt="Mobile Store to sell Product & Service">
       </div>
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInRight">
-        <h3>Sell Products & Services with your mobile store</h3>
+      	<h3>Sell Products & Services with your mobile store</h3>
         <ul class="list-unstyled">
-          <li>Your customers and field reps can search through and easily find and inquire about products and services that you have uploaded to your mobile store. </li>
+        	<li>Your customers and field reps can search through and easily find and inquire about products and services that you have uploaded to your mobile store. </li>
             <li>Organized and presented with a dynamic grouping database system, building and updating your products list is as easy as imaginable.</li>
             <li>Include images, prices, and important information</li>
             <li>Customer information is captured in an active data base for retrieval Add a merchant account to allow real-time payment purchases </li>
         </ul>
       </div>
-
-
+      
+        
       </div>
     </div>
 </div>
@@ -155,21 +214,21 @@
     <div class="container">
       <div class="row">
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInLeft">
-        <h3>Create & Deploy unlimited customer contact forms</h3>
+      	<h3>Create & Deploy unlimited customer contact forms</h3>
          <ul class="list-unstyled">
-          <li>Dynamic forms send and receive information to the active database in real time</li>
+        	<li>Dynamic forms send and receive information to the active database in real time</li>
             <li>Eliminate data duplication and redundancy</li>
             <li>Get information to and from your customers in seconds</li>
             <li>New forms automatically pushed to mobile devices. NO REINSTALL necessary</li>
             <li>Custom form layout, headings,calculated fields, or partially populate form
 exsisting data in database</li>
-      <li>Form Intrect with an active database in real time.Everyone is connected</li>
+			<li>Form Intrect with an active database in real time.Everyone is connected</li>
           </ul>
       </div>
       <div class="col-md-6 col-sm-6 col-xs-12  animated fadeInRight">
-        <img src="/static/images/theme/deploy.png" class="img-responsive" alt="Create & Depoly unlimited customer contact forms">
+      	<img src="images/deploy.png" class="img-responsive" alt="Create & Depoly unlimited customer contact forms">
       </div>
-
+        
       </div>
     </div>
 </div>
@@ -177,46 +236,46 @@ exsisting data in database</li>
     <div class="container">
       <div class="row">
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInRight">
-        <img src="/static/images/theme/report_analysis.png" class="img-responsive" alt="Report and Analysis">
+      	<img src="images/report_analysis.png" class="img-responsive" alt="Report and Analysis">
       </div>
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInLeft">
-        <h3 >Report and Analysis</h3>
+      	<h3 >Report and Analysis</h3>
         <h4>Chart Graph Report</h4>
         <h5>Quickly build reports,charts,and graphs for analysis using our easy report-builder interface</h5>
-    <ul class="list-unstyled">
-          <li>Sales</li>
+		<ul class="list-unstyled">
+        	<li>Sales</li>
             <li>Service calls</li>
             <li>Expenses</li>
             <li>Weekly, Monthly and Yearly Trends</li>
           </ul>
       </div>
-
-
+      
+        
       </div>
     </div>
 </div>
 <div class="create_deploy blue-container">
     <div class="container">
       <div class="row">
-
+      
       <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInLeft">
-        <h3>Dispach & Route Planning</h3>
+      	<h3>Dispach & Route Planning</h3>
          <ul class="list-unstyled">
-          <li>Dispach field reps to different locations or coordinate a meeting place</li>
+        	<li>Dispach field reps to different locations or coordinate a meeting place</li>
             <li>Route planning:multiple routes with multiple stops</li>
             <li>GPS with real-time voice Navigation</li>
             <li>Arrange route stops by shortest distance or by pre-set stop order</li>
           </ul>
       </div>
       <div class="col-md-6 col-sm-6 col-xs-12  animated fadeInRight">
-        <img src="/static/images/theme/map_img.png" class="img-responsive" alt="Create & Depoly unlimited customer contact forms">
+      	<img src="images/map_img.png" class="img-responsive" alt="Create & Depoly unlimited customer contact forms">
       </div>
       </div>
     </div>
 </div>
 <div class="additional-feature white-container">
     <div class="container animated fadeInUp">
-   <h3 class="text-center">Additional Features</h3>
+ 	 <h3 class="text-center">Additional Features</h3>
         <div class="row column-height">
             <div class="clo-md-6 col-sm-6 col-xs-12">
                 <div class="media">
@@ -241,11 +300,11 @@ exsisting data in database</li>
                   <div class="media-body">
                     <h4 class="media-heading">Your logo and colors</h4>
                     <p>Style and decorate by uploading your logo, and changing the bennyapp base colors to your liking</p>
-
+                    
                   </div>
                 </div>
             </div>
-      </div>
+  		</div>
         <div class="row column-height">
             <div class="clo-md-6 col-sm-6 col-xs-12">
                 <div class="media">
@@ -273,7 +332,7 @@ exsisting data in database</li>
                   </div>
                 </div>
             </div>
-      </div>
+  		</div>
         <div class="row column-height">
             <div class="clo-md-6 col-sm-6 col-xs-12">
                 <div class="media">
@@ -298,11 +357,11 @@ exsisting data in database</li>
                   <div class="media-body">
                     <h4 class="media-heading">Merchant payment processing</h4>
                     <p>You may use your existing merchant credit card processing company with your account, or create a Paypal account through our account sign up process.  (Oct 2015 release)</p>
-
+                    
                   </div>
                 </div>
             </div>
-      </div>
+  		</div>
         <div class="row column-height">
             <div class="clo-md-6 col-sm-6 col-xs-12">
                 <div class="media">
@@ -314,7 +373,7 @@ exsisting data in database</li>
                   <div class="media-body">
                     <h4 class="media-heading">Global Communication Network</h4>
                     <p>Employees, memebers, and VIPs join your network via approved access while customers and general audiences instantly join by downloading your App from available app stores.Segregate your App's content by user and what information they need to see.</p>
-
+                    
                   </div>
                 </div>
             </div>
@@ -331,8 +390,8 @@ exsisting data in database</li>
                   </div>
                 </div>
             </div>
-
-      </div>
+            
+  		</div>
     </div>
 </div>
 <div class="img-container_small">
@@ -345,13 +404,39 @@ exsisting data in database</li>
 <div class="white-container">
     <div class="container animated fadeInUp">
       <div class="text-center">
-        <h2>Our platform is something you can build uppon</h2>
+       	<h2>Our platform is something you can build uppon</h2>
          <p>Add on specific features and functionality to your elite account to further customize our solution to meet your business needs
  (small development and incremental monthly charges may apply. We will help design the right system for you for FREE)</p>
- <a href="#" target="_blank" class="btn btn-primary animated zoomIn">Customization Help</a>
+ <a href="#" target="_blank" class="btn btn-primary animated zoomIn">Customization Help</a> 
       </div>
      </div>
     </div>
+<div class="footer">
+    	<div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="footer-left">
+            <p>© 2015 DM Tech Solutions, LLC.</p>
+            </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="footer-right">
+                <p><a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
+                </div>
+                </div>
+        </div>
+        </div>
+        </div>
+</div>
 
-{% endblock %}
+<!-- jQuery--> 
 
+<script src="js/jquery-1.11.2.min.js" ></script> 
+<script src="js/bootstrap.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script> 
+<script src="js/jv-jquery-mobile-menu-min.js"></script> 
+<script src="js/script.js"></script> 
+
+
+</body>
+</html>

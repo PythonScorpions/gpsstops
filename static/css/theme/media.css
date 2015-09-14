@@ -1,0 +1,222 @@
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px) {
+.front-banner h2 {
+	font-size: 36px;
+	margin-top: 80px;
+}
+.front-banner h4 {
+	font-size: 16px;
+	margin-top: 50px;
+	margin-bottom: 15px;
+}
+.front-banner h3 {
+	font-size: 24px;
+	margin-bottom: 10px;
+}
+.front-banner h6 {
+	font-size: 14px;
+	margin-bottom: 30px;
+}
+.top-feature h3, .additional-feature h3 {
+	font-size: 24px;
+}
+/*--------------------Scheduling & Manage Contact and Create & Depoly unlimited customer contact forms -----------------*/
+.scheduling h3, .create_deploy h3 {
+	font-size: 24px;
+}
+.scheduling h5, .create_deploy h5 {
+	font-size: 16px;
+}
+.scheduling .list-unstyled li::before, .create_deploy .list-unstyled li::before {
+	font-size: 16px;
+}
+.scheduling .list-unstyled li, .create_deploy .list-unstyled li {
+	font-size: 16px;
+}
+/*--------------------mobile store-----------------*/
+.mobile-store h3 {
+	font-size: 24px;
+}
+.mobile-store h5 {
+	font-size: 16px;
+}
+.mobile-store .list-unstyled li::before {
+	font-size: 16px;
+}
+.mobile-store .list-unstyled li {
+	font-size: 16px;
+}
+.scheduling img {
+	padding: 0 10px;
+}
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px) {
+.front-banner h2 {
+	font-size: 28px;
+	margin-top: 30px;
+}
+.front-banner h4 {
+	font-size: 16px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+.front-banner h3 {
+	font-size: 22px;
+	margin-bottom: 10px;
+}
+.front-banner h6 {
+	font-size: 14px;
+	margin-bottom: 30px;
+}
+.banner-top img {
+	float: right;
+	padding-right: 0px;
+	margin-top: 70px;
+}
+.top-feature h3, .additional-feature h3 {
+	font-size: 24px;
+	margin-bottom: 10px;
+}
+/*--------------------Scheduling & Manage Contact and Create & Depoly unlimited customer contact forms -----------------*/
+.scheduling h3, .create_deploy h3 {
+	font-size: 24px;
+	margin-bottom: 10px;
+}
+.scheduling h5, .create_deploy h5 {
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+.scheduling .list-unstyled li::before, .create_deploy .list-unstyled li::before {
+	font-size: 16px;
+}
+.scheduling .list-unstyled li, .create_deploy .list-unstyled li {
+	font-size: 16px;
+}
+/*--------------------mobile store-----------------*/
+.mobile-store h3 {
+	font-size: 24px;
+	margin-bottom: 10px;
+}
+.mobile-store h5 {
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+.mobile-store .list-unstyled li::before {
+	font-size: 16px;
+}
+.mobile-store .list-unstyled li {
+	font-size: 16px;
+}
+.scheduling img {
+	padding: 0 10px;
+}
+.top-header .header-link ul li a{
+	font-size:14px;
+}
+}
+
+/* Small Devices, Tablets */
+@media only screen and (width : 768px) {
+.carousel-control {
+	width: 4%;
+}
+.carousel-control.left {
+	margin-left: 15px;
+	background-image: none;
+}
+.carousel-control.right {
+	margin-right: 15px;
+	background-image: none;
+}
+.top-header .logo {
+	width: 160px;
+}
+.top-header section {
+	height: auto;
+}
+.top-header .header-link {
+	display: block;
+	float: none;
+	font-size: 10px;
+	margin: 5px 0 0;
+	position: relative;
+	right: 0px;
+	text-align: center;
+	top: 0;
+}
+.top-feature h3, .additional-feature h3 {
+	font-size: 24px;
+	margin: 10px 0;
+}
+/*--------------------Scheduling & Manage Contact and Create & Depoly unlimited customer contact forms -----------------*/
+.scheduling h3, .create_deploy h3 {
+	margin: 10px 0;
+}
+/*--------------------mobile store-----------------*/
+.mobile-store h3 {
+	margin: 10px 0;
+}
+.footer {
+	text-align: center;
+}
+.footer .footer-left {
+	float: none;
+}
+.footer .footer-right {
+	float: none;
+}
+}
+
+@media only screen and (max-width : 767px) {
+#front-banner {
+	text-align: center;
+}
+.top-header .logo {
+  width: 180px;
+}
+.top-header .header-link {
+	display: block;
+	float: none;
+	font-size: 10px;
+	margin: 0px 0 0;
+	position: static;
+	right: 0px;
+	text-align: center;
+	top: 0;
+}
+.top-feature h3, .additional-feature h3 {
+	font-size: 24px;
+	margin: 10px 0;
+}
+.mobile-store h3 {
+	margin: 10px 0;
+}
+.report img, .mobile-store img{
+  display: block;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  text-align: center;
+}
+.scheduling img{
+	  display: block;
+  margin: 0 auto;
+}
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px) {
+.hamburger .hamburger-inner:after {
+	display: none;
+}
+.hamburger.open .hamburger-inner:after {
+	display: none;
+}
+
+
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width : 320px) {
+}
