@@ -375,6 +375,7 @@ class RouteListApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = int(self.kwargs['pk'])
+            user = User.objects.get(pk=user_id)
         except:
             return Response({
                 'code':0,
@@ -382,7 +383,8 @@ class RouteListApi(APIView):
                 'message':'User does not exist'
             })
 
-        routes = Route.objects.filter(user__id=user_id)
+        # routes = Route.objects.filter(user__id=user_id)
+        routes = filter_objects_by_user(user, Route)
         serializer = RouteSerializer(routes, many=True)
         return Response({
             'code':1,
