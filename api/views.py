@@ -611,13 +611,17 @@ class RoutesPerDay(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = int(self.kwargs['pk'])
+            user = User.objects.get(pk=user_id)
         except:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
         year = int(self.kwargs['year'])
         month = int(self.kwargs['month'])
         day = int(self.kwargs['day'])
         date_selected = datetime.date(year, month, day)
-        routes = Route.objects.filter(user__id=user_id, trip_datetime__startswith=date_selected)
+
+        # routes = Route.objects.filter(user__id=user_id, trip_datetime__startswith=date_selected)
+        routes = filter_objects_by_user(user, Route) \
+                 .filter(trip_datetime__startswith=date_selected)
         serializer = RouteSerializer(routes, many=True)
 
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
