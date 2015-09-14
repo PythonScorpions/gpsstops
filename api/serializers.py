@@ -118,19 +118,19 @@ class RouteSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_created_at(obj):
-        return obj.created_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.created_at.strftime("%m/%d/%Y %I:%M %p")
         # created = str(obj.created_at).split(' ')
         # return created[0].replace('-', '/') + ' ' + created[1][:5]
 
     @staticmethod
     def get_updated_at(obj):
-        return obj.updated_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.updated_at.strftime("%m/%d/%Y %I:%M %p")
         # updated = str(obj.updated_at).split(' ')
         # return updated[0].replace('-', '/') + ' ' + updated[1][:5]
 
     @staticmethod
     def get_trip_datetime(obj):
-        return obj.trip_datetime.strftime("%m/%d/%Y %H:%M %p")
+        return obj.trip_datetime.strftime("%m/%d/%Y %I:%M %p")
         # triptime = str(obj.trip_datetime).split(' ')
         # return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
@@ -161,19 +161,19 @@ class OptRouteSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_created_at(obj):
-        return obj.created_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.created_at.strftime("%m/%d/%Y %I:%M %p")
         # created = str(obj.created_at).split(' ')
         # return created[0].replace('-', '/') + ' ' + created[1][:5]
 
     @staticmethod
     def get_updated_at(obj):
-        return obj.updated_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.updated_at.strftime("%m/%d/%Y %I:%M %p")
         # updated = str(obj.updated_at).split(' ')
         # return updated[0].replace('-', '/') + ' ' + updated[1][:5]
 
     @staticmethod
     def get_trip_datetime(obj):
-        return obj.trip_datetime.strftime("%m/%d/%Y %H:%M %p")
+        return obj.trip_datetime.strftime("%m/%d/%Y %I:%M %p")
         # triptime = str(obj.trip_datetime).split(' ')
         # return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
@@ -196,7 +196,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'start_datetime':obj.start_datetime.strftime("%m/%d/%Y %H:%M %p"),
+            'start_datetime':obj.start_datetime.strftime("%m/%d/%Y %I:%M %p"),
             'timezone':obj.timezone,
             'location':obj.location,
             'latitude':obj.latitude,
@@ -281,7 +281,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'due_date':obj.due_date.strftime("%m/%d/%Y %H:%M %p"),
+            'due_date':obj.due_date.strftime("%m/%d/%Y %I:%M %p"),
             'timezone':obj.timezone,
             'note':obj.note,
             'notification_required':obj.notification_required,
