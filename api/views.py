@@ -597,11 +597,11 @@ class EditRouteApi(APIView):
             return Response({'code':0, 'status':200,
                 'message':'Route does not exist'})
 
-        if not self._set_user(request)
+        if not self._set_user(request):
             return Response({'code':0, 'status':200,
                 'message':'User does not exist'})
 
-        if not self._set_assigned_user(request)
+        if not self._set_assigned_user(request):
             return Response({'code':0, 'status':200,
                 'message':'Assigned user does not exist'})
 
