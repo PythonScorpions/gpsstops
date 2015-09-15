@@ -158,6 +158,8 @@ class NotificationsCronJob(CronJobBase):
                 if notification.flag:
                     continue
 
+            self._send_appointment_email(appointment)
+
             print "Checking device...."
             try:
                 devices = RegistratedDevice.objects.filter(user=appointment.user)
@@ -171,13 +173,11 @@ class NotificationsCronJob(CronJobBase):
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
-                        self._send_appointment_email(appointment)
                         AppointmentNotification.objects \
                         .create(appointment=appointment, flag=True)
                     elif device.device_type.lower() == 'android':
                         self._send_android_notifications('Appointment', message,
                             device.device_token)
-                        self._send_appointment_email(appointment)
                         AppointmentNotification.objects \
                         .create(appointment=appointment, flag=True)
                     else:
@@ -207,6 +207,8 @@ class NotificationsCronJob(CronJobBase):
                 if notification.flag:
                     continue
 
+            self._send_task_email(task)
+
             print "Checking device...."
             try:
                 devices = RegistratedDevice.objects.filter(user=task.user)
@@ -219,12 +221,10 @@ class NotificationsCronJob(CronJobBase):
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
-                        self._send_task_email(task)
                         TaskNotification.objects.create(task=task, flag=True)
                     elif device.device_type.lower() == 'android':
                         self._send_android_notifications('Task', message,
                             device.device_token)
-                        self._send_task_email(task)
                         TaskNotification.objects.create(task=task, flag=True)
                     else:
                         print "Device type not found. Device: %s.... Task: %s" % (
