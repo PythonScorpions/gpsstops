@@ -657,8 +657,9 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
                 # appointments = Appointments.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
                     appointments = appointments \
-                                    .extra(where=['DATE(start_datetime) == %s'],
-                                        params=[date.strftime("%Y-%m-%d")])
+                                    .filter(start_datetime__year=date.year,
+                                        start_datetime__month=date.month,
+                                        start_datetime__day=date.day)
                 return appointments
         return Appointments.objects.none()
 
@@ -715,8 +716,10 @@ class TaskViewSet(viewsets.ModelViewSet):
                 tasks = filter_objects_by_user(user_obj, Task)
                 # tasks = Task.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
-                    tasks = tasks.extra(where=['DATE(due_date) == %s'],
-                                        params=[date.strftime("%Y-%m-%d")])
+                    tasks = tasks \
+                            .filter(start_datetime__year=date.year,
+                                start_datetime__month=date.month,
+                                start_datetime__day=date.day)
                 return tasks
         return Task.objects.none()
 
