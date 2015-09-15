@@ -717,9 +717,9 @@ class TaskViewSet(viewsets.ModelViewSet):
                 # tasks = Task.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
                     tasks = tasks \
-                            .filter(start_datetime__year=date.year,
-                                start_datetime__month=date.month,
-                                start_datetime__day=date.day)
+                            .filter(due_date__year=date.year,
+                                due_date__month=date.month,
+                                due_date__day=date.day)
                 return tasks
         return Task.objects.none()
 
