@@ -106,8 +106,12 @@ class RouteSerializer(serializers.ModelSerializer):
         result = super(RouteSerializer, self).to_representation(obj)
         result['assigned_first_name'] = obj.user.first_name
         result['assigned_last_name'] = obj.user.last_name
-        result['created_by_first_name'] = obj.created_by.first_name
-        result['created_by_last_name'] = obj.created_by.last_name
+        if obj.created_by:
+            result['created_by_first_name'] = obj.created_by.first_name
+            result['created_by_last_name'] = obj.created_by.last_name
+        else:
+            result['created_by_first_name'] = ""
+            result['created_by_last_name'] = ""
         return result
 
     @staticmethod
@@ -148,8 +152,12 @@ class OptRouteSerializer(serializers.ModelSerializer):
         result = super(RouteSerializer, self).to_representation(obj)
         result['assigned_first_name'] = obj.user.first_name
         result['assigned_last_name'] = obj.user.last_name
-        result['created_by_first_name'] = obj.created_by.first_name
-        result['created_by_last_name'] = obj.created_by.last_name
+        if obj.created_by:
+            result['created_by_first_name'] = obj.created_by.first_name
+            result['created_by_last_name'] = obj.created_by.last_name
+        else:
+            result['created_by_first_name'] = ""
+            result['created_by_last_name'] = ""
         return result
 
     @staticmethod
