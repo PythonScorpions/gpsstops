@@ -128,11 +128,15 @@ class NotificationsCronJob(CronJobBase):
         print "Sending Appointment Email...."
         self._send_email('email/appointments.email', {'appointment':appointment},
             'Appointment Notification', appointment.user.email)
+        AppointmentEmailNotification.objects \
+        .create(appointment=appointment, flag=True)
 
     def _send_task_email(self, task):
         print "Sending Task Email...."
         self._send_email('email/task.email', {'task':task},
             'Task Notification', task.user.email)
+        TaskEmailNotification.objects \
+        .create(task=task, flag=True)
 
     def _send_appointments_notifications(self):
         ''' Send notifications for all appointments '''
@@ -150,6 +154,18 @@ class NotificationsCronJob(CronJobBase):
                         appointment.notification_time):
                 continue
 
+            email_flag = False
+            try:
+                email_notification = AppointmentEmailNotification.objects \
+                                    .get(appointment=appointment)
+            except:
+                print sys.exc_info()
+                email_flag = True
+            else:
+                email_flag = !email_notification.flag
+            if email_flag:
+                self._send_appointment_email(appointment)
+
             try:
                 notification = AppointmentNotification.objects \
                                 .get(appointment=appointment)
@@ -158,8 +174,6 @@ class NotificationsCronJob(CronJobBase):
             else:
                 if notification.flag:
                     continue
-
-            self._send_appointment_email(appointment)
 
             print "Checking device...."
             try:
@@ -200,6 +214,18 @@ class NotificationsCronJob(CronJobBase):
                         task.notification_time):
                 continue
 
+            email_flag = False
+            try:
+                email_notification = TaskEmailNotification.objects \
+                                     .get(task=task)
+            except:
+                print sys.exc_info()
+                email_flag = True
+            else:
+                email_flag = !email_notification.flag
+            if email_flag:
+                self._send_task_email(task)
+
             try:
                 notification = TaskNotification.objects.get(task=task)
             except:
@@ -207,8 +233,6 @@ class NotificationsCronJob(CronJobBase):
             else:
                 if notification.flag:
                     continue
-
-            self._send_task_email(task)
 
             print "Checking device...."
             try:
