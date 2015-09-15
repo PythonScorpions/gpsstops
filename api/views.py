@@ -713,10 +713,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                 tasks = filter_objects_by_user(user_obj, Task)
                 # tasks = Task.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
-                    date_min = datetime.datetime.combine(date, datetime.time.min)
-                    date_max = datetime.datetime.combine(date, datetime.time.max)
-                    tasks = tasks.filter(user__id=user) \
-                            .filter(due_date__range=(date_min, date_max))
+                    tasks = tasks.filter(due_date__contains=date)
                 return tasks
         return Task.objects.none()
 
