@@ -656,10 +656,11 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
                 appointments = filter_objects_by_user(user_obj, Appointments)
                 # appointments = Appointments.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
+                    min_date = datetime.datetime.combine(date, datetime.datetime.min.time())
+                    max_date = datetime.datetime.combine(date, datetime.datetime.max.time())
                     appointments = appointments \
-                                    .filter(start_datetime__year=date.year,
-                                        start_datetime__month=date.month,
-                                        start_datetime__day=date.day)
+                                    .filter(start_datetime__gte=min_date,
+                                        start_datetime__lte=max_date)
                 return appointments
         return Appointments.objects.none()
 
@@ -716,10 +717,11 @@ class TaskViewSet(viewsets.ModelViewSet):
                 tasks = filter_objects_by_user(user_obj, Task)
                 # tasks = Task.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
+                    min_date = datetime.datetime.combine(date, datetime.datetime.min.time())
+                    max_date = datetime.datetime.combine(date, datetime.datetime.max.time())
                     tasks = tasks \
-                            .filter(due_date__year=date.year,
-                                due_date__month=date.month,
-                                due_date__day=date.day)
+                            .filter(start_datetime__gte=min_date,
+                                start_datetime__lte=max_date)
                 return tasks
         return Task.objects.none()
 
