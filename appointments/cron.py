@@ -3,6 +3,7 @@
 from django.conf import settings
 from django_cron import CronJobBase, Schedule
 from django.template import loader, Context
+from django.core.mail import send_mail
 
 from pyapns.apns import APNs, Frame, Payload
 
