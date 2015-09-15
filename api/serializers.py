@@ -331,6 +331,13 @@ class TaskSerializer(serializers.ModelSerializer):
         )
         return task
 
+    def update(self, instance, validated_data):
+        task = super(TaskSerializer, self).update(instance, validated_data)
+        # print task
+        task.user = self.assigned_user
+        task.save()
+        return task
+
 
 class ContactSerializer(serializers.ModelSerializer):
 
