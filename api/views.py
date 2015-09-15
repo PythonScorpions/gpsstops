@@ -720,8 +720,8 @@ class TaskViewSet(viewsets.ModelViewSet):
                     min_date = datetime.datetime.combine(date, datetime.datetime.min.time())
                     max_date = datetime.datetime.combine(date, datetime.datetime.max.time())
                     tasks = tasks \
-                            .filter(start_datetime__gte=min_date,
-                                start_datetime__lte=max_date)
+                            .filter(due_date__gte=min_date,
+                                due_date__lte=max_date)
                 return tasks
         return Task.objects.none()
 
