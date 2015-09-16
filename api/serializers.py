@@ -104,8 +104,9 @@ class RouteSerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         result = super(RouteSerializer, self).to_representation(obj)
-        result['assigned_first_name'] = obj.user.first_name
-        result['assigned_last_name'] = obj.user.last_name
+        result['assigned_user_id'] = obj.user.id
+        result['assigned_user_first_name'] = obj.user.first_name
+        result['assigned_user_last_name'] = obj.user.last_name
         if obj.created_by:
             result['created_by_first_name'] = obj.created_by.first_name
             result['created_by_last_name'] = obj.created_by.last_name
