@@ -31,11 +31,11 @@ urlpatterns = patterns("api.views",
     url(r'edit_route/(?P<pk>[a-zA-Z0-9]+)', EditRouteApi.as_view(), name='edit-route-api'),
     url(r'optimized_edit_route/(?P<pk>[a-zA-Z0-9]+)', OptimizedEditRouteApi.as_view(), name='optimized-edit-route-api'),
     url(r'delete_route/(?P<pk>[a-zA-Z0-9]+)', DeleteRouteApi.as_view(), name='delete-route-api'),
-   url(r'events', Events.as_view(), name='events-api'),
-   url(r'routes_per_day/(?P<pk>[a-zA-Z0-9]+)/(?P<year>[a-zA-Z0-9]+)/(?P<month>[a-zA-Z0-9]+)/(?P<day>[a-zA-Z0-9]+)', RoutesPerDay.as_view(), name='routes-per-day'),
+    url(r'events', Events.as_view(), name='events-api'),
+    url(r'routes_per_day/(?P<pk>[a-zA-Z0-9]+)/(?P<year>[a-zA-Z0-9]+)/(?P<month>[a-zA-Z0-9]+)/(?P<day>[a-zA-Z0-9]+)',
+      RoutesPerDay.as_view(), name='routes-per-day'),
 
-
-   url(r'^', include(router.urls)),
-   url(r'agenda/$', AgendaView.as_view(), name='agendas'),
-   url(r'theme/$', ThemeView.as_view(), name='theme_view')
+    url(r'^', include(router.urls)),
+    url(r'agenda/$', AgendaView.as_view(), name='agendas'),
+    url(r'theme/$', ThemeView.as_view(), name='theme_view')
 )

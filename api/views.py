@@ -1150,7 +1150,9 @@ class ThemeView(APIView):
                     'background_color':organization.theme.background_color,
                     'inactive_button_color':organization.theme.inactive_button_color,
                     'logo_url':organization.theme.logo_url,
-                    'navigation_color':organization.theme.navigation_color
+                    'navigation_color':organization.theme.navigation_color,
+                    'active_button_text_color':organization.theme.active_button_text_color,
+                    'inactive_button_text_color':organization.theme.inactive_button_text_color
                 })
             else:
                 return Response({'code':0, 'status':'error',
