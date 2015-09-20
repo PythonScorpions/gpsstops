@@ -85,6 +85,8 @@ class Theme(models.Model):
     inactive_button_color = models.CharField(max_length=10)
     logo_url = models.URLField()
     background_color = models.CharField(max_length=10)
+    active_button_text_color = models.CharField(max_length=10)
+    inactive_button_text_color = models.CharField(max_length=10)
 
 
 class Organization(models.Model):

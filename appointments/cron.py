@@ -3,6 +3,7 @@
 from django.conf import settings
 from django_cron import CronJobBase, Schedule
 from django.template import loader, Context
+from django.core.mail import send_mail
 
 from pyapns.apns import APNs, Frame, Payload
 
@@ -127,11 +128,15 @@ class NotificationsCronJob(CronJobBase):
         print "Sending Appointment Email...."
         self._send_email('email/appointments.email', {'appointment':appointment},
             'Appointment Notification', appointment.user.email)
+        AppointmentEmailNotification.objects \
+        .create(appointment=appointment, flag=True)
 
     def _send_task_email(self, task):
         print "Sending Task Email...."
         self._send_email('email/task.email', {'task':task},
             'Task Notification', task.user.email)
+        TaskEmailNotification.objects \
+        .create(task=task, flag=True)
 
     def _send_appointments_notifications(self):
         ''' Send notifications for all appointments '''
@@ -148,6 +153,18 @@ class NotificationsCronJob(CronJobBase):
                         appointment.timezone,
                         appointment.notification_time):
                 continue
+
+            email_flag = False
+            try:
+                email_notification = AppointmentEmailNotification.objects \
+                                    .get(appointment=appointment)
+            except:
+                print sys.exc_info()
+                email_flag = True
+            else:
+                email_flag = !email_notification.flag
+            if email_flag:
+                self._send_appointment_email(appointment)
 
             try:
                 notification = AppointmentNotification.objects \
@@ -171,13 +188,11 @@ class NotificationsCronJob(CronJobBase):
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
-                        self._send_appointment_email(appointment)
                         AppointmentNotification.objects \
                         .create(appointment=appointment, flag=True)
                     elif device.device_type.lower() == 'android':
                         self._send_android_notifications('Appointment', message,
                             device.device_token)
-                        self._send_appointment_email(appointment)
                         AppointmentNotification.objects \
                         .create(appointment=appointment, flag=True)
                     else:
@@ -199,6 +214,18 @@ class NotificationsCronJob(CronJobBase):
                         task.notification_time):
                 continue
 
+            email_flag = False
+            try:
+                email_notification = TaskEmailNotification.objects \
+                                     .get(task=task)
+            except:
+                print sys.exc_info()
+                email_flag = True
+            else:
+                email_flag = !email_notification.flag
+            if email_flag:
+                self._send_task_email(task)
+
             try:
                 notification = TaskNotification.objects.get(task=task)
             except:
@@ -219,12 +246,10 @@ class NotificationsCronJob(CronJobBase):
                     if device.device_type.lower() == 'ios':
                         self._send_ios_notifications(message,
                                 device.device_token)
-                        self._send_task_email(task)
                         TaskNotification.objects.create(task=task, flag=True)
                     elif device.device_type.lower() == 'android':
                         self._send_android_notifications('Task', message,
                             device.device_token)
-                        self._send_task_email(task)
                         TaskNotification.objects.create(task=task, flag=True)
                     else:
                         print "Device type not found. Device: %s.... Task: %s" % (

@@ -299,43 +299,76 @@ class ForgotPassword(APIView):
 
 class CreateRouteApi(APIView):
 
-    @staticmethod
-    def post(request):
-
-        trip_title = request.data['trip_title']
-        trip_datetime = datetime.datetime.strptime(str(request.data['trip_datetime']), "%Y/%m/%d %H:%M")
-        print trip_title
-        print type(trip_datetime), "-----------------", trip_datetime
-        total_time = request.data['total_hours']
-        optimized_total_time = request.data['optimized_total_hours']
-        if '.' in request.data['total_distance']:
-            total_distance = float(request.data['total_distance'][:-3])
+    def _format_distance(self, request, key):
+        if '.' in request.data[key]:
+            distance = float(request.data[key][:-3])
         else:
-            total_distance = float(int(request.data['total_distance'][:-3]))
+            distance = float(int(request.data[key][:-3]))
+        return distance
 
-        if '.' in request.data['optimized_total_distance']:
-            optimized_total_distance = float(request.data['optimized_total_distance'][:-3])
-        else:
-            optimized_total_distance = float(int(request.data['optimized_total_distance'][:-3]))
-        try:
-            user_obj = User.objects.get(id=int(request.data['user_id']))
-        except:
-            return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
+    def _set_data(self, request):
+        self.is_editable = request.data['is_editable']
+        self.trip_title = request.data['trip_title']
 
-        # try:
-        route_obj = Route(user=user_obj, trip_title=trip_title, trip_datetime=trip_datetime,
-                          total_distance=total_distance, total_time=total_time,
-                          optimized_total_time=optimized_total_time,
-                          optimized_total_distance=optimized_total_distance)
+        trip_datetime_str = str(request.data['trip_datetime'])
+        self.trip_datetime = datetime.datetime.strptime(
+                                trip_datetime_str, "%Y/%m/%d %H:%M")
+
+        self.total_time = request.data['total_hours']
+        self.optimized_total_time = request.data['optimized_total_hours']
+        self.total_distance = self._format_distance(request, 'total_distance')
+        self.optimized_total_distance = self._format_distance(request, 'optimized_total_distance')
+        # print self.trip_title
+        # print type(self.trip_datetime), "-----------------", self.trip_datetime
+
+    def _create_route(self):
+        route_obj = Route(
+            user=self.assigned_user,
+            trip_title=self.trip_title,
+            trip_datetime=self.trip_datetime,
+            total_distance=self.total_distance,
+            total_time=self.total_time,
+            optimized_total_time=self.optimized_total_time,
+            optimized_total_distance=self.optimized_total_distance,
+            created_by=self.user_obj,
+            is_editable=True if self.is_editable == 1 else False
+        )
         route_obj.save()
-        print type(request.data['location'])
-        print len(request.data['location'])
+        return route_obj
+
+    def _set_user(self, request):
+        try:
+            self.user_obj = User.objects.get(id=int(request.data['user_id']))
+        except:
+            pass
+        else:
+            return self.user_obj
+        return None
+
+    def _set_assigned_user(self, request):
+        try:
+            self.assigned_user = User.objects \
+                                 .get(pk=int(request.data['assigned_user_id']))
+        except:
+            pass
+        else:
+            return self.assigned_user
+        return None
+
+    def _save_locations(self, request):
         for idx, loc in enumerate(request.data['location']):
             if loc['latitude'] and loc['longitude']:
-                loc_obj = Location(route=route_obj, location_address=loc['location_name'],
-                                   location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                   location_long=loc['longitude'], location_note=loc['note'],
-                                   distance=loc['distance'], time=loc['time'])
+                loc_obj = Location(
+                    route=self.route_obj,
+                    location_address=loc['location_name'],
+                    location_near_address=loc['near_by_location'],
+                    location_lat=loc['latitude'],
+                    location_long=loc['longitude'],
+                    location_note=loc['note'],
+                    distance=loc['distance'],
+                    time=loc['time']
+                )
+
                 if idx == 0:
                     loc_obj.location_number = 11
                     loc_obj.save()
@@ -347,12 +380,20 @@ class CreateRouteApi(APIView):
                     loc_obj.save()
             else:
                 pass
+
+    def _save_optimized_locations(self, request):
         for idx, loc in enumerate(request.data['optimized_location']):
             if loc['latitude'] and loc['longitude']:
-                loc_obj = OptimizedLocation(route=route_obj, location_address=loc['location_name'],
-                                            location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                            location_long=loc['longitude'], location_note=loc['note'],
-                                            distance=loc['distance'], time=loc['time'])
+                loc_obj = OptimizedLocation(
+                    route=self.route_obj,
+                    location_address=loc['location_name'],
+                    location_near_address=loc['near_by_location'],
+                    location_lat=loc['latitude'],
+                    location_long=loc['longitude'],
+                    location_note=loc['note'],
+                    distance=loc['distance'],
+                    time=loc['time']
+                )
                 if idx == 0:
                     loc_obj.location_number = 11
                     loc_obj.save()
@@ -364,17 +405,32 @@ class CreateRouteApi(APIView):
                     loc_obj.save()
             else:
                 pass
-        # except:
-        #     return Response({'code': 0, 'status': 200, 'message': 'Something went wrong'})
-        #     route_obj.delete()
 
-        return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been created'})
+    # @staticmethod
+    def post(self, request):
+        self._set_data(request)
+
+        if not self._set_user(request):
+            return Response({'code': 0, 'status': 200,
+                'message': 'User does not exist'})
+
+        if not self._set_assigned_user(request):
+            return Response({'code': 0, 'status': 200,
+                'message': 'Assigned User does not exist'})
+
+        self.route_obj = self._create_route()
+        self._save_locations(request)
+        self._save_optimized_locations(request)
+
+        return Response({'code': 1, 'status': 200, 'Data': 'Null',
+            'message': 'Route has been created'})
 
 
 class RouteListApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = int(self.kwargs['pk'])
+            user = User.objects.get(pk=user_id)
         except:
             return Response({
                 'code':0,
@@ -382,7 +438,8 @@ class RouteListApi(APIView):
                 'message':'User does not exist'
             })
 
-        routes = Route.objects.filter(user__id=user_id)
+        # routes = Route.objects.filter(user__id=user_id)
+        routes = filter_objects_by_user(user, Route)
         serializer = RouteSerializer(routes, many=True)
         return Response({
             'code':1,
@@ -397,9 +454,12 @@ class OptimizedRouteListApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = int(self.kwargs['pk'])
+            user = User.objects.get(pk=user_id)
         except:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
-        routes = Route.objects.filter(user__id=user_id)
+
+        # routes = Route.objects.filter(user__id=user_id)
+        routes = filter_objects_by_user(user, Route)
         serializer = OptRouteSerializer(routes, many=True)
 
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'All routes Data'})
@@ -407,88 +467,157 @@ class OptimizedRouteListApi(APIView):
 
 class EditRouteApi(APIView):
 
+    def _get_route(self, id):
+        try:
+            self.route_obj = Route.objects.get(id=int(self.kwargs['pk']))
+        except:
+            pass
+        else:
+            return self.route_obj
+        return None
+
+    def _format_distance(self, request, key):
+        if '.' in request.data[key]:
+            distance = float(request.data[key][:-3])
+        else:
+            distance = float(int(request.data[key][:-3]))
+        return distance
+
+    def _set_data(self, request):
+        self.is_editable = request.data['is_editable']
+        self.trip_title = request.data['trip_title']
+
+        trip_datetime_str = str(request.data['trip_datetime'])
+        self.trip_datetime = datetime.datetime.strptime(
+                                trip_datetime_str, "%Y/%m/%d %H:%M")
+
+        self.total_time = request.data['total_hours']
+        self.optimized_total_time = request.data['optimized_total_hours']
+        self.total_distance = self._format_distance(request, 'total_distance')
+        self.optimized_total_distance = self._format_distance(request, 'optimized_total_distance')
+
+    def _set_user(self, request):
+        try:
+            self.user_obj = User.objects.get(id=int(request.data['user_id']))
+        except:
+            pass
+        else:
+            return self.user_obj
+        return None
+
+    def _set_assigned_user(self, request):
+        try:
+            self.assigned_user = User.objects \
+                                 .get(pk=int(request.data['assigned_user_id']))
+        except:
+            pass
+        else:
+            return self.assigned_user
+        return None
+
+    def _save_route(self):
+        self.route_obj.user = self.assigned_user
+        self.route_obj.created_by = self.user_obj
+        self.route_obj.is_editable = self.is_editable
+
+        self.route_obj.trip_title = self.trip_title
+        self.route_obj.trip_datetime = self.trip_datetime
+        self.route_obj.total_distance = self.total_distance
+        self.route_obj.total_time = self.total_time
+        self.route_obj.optimized_total_distance = self.optimized_total_distance
+        self.route_obj.optimized_total_time = self.optimized_total_time
+
+        self.route_obj.save()
+
+    def _save_locations(self, request):
+        for idx, loc in enumerate(request.data['location']):
+            if loc['latitude'] and loc['longitude']:
+                loc_obj = Location(
+                    route=self.route_obj,
+                    location_address=loc['location_name'],
+                    location_near_address=loc['near_by_location'],
+                    location_lat=loc['latitude'],
+                    location_long=loc['longitude'],
+                    location_note=loc['note'],
+                    distance=loc['distance'],
+                    time=loc['time']
+                )
+
+                if idx == 0:
+                    loc_obj.location_number = 11
+                    loc_obj.save()
+                elif idx == len(request.data['location'])-1:
+                    loc_obj.location_number = 22
+                    loc_obj.save()
+                else:
+                    loc_obj.location_number = idx
+                    loc_obj.save()
+            else:
+                pass
+
+    def _save_optimized_locations(self, request):
+        for idx, loc in enumerate(request.data['optimized_location']):
+            if loc['latitude'] and loc['longitude']:
+                loc_obj = OptimizedLocation(
+                    route=self.route_obj,
+                    location_address=loc['location_name'],
+                    location_near_address=loc['near_by_location'],
+                    location_lat=loc['latitude'],
+                    location_long=loc['longitude'],
+                    location_note=loc['note'],
+                    distance=loc['distance'],
+                    time=loc['time']
+                )
+                if idx == 0:
+                    loc_obj.location_number = 11
+                    loc_obj.save()
+                elif idx == len(request.data['location'])-1:
+                    loc_obj.location_number = 22
+                    loc_obj.save()
+                else:
+                    loc_obj.location_number = idx
+                    loc_obj.save()
+            else:
+                pass
+
     def get(self, request, *args, **kwargs):
         try:
             route_id = int(self.kwargs['pk'])
             route_obj = Route.objects.get(id=route_id)
         except:
-            return Response({'code': 0, 'status': 200, 'message': 'Route does not exist'})
+            return Response({'code': 0, 'status': 200,
+                'message': 'Route does not exist'})
+
         route_serializer = RouteSerializer(route_obj)
-        return Response({'code': 1, 'status': 200, 'Data': route_serializer.data, 'message': 'All routes Data'})
+        return Response({'code': 1, 'status': 200,
+            'Data': route_serializer.data, 'message': 'All routes Data'})
 
     def post(self, request, *args, **kwargs):
+        if not self._get_route():
+            return Response({'code':0, 'status':200,
+                'message':'Route does not exist'})
+
+        if not self._set_user(request):
+            return Response({'code':0, 'status':200,
+                'message':'User does not exist'})
+
+        if not self._set_assigned_user(request):
+            return Response({'code':0, 'status':200,
+                'message':'Assigned user does not exist'})
+
+        self._set_data(request)
+        self._save_route()
+
         try:
-            route_id = int(self.kwargs['pk'])
-            route_obj = Route.objects.get(id=route_id)
+            Location.objects.filter(route=self.route_obj).delete()
+            OptimizedLocation.objects.filter(route=self.route_obj).delete()
+
+            self._save_locations(request)
+            self._save_optimized_locations(request)
         except:
-            return Response({'code': 0, 'status': 200, 'message': 'Route does not exist'})
+            return Response({'code':0, 'status':200, 'message':'Something went wrong'})
 
-        trip_title = request.data['trip_title']
-        trip_datetime = datetime.datetime.strptime(str(request.data['trip_datetime']), "%Y/%m/%d %H:%M")
-        print trip_title
-        print type(trip_datetime), "-----------------", trip_datetime
-        total_time = request.data['total_hours']
-        optimized_total_time = request.data['optimized_total_hours']
-        if '.' in request.data['total_distance']:
-            total_distance = float(request.data['total_distance'][:-3])
-        else:
-            total_distance = float(int(request.data['total_distance'][:-3]))
-
-        if '.' in request.data['optimized_total_distance']:
-            optimized_total_distance = float(request.data['optimized_total_distance'][:-3])
-        else:
-            optimized_total_distance = float(int(request.data['optimized_total_distance'][:-3]))
-
-        route_obj.trip_title = trip_title
-        route_obj.trip_datetime = trip_datetime
-        route_obj.total_distance = total_distance
-        route_obj.total_time = total_time
-        route_obj.optimized_total_distance = optimized_total_distance
-        route_obj.optimized_total_time = optimized_total_time
-        try:
-            route_obj.save()
-
-            Location.objects.filter(route=route_obj).delete()
-            OptimizedLocation.objects.filter(route=route_obj).delete()
-
-            for idx, loc in enumerate(request.data['location']):
-                if loc['latitude'] and loc['longitude']:
-                    loc_obj = Location(route=route_obj, location_address=loc['location_name'],
-                                       location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                       location_long=loc['longitude'], location_note=loc['note'],
-                                       distance=loc['distance'], time=loc['time'])
-                    if idx == 0:
-                        loc_obj.location_number = 11
-                        loc_obj.save()
-                    elif idx == len(request.data['location'])-1:
-                        loc_obj.location_number = 22
-                        loc_obj.save()
-                    else:
-                        loc_obj.location_number = idx
-                        loc_obj.save()
-                else:
-                    pass
-            for idx, loc in enumerate(request.data['optimized_location']):
-                if loc['latitude'] and loc['longitude']:
-                    loc_obj = OptimizedLocation(route=route_obj, location_address=loc['location_name'],
-                                                location_near_address=loc['near_by_location'], location_lat=loc['latitude'],
-                                                location_long=loc['longitude'], location_note=loc['note'],
-                                                distance=loc['distance'], time=loc['time'])
-                    if idx == 0:
-                        loc_obj.location_number = 11
-                        loc_obj.save()
-                    elif idx == len(request.data['location'])-1:
-                        loc_obj.location_number = 22
-                        loc_obj.save()
-                    else:
-                        loc_obj.location_number = idx
-                        loc_obj.save()
-                else:
-                    pass
-        except:
-            return Response({'code': 0, 'status': 200, 'message': 'Something went wrong'})
-
-        return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Route has been updated'})
+        return Response({'code':1, 'status':200, 'Data':'Null', 'message':'Route has been updated'})
 
 
 class OptimizedEditRouteApi(APIView):
@@ -606,13 +735,17 @@ class RoutesPerDay(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = int(self.kwargs['pk'])
+            user = User.objects.get(pk=user_id)
         except:
             return Response({'code': 0, 'status': 200, 'message': 'User does not exist'})
         year = int(self.kwargs['year'])
         month = int(self.kwargs['month'])
         day = int(self.kwargs['day'])
         date_selected = datetime.date(year, month, day)
-        routes = Route.objects.filter(user__id=user_id, trip_datetime__startswith=date_selected)
+
+        # routes = Route.objects.filter(user__id=user_id, trip_datetime__startswith=date_selected)
+        routes = filter_objects_by_user(user, Route) \
+                 .filter(trip_datetime__startswith=date_selected)
         serializer = RouteSerializer(routes, many=True)
 
         return Response({'code': 1, 'status': 200, 'Data': serializer.data, 'message': 'Datewise routes Data'})
@@ -647,7 +780,11 @@ class AppointmentsViewSet(viewsets.ModelViewSet):
                 appointments = filter_objects_by_user(user_obj, Appointments)
                 # appointments = Appointments.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
-                    appointments = appointments.filter(start_datetime__contains=date)
+                    min_date = datetime.datetime.combine(date, datetime.datetime.min.time())
+                    max_date = datetime.datetime.combine(date, datetime.datetime.max.time())
+                    appointments = appointments \
+                                    .filter(start_datetime__gte=min_date,
+                                        start_datetime__lte=max_date)
                 return appointments
         return Appointments.objects.none()
 
@@ -704,10 +841,11 @@ class TaskViewSet(viewsets.ModelViewSet):
                 tasks = filter_objects_by_user(user_obj, Task)
                 # tasks = Task.objects.filter(user__id=user)
                 if date and self.request.method == 'GET':
-                    date_min = datetime.datetime.combine(date, datetime.time.min)
-                    date_max = datetime.datetime.combine(date, datetime.time.max)
-                    tasks = tasks.filter(user__id=user) \
-                            .filter(due_date__range=(date_min, date_max))
+                    min_date = datetime.datetime.combine(date, datetime.datetime.min.time())
+                    max_date = datetime.datetime.combine(date, datetime.datetime.max.time())
+                    tasks = tasks \
+                            .filter(due_date__gte=min_date,
+                                due_date__lte=max_date)
                 return tasks
         return Task.objects.none()
 
@@ -1012,7 +1150,9 @@ class ThemeView(APIView):
                     'background_color':organization.theme.background_color,
                     'inactive_button_color':organization.theme.inactive_button_color,
                     'logo_url':organization.theme.logo_url,
-                    'navigation_color':organization.theme.navigation_color
+                    'navigation_color':organization.theme.navigation_color,
+                    'active_button_text_color':organization.theme.active_button_text_color,
+                    'inactive_button_text_color':organization.theme.inactive_button_text_color
                 })
             else:
                 return Response({'code':0, 'status':'error',

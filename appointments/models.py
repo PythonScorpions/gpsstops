@@ -98,3 +98,15 @@ class TaskNotification(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     flag = models.BooleanField(default=False)
 
+
+class AppointmentEmailNotification(models.Model):
+    appointment = models.ForeignKey(Appointments)
+    created_on = models.DateTimeField(auto_now_add=True)
+    flag = models.BooleanField(default=False)
+
+
+class TaskEmailNotification(models.Model):
+    task = models.ForeignKey(Task)
+    created_on = models.DateTimeField(auto_now_add=True)
+    flag = models.BooleanField(default=False)
+

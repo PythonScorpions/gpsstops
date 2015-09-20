@@ -104,10 +104,15 @@ class RouteSerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         result = super(RouteSerializer, self).to_representation(obj)
-        result['assigned_first_name'] = obj.user.first_name
-        result['assigned_last_name'] = obj.user.last_name
-        result['created_by_first_name'] = obj.created_by.first_name
-        result['created_by_last_name'] = obj.created_by.last_name
+        result['assigned_user_id'] = obj.user.id
+        result['assigned_user_first_name'] = obj.user.first_name
+        result['assigned_user_last_name'] = obj.user.last_name
+        if obj.created_by:
+            result['created_by_first_name'] = obj.created_by.first_name
+            result['created_by_last_name'] = obj.created_by.last_name
+        else:
+            result['created_by_first_name'] = ""
+            result['created_by_last_name'] = ""
         return result
 
     @staticmethod
@@ -118,19 +123,19 @@ class RouteSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_created_at(obj):
-        return obj.created_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.created_at.strftime("%m/%d/%Y %I:%M %p")
         # created = str(obj.created_at).split(' ')
         # return created[0].replace('-', '/') + ' ' + created[1][:5]
 
     @staticmethod
     def get_updated_at(obj):
-        return obj.updated_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.updated_at.strftime("%m/%d/%Y %I:%M %p")
         # updated = str(obj.updated_at).split(' ')
         # return updated[0].replace('-', '/') + ' ' + updated[1][:5]
 
     @staticmethod
     def get_trip_datetime(obj):
-        return obj.trip_datetime.strftime("%m/%d/%Y %H:%M %p")
+        return obj.trip_datetime.strftime("%m/%d/%Y %I:%M %p")
         # triptime = str(obj.trip_datetime).split(' ')
         # return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
@@ -148,8 +153,12 @@ class OptRouteSerializer(serializers.ModelSerializer):
         result = super(RouteSerializer, self).to_representation(obj)
         result['assigned_first_name'] = obj.user.first_name
         result['assigned_last_name'] = obj.user.last_name
-        result['created_by_first_name'] = obj.created_by.first_name
-        result['created_by_last_name'] = obj.created_by.last_name
+        if obj.created_by:
+            result['created_by_first_name'] = obj.created_by.first_name
+            result['created_by_last_name'] = obj.created_by.last_name
+        else:
+            result['created_by_first_name'] = ""
+            result['created_by_last_name'] = ""
         return result
 
     @staticmethod
@@ -161,19 +170,19 @@ class OptRouteSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_created_at(obj):
-        return obj.created_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.created_at.strftime("%m/%d/%Y %I:%M %p")
         # created = str(obj.created_at).split(' ')
         # return created[0].replace('-', '/') + ' ' + created[1][:5]
 
     @staticmethod
     def get_updated_at(obj):
-        return obj.updated_at.strftime("%m/%d/%Y %H:%M %p")
+        return obj.updated_at.strftime("%m/%d/%Y %I:%M %p")
         # updated = str(obj.updated_at).split(' ')
         # return updated[0].replace('-', '/') + ' ' + updated[1][:5]
 
     @staticmethod
     def get_trip_datetime(obj):
-        return obj.trip_datetime.strftime("%m/%d/%Y %H:%M %p")
+        return obj.trip_datetime.strftime("%m/%d/%Y %I:%M %p")
         # triptime = str(obj.trip_datetime).split(' ')
         # return triptime[0].replace('-', '/') + ' ' + triptime[1][:5]
 
@@ -196,7 +205,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'start_datetime':obj.start_datetime.strftime("%m/%d/%Y %H:%M %p"),
+            'start_datetime':obj.start_datetime.strftime("%m/%d/%Y %I:%M %p"),
             'timezone':obj.timezone,
             'location':obj.location,
             'latitude':obj.latitude,
@@ -281,7 +290,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'id':obj.id,
             'user':obj.created_by.id,
             'title':obj.title,
-            'due_date':obj.due_date.strftime("%m/%d/%Y %H:%M %p"),
+            'due_date':obj.due_date.strftime("%m/%d/%Y %I:%M %p"),
             'timezone':obj.timezone,
             'note':obj.note,
             'notification_required':obj.notification_required,
@@ -329,6 +338,13 @@ class TaskSerializer(serializers.ModelSerializer):
             notification_time=validated_data['notification_time'],
             notification_required=validated_data['notification_required']
         )
+        return task
+
+    def update(self, instance, validated_data):
+        task = super(TaskSerializer, self).update(instance, validated_data)
+        # print task
+        task.user = self.assigned_user
+        task.save()
         return task
 
 
