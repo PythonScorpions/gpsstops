@@ -255,3 +255,13 @@ class FormForOrgForm(forms.ModelForm):
         model = OrgForms
         exclude = ('serial_no', 'status', 'created_at', 'updated_at', 'input_assign_to', 'display_assign_to',
                    'allow_accept_reject', 'input_assign_allow', 'display_assign_allow')
+
+
+class WebThemeForm(forms.ModelForm):
+    class Meta:
+        model = WebTheme
+
+
+class MobileThemeForm(forms.ModelForm):
+    class Meta:
+        model = Theme

@@ -508,6 +508,8 @@ users_enable_view = UserActivatedView.as_view()
 
 
 class ThemeView(View):
+
+    @login_required
     def get(self, request, pk=None, *args, **kwargs):
         # web_theme_form = WebThemeForm()
         # mobile_theme = MobileThemeForm()

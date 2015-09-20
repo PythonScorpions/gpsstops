@@ -80,7 +80,7 @@ class Customer(models.Model):
 
 
 class Theme(models.Model):
-    logo_url = models.URLField()
+    logo_url = models.URLField(null=True)
 
     background_color = models.CharField(max_length=10, default="#ffffff")
 
@@ -94,7 +94,7 @@ class Theme(models.Model):
 
 
 class WebTheme(models.Model):
-    logo_url = models.URLField()
+    logo_url = models.URLField(null=True)
 
     background_color = models.CharField(max_length=10, default="#ffffff")
     text_color = models.CharField(max_length=10, default="#414042")
