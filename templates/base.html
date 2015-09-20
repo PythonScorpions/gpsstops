@@ -94,8 +94,8 @@
     <div class="header-link">
       <ul class="list-inline">
         <li><a href="#">800-466-0992 </a></li>
+        {% if user.is_authenticated and user.is_active and user.user_profiles.admin_status == "enable"%}
         <li>
-          {% if user.is_authenticated and user.is_active and user.user_profiles.admin_status == "enable"%}
           <div class="dropdown">
             <button class="btn my-account btn-default dropdown-toggle"
                     type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
@@ -135,11 +135,11 @@
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Email notifications</a></li>
             </ul>
           </div>
-          {% else %}
-          <a href="#" id="login">Login</a>
-          {% endif %}
         </li>
+        {% else %}
+        <li><a href="#" id="login">Login</a></li>
         <li><a href="#" class="btn btn-primary">Sign up </a></li>
+        {% endif %}
       </ul>
     </div>
  </div>

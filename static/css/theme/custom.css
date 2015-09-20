@@ -1,8 +1,14 @@
 
 /* custom modification in the theme */
+body {
+    padding-top: 100px;
+}
 .top-header {
-    overflow: inherit;
     border-bottom: 1px solid #f5f5f5;
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: inherit;
 }
 .top-header .header-link .dropdown button {
     background-color: transparent;
@@ -34,8 +40,6 @@
 }
 .page #login-block .input-box {
     text-align: right;
-    padding: 2.5rem 0rem 1rem;
-    border-top: 1px solid #f5f5f5;
 }
 .page #login-block .input-box form {
     display: inline-block;
