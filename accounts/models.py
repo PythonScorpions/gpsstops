@@ -80,20 +80,59 @@ class Customer(models.Model):
 
 
 class Theme(models.Model):
-    navigation_color = models.CharField(max_length=10)
-    active_button_color = models.CharField(max_length=10)
-    inactive_button_color = models.CharField(max_length=10)
     logo_url = models.URLField()
-    background_color = models.CharField(max_length=10)
-    active_button_text_color = models.CharField(max_length=10)
-    inactive_button_text_color = models.CharField(max_length=10)
+
+    background_color = models.CharField(max_length=10, default="#ffffff")
+
+    navigation_color = models.CharField(max_length=10, default="#337ab7")
+
+    active_button_color = models.CharField(max_length=10, default="#0b9bc1")
+    active_button_text_color = models.CharField(max_length=10, default="#197095")
+
+    inactive_button_color = models.CharField(max_length=10, default="#414042")
+    inactive_button_text_color = models.CharField(max_length=10, default="#333333")
+
+
+class WebTheme(models.Model):
+    logo_url = models.URLField()
+
+    background_color = models.CharField(max_length=10, default="#ffffff")
+    text_color = models.CharField(max_length=10, default="#414042")
+
+    header_background_color = models.CharField(max_length=10, default="#ffffff")
+    header_text_color = models.CharField(max_length=10, default="#197095")
+
+    menu_background_color = models.CharField(max_length=10, default="#ffffff")
+    menu_text_color = models.CharField(max_length=10, default="#197095")
+
+    footer_background_color = models.CharField(max_length=10, default="#14688c")
+    footer_color = models.CharField(max_length=10, default="#b9cbd5")
+
+    link_active_color = models.CharField(max_length=10, default="#337ab7")
+    link_active_hover_color = models.CharField(max_length=10, default="#197095")
+    link_inactive_color = models.CharField(max_length=10, default="#337ab7")
+    link_inactive_hover_color = models.CharField(max_length=10, default="#197095")
+
+    default_button_color = models.CharField(max_length=10, default="#0b9bc1")
+    default_button_border_color = models.CharField(max_length=10, default="#0b9bc1")
+    default_button_inactive_color = models.CharField(max_length=10, default="#0b9bc1")
+    default_button_inactive_border_color = models.CharField(max_length=10, default="#0b9bc1")
+
+    primary_button_color = models.CharField(max_length=10, default="#0b9bc1")
+    primary_button_border_color = models.CharField(max_length=10, default="#0b9bc1")
+    primary_button_inactive_color = models.CharField(max_length=10, default="#0b9bc1")
+    primary_button_inactive_border_color = models.CharField(max_length=10, default="#0b9bc1")
+
+    error_box_background_color = models.CharField(max_length=10, default="#ffffff")
+    error_text_color = models.CharField(max_length=10, default="#cc3333")
 
 
 class Organization(models.Model):
     super_admin = models.OneToOneField(User, related_name='super_admin_role')
     admins = models.ManyToManyField(User, related_name='admin_role', blank=True, null=True)
     employees = models.ManyToManyField(User, related_name='employee_role', blank=True, null=True)
-    theme = models.ForeignKey(Theme, null=True, blank=True)
+    theme = models.ForeignKey(Theme, null=True, blank=True, related_name="theme")
+    web_theme = models.ForeignKey(Theme, null=True, blank=True, related_name="web_theme")
 
 
 class OrganizationRoles(models.Model):

@@ -331,7 +331,7 @@ class CreateRouteApi(APIView):
             optimized_total_time=self.optimized_total_time,
             optimized_total_distance=self.optimized_total_distance,
             created_by=self.user_obj,
-            is_editable=True if self.is_editable == 1 else False
+            is_editable=True if self.is_editable == 1 or self.is_editable == "1" else False
         )
         route_obj.save()
         return route_obj
@@ -467,7 +467,7 @@ class OptimizedRouteListApi(APIView):
 
 class EditRouteApi(APIView):
 
-    def _get_route(self, id):
+    def _get_route(self):
         try:
             self.route_obj = Route.objects.get(id=int(self.kwargs['pk']))
         except:

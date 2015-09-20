@@ -505,3 +505,11 @@ class UserActivatedView(View):
 
         return redirect('/accounts/users/')
 users_enable_view = UserActivatedView.as_view()
+
+
+class ThemeView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        # web_theme_form = WebThemeForm()
+        # mobile_theme = MobileThemeForm()
+        return render(request, "accounts/theme.html")
+theme_view = ThemeView.as_view()

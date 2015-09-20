@@ -25,4 +25,6 @@ urlpatterns = patterns("accounts.views",
   url(r'^accounts/users/(?P<pk>\d+)/$', users_create_view, name='users_edit'),
   url(r'^accounts/users/(?P<pk>\d+)/active/toggle/$', users_enable_view, name='users_enable'),
   url(r'^accounts/login/(?P<key>\w+)/$', users_login_view, name='users_login'),
+
+  url(r'^accounts/theme/$', theme_view, name='theme'),
 )

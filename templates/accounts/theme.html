@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="theme-block container">
+    <h2>Theme Settings</h2>
+    <div class="theme-tabs">
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#webTheme" aria-controls="webTheme" role="tab" data-toggle="tab">Web Theme</a></li>
+        <li role="presentation"><a href="#mobileTheme" aria-controls="mobileTheme" role="tab" data-toggle="tab">Mobile Theme</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="webTheme">
+            <form class="theme-form">
+                <button type="submit" name="web_theme" value="Web Theme" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="mobileTheme">
+            <form class="theme-form">
+                <button type="submit" name="mobile_theme" value="Mobile Theme" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}
