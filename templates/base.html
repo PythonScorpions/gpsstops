@@ -18,6 +18,7 @@
   <link href="{{STATIC_URL}}css/theme/media.css" rel="stylesheet" type="text/css">
   <link href="{{STATIC_URL}}css/theme/jv-jquery-mobile-menu.css" rel="stylesheet" type="text/css">
   <link href="{{STATIC_URL}}css/theme/animate.css" rel="stylesheet" type="text/css">
+  <link href="{{ STATIC_URL }}css/theme/style-custom.css" rel="stylesheet" type="text/css" />
   <link href="{{ STATIC_URL }}css/theme/custom.css" rel="stylesheet" type="text/css" />
 
   <script type="text/javascript" src="{{STATIC_URL}}js/jquery.min.js"></script>
@@ -48,47 +49,104 @@
   <div class="top-header">
      <div class="mobile-nav">
       <div class="gw-sidebar">
-  <div id="gw-sidebar" class="gw-sidebar">
-    <div class="nano-content">
-      <ul class="gw-nav gw-nav-list">
-        <li class="init-un-active"> <a href="javascript:void(0)"> <span class="gw-menu-text">Home</span> </a> </li>
-        <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">Downloads</span> <b class="gw-arrow"></b> </a>
-          <ul class="gw-submenu">
-            <li> <a href="javascript:void(0)">Menu 1</a> </li>
-          </ul>
-        </li>
-        <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">Support</span> <b class="gw-arrow icon-arrow-up8"></b> </a>
-          <ul class="gw-submenu">
-            <li> <a href="javascript:void(0)">Menu 1</a> </li>
-            <li> <a href="javascript:void(0)">Menu 2</a> </li>
-            <li> <a href="javascript:void(0)">Menu 3</a> </li>
-          </ul>
-        </li>
-        <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">About Us</span> <b></b> </a>
-          <ul class="gw-submenu">
-            <li> <a href="javascript:void(0)">Menu 1</a> </li>
-            <li> <a href="javascript:void(0)">Menu 2</a> </li>
+        <div id="gw-sidebar" class="gw-sidebar">
+          <div class="nano-content">
+            <ul class="gw-nav gw-nav-list">
+              <li class="init-un-active"><a href="{% url 'index' %}"><span class="gw-menu-text">Home</span></a> </li>
+              <li class="init-un-active"><a href="/download/"><span class="gw-menu-text">Download</span></a> </li>
+              <li class="init-un-active"><a href="/support/"><span class="gw-menu-text">Support</span></a> </li>
+              <li class="init-un-active"><a href="/about_us/"><span class="gw-menu-text">About</span></a></li>
+              {% if user.is_authenticated %}
+              <li class="init-un-active"><a href="/calender/"><span class="gw-menu-text">Calender</span></a></li>
+              <li class="init-un-active"><a href="/maps/routes/"><span class="gw-menu-text">Created routes</span></a></li>
+              <li class="init-un-active"><a href="/route/add/"><span class="gw-menu-text">Add Route</span></a></li>
+              {% endif %}
+              <li class="init-un-active"><a href="/contact_us/" style="border:none;"><span class="gw-menu-text">Contact</span></a></li>
+              <!--
+              <li class="init-un-active"> <a href="/"> <span class="gw-menu-text">Home</span> </a> </li>
 
-          </ul>
-        </li>
-        <li class="init-un-active"> <a href="javascript:void(0)"> <span class="gw-menu-text">Contact Us</span> </a> </li>
-      </ul>
-    </div>
-  </div>
-</div>
+              <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">Downloads</span> <b class="gw-arrow"></b> </a>
+                <ul class="gw-submenu">
+                  <li> <a href="javascript:void(0)">Menu 1</a> </li>
+                </ul>
+              </li>
+              <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">Support</span> <b class="gw-arrow icon-arrow-up8"></b> </a>
+                <ul class="gw-submenu">
+                  <li> <a href="javascript:void(0)">Menu 1</a> </li>
+                  <li> <a href="javascript:void(0)">Menu 2</a> </li>
+                  <li> <a href="javascript:void(0)">Menu 3</a> </li>
+                </ul>
+              </li>
+              <li class="init-arrow-down"> <a href="javascript:void(0)"> <span class="gw-menu-text">About Us</span> <b></b> </a>
+                <ul class="gw-submenu">
+                  <li> <a href="javascript:void(0)">Menu 1</a> </li>
+                  <li> <a href="javascript:void(0)">Menu 2</a> </li>
+
+                </ul>
+              </li>
+              <li class="init-un-active"> <a href="javascript:void(0)"> <span class="gw-menu-text">Contact Us</span> </a> </li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="logo"> <img src="/static/images/theme/logo.jpg" class="img-responsive" alt="Benny App" > </div>
     <div class="header-link">
       <ul class="list-inline">
         <li><a href="#">800-466-0992 </a></li>
-        <li><a href="#">Login </a></li>
+        <li>
+          {% if user.is_authenticated and user.is_active and user.user_profiles.admin_status == "enable"%}
+          <div class="dropdown">
+            <button class="btn my-account btn-default dropdown-toggle"
+                    type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                <i class="glyphicon glyphicon-user"></i> My Account
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="/update-profile">
+                        <h4>{{ user.first_name }}</h4>
+                        <p>View Profile</p>
+                    </a>
+                    <hr style="margin:5px 0;" />
+                </li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/logout/">Log Out</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Account Settings</a></li>
+                {% if user.user_profiles.user_role == 'super_admin' %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/accounts/theme/">Theme</a></li>
+                {% endif %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change Password</a></li>
+                {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/accounts/users/">Users</a></li>
+                {% endif %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact/">Contact</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact_group/">Contact Group</a></li>
+                {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'form-category' %}">Form Creation</a></li>
+                {% endif %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'input-forms' %}">Input Forms</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'display-forms' %}">Display Forms</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'customers' %}">Customers</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sync with mobile app Options</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment Options</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Payment History</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set default calendar view</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Set language</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Email notifications</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <a href="#" id="login">Login</a>
+          {% endif %}
+        </li>
         <li><a href="#" class="btn btn-primary">Sign up </a></li>
       </ul>
     </div>
  </div>
-{% block content %}
-
-{% endblock content %}
+  <div class="page">
+  {% block content %}
+  {% endblock content %}
+  </div>
 <div class="footer">
       <div class="container">
         <div class="row">
@@ -105,9 +163,10 @@
         </div>
         </div>
         </div>
-</div>
+  </div>
 
   <script src="{{STATIC_URL}}js/theme/script.js"></script>
+  <script src="{{STATIC_URL}}js/theme/custom.js"></script>
 
   {#<script class="cssdesk" src="{{STATIC_URL}}js/fullcalendar.min.js" type="text/javascript"></script>#}
   {#<script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>#}

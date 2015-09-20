@@ -1,5 +1,69 @@
-/* Custom */
 
+/* custom modification in the theme */
+.top-header {
+    overflow: inherit;
+    border-bottom: 1px solid #f5f5f5;
+}
+.top-header .header-link .dropdown button {
+    background-color: transparent;
+    border: 2px solid #0b9bc1;
+    border-radius: 17px;
+    color: #0b9bc1;
+    font-size: 1.1rem;
+}
+.top-header .header-link ul.dropdown-menu {
+    left: inherit;
+    right: 0;
+}
+.top-header .header-link ul.dropdown-menu h4 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+.top-header .header-link ul.dropdown-menu p {
+    margin-bottom: 1px;
+    font-size: 1.2rem;
+}
+.top-header .header-link ul.dropdown-menu li a {
+    font-size: 1.3rem;
+    padding: 0.6rem 2rem;
+}
+
+.page {
+    /*float: left;
+    margin-top: -3.2rem;*/
+}
+.page #login-block .input-box {
+    text-align: right;
+    padding: 2.5rem 0rem 1rem;
+    border-top: 1px solid #f5f5f5;
+}
+.page #login-block .input-box form {
+    display: inline-block;
+}
+.page #login-block .input-box form input[type=email],
+.page #login-block .input-box form input[type=password] {
+    border-radius: 30px;
+    border: 2px solid #bbb;
+    font-size: 1.2rem;
+    padding: 0.5rem 1.4rem;
+    margin-left: 0.3rem;
+    outline: none;
+    width: 20rem;
+}
+.page #login-block .input-box form .btn.btn-primary {
+    padding: 0;
+    font-size: 1.1rem;
+    border-width: 2px;
+    width: 10rem;
+    height: 3rem;
+    margin: 0rem 0rem 0rem 0.1rem;
+}
+.page #login-block .input-box form .rowC {
+    padding: 1rem 0 0;
+}
+.page #login-block .input-box form .rowC a {
+    font-size: 1rem;
+}
 .page-header .actions {
     margin-right: 1em;
 }
@@ -12,6 +76,21 @@
 }
 .page-header .actions .glyphicon {
     margin-top: 1px;
+}
+
+.page .left-map {
+    background: #fff;
+}
+.page .left-map .btn {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    border: 2px solid;
+    width: 15rem;
+}
+
+.calendar .btn {
+    background: #24a9e1 none repeat scroll 0 0;
+    border: medium none;
 }
 .cal-month-day .events-list a {
 	float: none !important;
@@ -60,11 +139,21 @@
     font-size: 0.9em;
 }
 
+.banner h3 {
+    margin-bottom: 0.3rem;
+}
+
 .appointmentBlock {
-	border-top: 1px solid #24a9e1;
+	/*border-top: 1px solid #24a9e1;*/
     padding: 2em;
     margin: 1em;
     min-height: 71vh;
+}
+.appointmentBlock .btn.btn-primary {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    border: 2px solid;
+    width: 15rem;
 }
 .appointmentBlock .wrapper {
 	/* margin: 0 auto; */
@@ -103,6 +192,7 @@
 
 .panel .panel-heading {
 	font-size: 1em;
+    margin-bottom: 0;
 }
 .panel .panel-heading .btn {
     float: right;
