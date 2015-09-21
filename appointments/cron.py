@@ -105,7 +105,7 @@ class NotificationsCronJob(CronJobBase):
         try:
             cur_dt = datetime.datetime.now(pytz.timezone(given_timezone))
         except:
-            pass
+            print sys.exc_info()
         else:
             cur_dt_in_secs = time.mktime(cur_dt.timetuple())
             given_dt_in_secs = time.mktime(dt_to_be_checked.timetuple())
@@ -223,6 +223,8 @@ class NotificationsCronJob(CronJobBase):
                 email_flag = True
             else:
                 email_flag = not email_notification.flag
+
+            print "Task email flag: ", email_flag
             if email_flag:
                 self._send_task_email(task)
 
