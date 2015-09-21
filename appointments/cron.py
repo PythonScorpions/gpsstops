@@ -162,7 +162,7 @@ class NotificationsCronJob(CronJobBase):
                 print sys.exc_info()
                 email_flag = True
             else:
-                email_flag = !email_notification.flag
+                email_flag = not email_notification.flag
             if email_flag:
                 self._send_appointment_email(appointment)
 
@@ -222,7 +222,7 @@ class NotificationsCronJob(CronJobBase):
                 print sys.exc_info()
                 email_flag = True
             else:
-                email_flag = !email_notification.flag
+                email_flag = not email_notification.flag
             if email_flag:
                 self._send_task_email(task)
 
