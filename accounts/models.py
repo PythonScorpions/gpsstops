@@ -106,7 +106,7 @@ class WebTheme(models.Model):
     menu_text_color = models.CharField(max_length=10, default="#197095")
 
     footer_background_color = models.CharField(max_length=10, default="#14688c")
-    footer_color = models.CharField(max_length=10, default="#b9cbd5")
+    footer_text_color = models.CharField(max_length=10, default="#b9cbd5")
 
     link_active_color = models.CharField(max_length=10, default="#337ab7")
     link_active_hover_color = models.CharField(max_length=10, default="#197095")
@@ -132,7 +132,7 @@ class Organization(models.Model):
     admins = models.ManyToManyField(User, related_name='admin_role', blank=True, null=True)
     employees = models.ManyToManyField(User, related_name='employee_role', blank=True, null=True)
     theme = models.ForeignKey(Theme, null=True, blank=True, related_name="theme")
-    web_theme = models.ForeignKey(Theme, null=True, blank=True, related_name="web_theme")
+    web_theme = models.ForeignKey(WebTheme, null=True, blank=True, related_name="web_theme")
 
 
 class OrganizationRoles(models.Model):

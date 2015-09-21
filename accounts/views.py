@@ -509,9 +509,70 @@ users_enable_view = UserActivatedView.as_view()
 
 class ThemeView(View):
 
-    @login_required
+    @method_decorator(login_required)
     def get(self, request, pk=None, *args, **kwargs):
-        # web_theme_form = WebThemeForm()
-        # mobile_theme = MobileThemeForm()
-        return render(request, "accounts/theme.html")
+        if not request.user.user_profiles.user_role == "super_admin":
+            return redirect("/")
+
+        context = {}
+        try:
+            organization = Organization.objects.get(super_admin=request.user)
+        except:
+            context['error_message'] = "Error! User is not assigned an organization. Please contact your administrator."
+
+        if not organization.theme:
+            organization.theme = Theme.objects.create()
+            organization.save()
+
+        if not organization.web_theme:
+            organization.web_theme = WebTheme.objects.create()
+            organization.save()
+
+        context['web_theme_form'] = WebThemeForm(instance=organization.web_theme)
+        context['mobile_theme_form'] = MobileThemeForm(instance=organization.theme)
+
+        return render(request, "accounts/theme.html", context)
+
+    @method_decorator(login_required)
+    def post(self, request, pk=None, *args, **kwargs):
+        if not request.user.user_profiles.user_role == "super_admin":
+            return redirect("/")
+
+        context = {}
+        try:
+            organization = Organization.objects.get(super_admin=request.user)
+        except:
+            context['error_message'] = "Error! User is not assigned an organization. Please contact your administrator."
+
+        if not organization.theme:
+            organization.theme = Theme.objects.create()
+            organization.save()
+
+        if not organization.web_theme:
+            organization.web_theme = WebTheme.objects.create()
+            organization.save()
+
+        if request.POST.has_key('web_theme'):
+            web_theme_form = WebThemeForm(request.POST, instance=organization.web_theme)
+            context['web_theme_form'] = web_theme_form
+
+            if web_theme_form.is_valid():
+                web_theme_form.save()
+            else:
+                print web_theme_form.errors
+        else:
+            context['web_theme_form'] = WebThemeForm(instance=organization.web_theme)
+
+        if request.POST.has_key('mobile_theme'):
+            mobile_theme_form = MobileThemeForm(instance=organization.theme)
+            context['mobile_theme_form'] =  mobile_theme_form
+
+            if mobile_theme_form.is_valid():
+                mobile_theme_form.save()
+            else:
+                print mobile_theme_form.errors
+        else:
+            context['mobile_theme_form'] = MobileThemeForm(instance=organization.theme)
+
+        return render(request, "accounts/theme.html", context)
 theme_view = ThemeView.as_view()
