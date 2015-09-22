@@ -1149,7 +1149,7 @@ class ThemeView(APIView):
                     'active_button_color':organization.theme.active_button_color,
                     'background_color':organization.theme.background_color,
                     'inactive_button_color':organization.theme.inactive_button_color,
-                    'logo_url':organization.theme.logo_url,
+                    'logo_url':"http://bennyapp.com/media/" + organization.theme.logo.name,
                     'navigation_color':organization.theme.navigation_color,
                     'active_button_text_color':organization.theme.active_button_text_color,
                     'inactive_button_text_color':organization.theme.inactive_button_text_color
