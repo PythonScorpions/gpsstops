@@ -1,4 +1,4 @@
-
+{% load utils %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -93,7 +93,8 @@
         </div>
       </div>
     </div>
-    <div class="logo"> <img src="/static/images/theme/logo.jpg" class="img-responsive" alt="Benny App" > </div>
+    <!-- <div class="logo"> <img src="/static/images/theme/logo.jpg" class="img-responsive" alt="Benny App" > </div> -->
+    <div class="logo"> <img src="{{user|logo}}" class="img-responsive" alt="Benny App" > </div>
     <div class="header-link">
       <ul class="list-inline">
         <li><a href="tel:+9726494193">972-649-4193</a></li>

@@ -51,7 +51,10 @@ body {
     background: {{theme.header_background_color}} !important;
     color: {{theme.header_text_color}} !important;
 }
-
+.page {
+    background: {{theme.background_color}} !important;
+    color: {{theme.text_color}} !important;
+}
 .footer {
     background: {{theme.footer_background_color}} !important;
     color: {{theme.footer_text_color}} !important;

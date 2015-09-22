@@ -593,6 +593,7 @@ class CssThemeView(View):
 
         if organization == None:
             return render(request, '')
+        # print organization.web_theme.logo
         return render(request, 'accounts/theme.css',
             {'theme':organization.web_theme}, content_type='text/css')
 css_theme_view = CssThemeView.as_view()
