@@ -115,14 +115,18 @@ class WebTheme(models.Model):
     link_inactive_color = models.CharField(max_length=10, default="#337ab7")
     link_inactive_hover_color = models.CharField(max_length=10, default="#197095")
 
-    default_button_color = models.CharField(max_length=10, default="#0b9bc1")
+    default_button_color = models.CharField(max_length=10, default="#ffffff")
+    default_button_text_color = models.CharField(max_length=10, default="#0b9bc1")
     default_button_border_color = models.CharField(max_length=10, default="#0b9bc1")
     default_button_inactive_color = models.CharField(max_length=10, default="#0b9bc1")
+    default_button_inactive_text_color = models.CharField(max_length=10, default="#000000")
     default_button_inactive_border_color = models.CharField(max_length=10, default="#0b9bc1")
 
-    primary_button_color = models.CharField(max_length=10, default="#0b9bc1")
+    primary_button_color = models.CharField(max_length=10, default="#ffffff")
+    primary_button_text_color = models.CharField(max_length=10, default="#0b9bc1")
     primary_button_border_color = models.CharField(max_length=10, default="#0b9bc1")
     primary_button_inactive_color = models.CharField(max_length=10, default="#0b9bc1")
+    primary_button_inactive_text_color = models.CharField(max_length=10, default="#000000")
     primary_button_inactive_border_color = models.CharField(max_length=10, default="#0b9bc1")
 
     error_box_background_color = models.CharField(max_length=10, default="#ffffff")
