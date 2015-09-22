@@ -27,4 +27,5 @@ urlpatterns = patterns("accounts.views",
   url(r'^accounts/login/(?P<key>\w+)/$', users_login_view, name='users_login'),
 
   url(r'^accounts/theme/$', theme_view, name='theme'),
+  url(r'^accounts/theme/css/$', css_theme_view, name='css-theme'),
 )

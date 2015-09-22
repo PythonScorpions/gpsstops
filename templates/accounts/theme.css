@@ -1,0 +1,61 @@
+/**
+ *
+ */
+
+a {
+    color: {{theme.link_active_color}} !important;
+}
+a:hover {
+    color: {{theme.link_active_hover_color}} !important;
+}
+
+button.btn.btn-default, a.btn.btn-default {
+    background: transparent !important;
+    border-color: {{theme.default_button_border_color}} !important;
+    color: {{theme.default_button_color}} !important;
+}
+button.btn.btn-default:hover, a.btn.btn-default:hover {
+    background: transparent !important;
+    background: {{theme.default_button_border_color}} !important;
+    border-color: {{theme.default_button_border_color}} !important;
+    color: #fff !important;
+}
+
+button, button.btn.btn-primary, a.btn.btn-primary {
+    background: transparent !important;
+    border-color: {{theme.primary_button_border_color}} !important;
+    color: {{theme.primary_button_color}} !important;
+}
+button, button.btn.btn-primary:hover, a.btn.btn-primary:hover {
+    background: {{theme.primary_button_border_color}} !important;
+    border-color: {{theme.primary_button_border_color}} !important;
+    color: #fff !important;
+}
+button, button.btn.btn-primary[disabled], a.btn.btn-primary[disabled] {
+    background: transparent !important;
+    border-color: {{theme.primary_button_inactive_border_color}} !important;
+    color: {{theme.primary_button_inactive_color}} !important;
+}
+button, button.btn.btn-primary[disabled]:hover, a.btn.btn-primary[disabled]:hover {
+    background: {{theme.primary_button_inactive_border_color}} !important;
+    border-color: {{theme.primary_button_inactive_border_color}} !important;
+    color: #fff !important;
+}
+
+body {
+    background: {{theme.background_color}} !important;
+    color: {{theme.text_color}} !important;
+}
+
+.top-header {
+    background: {{theme.header_background_color}} !important;
+    color: {{theme.header_text_color}} !important;
+}
+
+.footer {
+    background: {{theme.footer_background_color}} !important;
+    color: {{theme.footer_text_color}} !important;
+}
+.footer p, .footer a {
+    color: {{theme.footer_text_color}} !important;
+}

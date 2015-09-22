@@ -553,7 +553,7 @@ class ThemeView(View):
             organization.save()
 
         if request.POST.has_key('web_theme'):
-            web_theme_form = WebThemeForm(request.POST, instance=organization.web_theme)
+            web_theme_form = WebThemeForm(request.POST, request.FILES, instance=organization.web_theme)
             context['web_theme_form'] = web_theme_form
 
             if web_theme_form.is_valid():
@@ -564,7 +564,7 @@ class ThemeView(View):
             context['web_theme_form'] = WebThemeForm(instance=organization.web_theme)
 
         if request.POST.has_key('mobile_theme'):
-            mobile_theme_form = MobileThemeForm(instance=organization.theme)
+            mobile_theme_form = MobileThemeForm(request.POST, request.FILES, instance=organization.theme)
             context['mobile_theme_form'] =  mobile_theme_form
 
             if mobile_theme_form.is_valid():
@@ -576,3 +576,23 @@ class ThemeView(View):
 
         return render(request, "accounts/theme.html", context)
 theme_view = ThemeView.as_view()
+
+
+class CssThemeView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        organization = None
+        try:
+            if request.user.user_profiles.user_role == "super_admin":
+                organization = Organization.objects.get(super_admin=request.user)
+            elif request.user.user_profiles.user_role == "admin":
+                organization = Organization.objects.get(admins=request.user)
+            elif request.user.user_profiles.user_role == "employee":
+                organization = Organization.objects.get(employees=request.user)
+        except:
+            pass
+
+        if organization == None:
+            return render(request, '')
+        return render(request, 'accounts/theme.css',
+            {'theme':organization.web_theme}, content_type='text/css')
+css_theme_view = CssThemeView.as_view()
