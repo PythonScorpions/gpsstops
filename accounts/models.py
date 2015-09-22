@@ -81,7 +81,7 @@ class Customer(models.Model):
 
 class Theme(models.Model):
     # logo_url = models.URLField(null=True)
-    logo = models.FileField(upload_to='uploads', null=True)
+    logo = models.FileField(upload_to='uploads', null=True, blank=True)
 
     background_color = models.CharField(max_length=10, default="#ffffff")
 

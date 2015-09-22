@@ -258,10 +258,14 @@ class FormForOrgForm(forms.ModelForm):
 
 
 class WebThemeForm(forms.ModelForm):
+    logo = forms.FileField(required=False)
+
     class Meta:
         model = WebTheme
 
 
 class MobileThemeForm(forms.ModelForm):
+    logo = forms.FileField(required=False)
+
     class Meta:
         model = Theme
