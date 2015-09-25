@@ -100,6 +100,9 @@ body {
 	float: none !important;
 	display: inline-block;
 }
+.cal-month-day .events-list a.event-task.custom-event-assigned {
+    background-color: #f00;
+}
 .cal-month-day .route {
     margin: 1rem 1rem 0.8rem 0;
     clear: both;
