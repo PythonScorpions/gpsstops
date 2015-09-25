@@ -9,6 +9,8 @@ from django.db.models.signals import post_save,pre_save,pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from accounts.constants import *
+
 
 @receiver(post_save, sender=User)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -83,54 +85,54 @@ class Theme(models.Model):
     # logo_url = models.URLField(null=True)
     logo = models.FileField(upload_to='uploads', null=True, blank=True)
 
-    background_color = models.CharField(max_length=10, default="#ffffff")
+    background_color = models.CharField(max_length=10, default=MOBILE_THEME_CONSTANTS['background_color'])
 
-    navigation_color = models.CharField(max_length=10, default="#337ab7")
+    navigation_color = models.CharField(max_length=10, default=MOBILE_THEME_CONSTANTS['navigation_color'])
 
-    active_button_color = models.CharField(max_length=10, default="#0b9bc1")
-    active_button_text_color = models.CharField(max_length=10, default="#197095")
+    active_button_color = models.CharField(max_length=10, default=MOBILE_THEME_CONSTANTS['active_button_color'])
+    active_button_text_color = models.CharField(max_length=10, default=MOBILE_THEME_CONSTANTS['active_button_text_color'])
 
-    inactive_button_color = models.CharField(max_length=10, default="#414042")
-    inactive_button_text_color = models.CharField(max_length=10, default="#333333")
+    inactive_button_color = models.CharField(max_length=10, default=MOBILE_THEME_CONSTANTS['inactive_button_color'])
+    inactive_button_text_color = models.CharField(max_length=10, default=MOBILE_THEME_CONSTANTS['inactive_button_text_color'])
 
 
 class WebTheme(models.Model):
     # logo_url = models.URLField(null=True)
     logo = models.FileField(upload_to='uploads', null=True)
 
-    background_color = models.CharField(max_length=10, default="#ffffff")
-    text_color = models.CharField(max_length=10, default="#414042")
+    background_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['background_color'])
+    text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['text_color'])
 
-    header_background_color = models.CharField(max_length=10, default="#ffffff")
-    header_text_color = models.CharField(max_length=10, default="#197095")
+    header_background_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['header_background_color'])
+    header_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['header_text_color'])
 
-    menu_background_color = models.CharField(max_length=10, default="#ffffff")
-    menu_text_color = models.CharField(max_length=10, default="#197095")
+    menu_background_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['menu_background_color'])
+    menu_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['menu_text_color'])
 
-    footer_background_color = models.CharField(max_length=10, default="#14688c")
-    footer_text_color = models.CharField(max_length=10, default="#b9cbd5")
+    footer_background_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['footer_background_color'])
+    footer_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['footer_text_color'])
 
-    link_active_color = models.CharField(max_length=10, default="#337ab7")
-    link_active_hover_color = models.CharField(max_length=10, default="#197095")
-    link_inactive_color = models.CharField(max_length=10, default="#337ab7")
-    link_inactive_hover_color = models.CharField(max_length=10, default="#197095")
+    link_active_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['link_active_color'])
+    link_active_hover_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['link_active_hover_color'])
+    link_inactive_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['link_inactive_color'])
+    link_inactive_hover_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['link_inactive_hover_color'])
 
-    default_button_color = models.CharField(max_length=10, default="#ffffff")
-    default_button_text_color = models.CharField(max_length=10, default="#0b9bc1")
-    default_button_border_color = models.CharField(max_length=10, default="#0b9bc1")
-    default_button_inactive_color = models.CharField(max_length=10, default="#0b9bc1")
-    default_button_inactive_text_color = models.CharField(max_length=10, default="#000000")
-    default_button_inactive_border_color = models.CharField(max_length=10, default="#0b9bc1")
+    default_button_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['default_button_color'])
+    default_button_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['default_button_text_color'])
+    default_button_border_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['default_button_border_color'])
+    default_button_inactive_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['default_button_inactive_color'])
+    default_button_inactive_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['default_button_inactive_text_color'])
+    default_button_inactive_border_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['default_button_inactive_border_color'])
 
-    primary_button_color = models.CharField(max_length=10, default="#ffffff")
-    primary_button_text_color = models.CharField(max_length=10, default="#0b9bc1")
-    primary_button_border_color = models.CharField(max_length=10, default="#0b9bc1")
-    primary_button_inactive_color = models.CharField(max_length=10, default="#0b9bc1")
-    primary_button_inactive_text_color = models.CharField(max_length=10, default="#000000")
-    primary_button_inactive_border_color = models.CharField(max_length=10, default="#0b9bc1")
+    primary_button_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['primary_button_color'])
+    primary_button_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['primary_button_text_color'])
+    primary_button_border_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['primary_button_border_color'])
+    primary_button_inactive_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['primary_button_inactive_color'])
+    primary_button_inactive_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['primary_button_inactive_text_color'])
+    primary_button_inactive_border_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['primary_button_inactive_border_color'])
 
-    error_box_background_color = models.CharField(max_length=10, default="#ffffff")
-    error_text_color = models.CharField(max_length=10, default="#cc3333")
+    error_box_background_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['error_box_background_color'])
+    error_text_color = models.CharField(max_length=10, default=WEB_THEME_CONSTANTS['error_text_color'])
 
 
 class Organization(models.Model):

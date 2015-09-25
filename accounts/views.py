@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.db.models import Q
 
+from accounts.constants import *
 from accounts.forms import *
 from maps.models import *
 from maps.views import custom_login_required
@@ -509,6 +510,59 @@ users_enable_view = UserActivatedView.as_view()
 
 class ThemeView(View):
 
+    def _reset_web_theme(self, theme):
+        theme.logo = None
+        theme.background_color = WEB_THEME_CONSTANTS['background_color']
+        theme.text_color = WEB_THEME_CONSTANTS['text_color']
+
+        theme.header_background_color = WEB_THEME_CONSTANTS['header_background_color']
+        theme.header_text_color = WEB_THEME_CONSTANTS['header_text_color']
+
+        theme.menu_background_color = WEB_THEME_CONSTANTS['menu_background_color']
+        theme.menu_text_color = WEB_THEME_CONSTANTS['menu_text_color']
+
+        theme.footer_background_color = WEB_THEME_CONSTANTS['footer_background_color']
+        theme.footer_text_color = WEB_THEME_CONSTANTS['footer_text_color']
+
+        theme.link_active_color = WEB_THEME_CONSTANTS['link_active_color']
+        theme.link_active_hover_color = WEB_THEME_CONSTANTS['link_active_hover_color']
+        theme.link_inactive_color = WEB_THEME_CONSTANTS['link_inactive_color']
+        theme.link_inactive_hover_color = WEB_THEME_CONSTANTS['link_inactive_hover_color']
+
+        theme.default_button_color = WEB_THEME_CONSTANTS['default_button_color']
+        theme.default_button_text_color = WEB_THEME_CONSTANTS['default_button_text_color']
+        theme.default_button_border_color = WEB_THEME_CONSTANTS['default_button_border_color']
+        theme.default_button_inactive_color = WEB_THEME_CONSTANTS['default_button_inactive_color']
+        theme.default_button_inactive_text_color = WEB_THEME_CONSTANTS['default_button_inactive_text_color']
+        theme.default_button_inactive_border_color = WEB_THEME_CONSTANTS['default_button_inactive_border_color']
+
+        theme.primary_button_color = WEB_THEME_CONSTANTS['primary_button_color']
+        theme.primary_button_text_color = WEB_THEME_CONSTANTS['primary_button_text_color']
+        theme.primary_button_border_color = WEB_THEME_CONSTANTS['primary_button_border_color']
+        theme.primary_button_inactive_color = WEB_THEME_CONSTANTS['primary_button_inactive_color']
+        theme.primary_button_inactive_text_color = WEB_THEME_CONSTANTS['primary_button_inactive_text_color']
+        theme.primary_button_inactive_border_color = WEB_THEME_CONSTANTS['primary_button_inactive_border_color']
+
+        theme.error_box_background_color = WEB_THEME_CONSTANTS['error_box_background_color']
+        theme.error_text_color = WEB_THEME_CONSTANTS['error_text_color']
+        theme.save()
+
+        return WebThemeForm(instance=theme)
+
+    def _reset_mobile_theme(self, theme):
+        theme.logo = None
+        theme.background_color = MOBILE_THEME_CONSTANTS['background_color']
+        theme.navigation_color = MOBILE_THEME_CONSTANTS['navigation_color']
+
+        theme.active_button_color = MOBILE_THEME_CONSTANTS['active_button_color']
+        theme.active_button_text_color = MOBILE_THEME_CONSTANTS['active_button_text_color']
+
+        theme.inactive_button_color = MOBILE_THEME_CONSTANTS['inactive_button_color']
+        theme.inactive_button_text_color = MOBILE_THEME_CONSTANTS['inactive_button_text_color']
+        theme.save()
+
+        return MobileThemeForm(instance=theme)
+
     @method_decorator(login_required)
     def get(self, request, pk=None, *args, **kwargs):
         if not request.user.user_profiles.user_role == "super_admin":
@@ -560,6 +614,8 @@ class ThemeView(View):
                 web_theme_form.save()
             else:
                 print web_theme_form.errors
+        elif request.POST.has_key('reset_web_theme'):
+            context['web_theme_form'] = self._reset_web_theme(organization.web_theme)
         else:
             context['web_theme_form'] = WebThemeForm(instance=organization.web_theme)
 
@@ -571,6 +627,8 @@ class ThemeView(View):
                 mobile_theme_form.save()
             else:
                 print mobile_theme_form.errors
+        elif request.POST.has_key('mobile_web_theme'):
+            context['mobile_theme_form'] = self._reset_mobile_theme(organization.theme)
         else:
             context['mobile_theme_form'] = MobileThemeForm(instance=organization.theme)
 
