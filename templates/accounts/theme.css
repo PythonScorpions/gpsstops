@@ -62,6 +62,17 @@ body {
     background: {{theme.header_background_color}} !important;
     color: {{theme.header_text_color}} !important;
 }
+.mobile-menu-inner {
+    background: {{theme.menu_background_color}} !important;
+    color: {{theme.menu_text_color}} !important;
+}
+.mobile-menu-inner a {
+    color: {{theme.menu_text_color}} !important;
+}
+.mobile-nav ul li {
+    border-botton: 1px solid {{theme.menu_text_color}} !important;
+}
+
 .page {
     background: {{theme.background_color}} !important;
     color: {{theme.text_color}} !important;

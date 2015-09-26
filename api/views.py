@@ -700,6 +700,8 @@ class Events(APIView):
             temp['class'] = 'event-warning appointment'
             temp['start'] = str((int(appointment.start_datetime.strftime("%s")) * 1000)-19800000)
             temp['appointment'] = 'true'
+            if appointment.created_by != appointment.user:
+                temp['class'] = 'event-info custom-event-assigned event-appointment'
             events.append(temp)
 
 
@@ -713,6 +715,8 @@ class Events(APIView):
             if task.due_date:
                 temp['start'] = str((int(task.due_date.strftime("%s")) * 1000)-19800000)
             temp['task'] = 'true'
+            if task.created_by != task.user:
+                temp['class'] = 'event-info custom-event-assigned event-task'
             events.append(temp)
 
         return Response({'success': 1, 'result': events})
