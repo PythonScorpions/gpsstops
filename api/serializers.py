@@ -11,7 +11,7 @@ from django.db.models import Q
 from rest_framework import serializers
 from rest_framework import exceptions, serializers
 
-from accounts.models import UserProfiles
+from accounts.models import UserProfiles, Customer
 from appointments.models import *
 from maps.models import *
 
@@ -536,3 +536,10 @@ class UsersSerializer(serializers.Serializer):
 
         chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
         return "".join([chars[ord(c) % len(chars)] for c in urandom(length)])
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Customer
+        write_only_fields = ('token',)

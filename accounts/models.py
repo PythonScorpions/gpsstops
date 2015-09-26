@@ -76,7 +76,37 @@ class Company(models.Model):
 
 
 class Customer(models.Model):
-    name = models.CharField(max_length=100, blank=True, null=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    company_name = models.CharField(max_length=100, blank=True, null=True)
+    address1 = models.CharField(max_length=400)
+    address2 = models.CharField(max_length=400, blank=True, null=True)
+    near_by_location = models.CharField(max_length=100, blank=True, null=True)
+    near_by_location_lat = models.FloatField(default=0.0)
+    near_by_location_lng = models.FloatField(default=0.0)
+    country_name = models.CharField(max_length=100)
+    country_code = models.CharField(max_length=10)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=30)
+    mobile_number = models.CharField(max_length=30)
+    email = models.EmailField(max_length=100)
+    password = models.CharField(max_length=100)
+    token = models.CharField('Token', max_length=200, blank=True, null=True)
+
+    def __unicode__(self):
+        return u'%s' % self.user
+
+    def random_key(self):
+        alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
+        return ''.join([random.choice(alphabet) for x in xrange(30)])
+
+    def save(self, *args, **kwargs):
+        super(Customer, self).save(*args, **kwargs)
+        if not self.token:
+            self.token = self.random_key()
+        super(Customer, self).save(*args, ** kwargs)
 
 
 class Theme(models.Model):

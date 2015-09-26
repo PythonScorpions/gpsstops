@@ -286,7 +286,7 @@ class ForgotPassword(APIView):
                 })
 
             send_mail(
-                '[%s] %s' % (site, 'New Contactus Request'),
+                '[%s] %s' % (site, 'Forget Password Request'),
                 t.render(c),
                 settings.EMAIL_HOST_USER,
                 [email.email],
@@ -1159,3 +1159,126 @@ class ThemeView(APIView):
                     'message':'No theme set yet.'})
         else:
             return Response({'code':0, 'status':'error', 'message':form.errors})
+
+
+class CustomerPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        if Customer.objects.filter(email=request.data['email']):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Email Already Exist'})
+        else:
+            # try:
+            customer_data = Customer(
+                first_name=request.data['first_name'], last_name=request.data['last_name'],
+                address1=request.data['address1'], title=request.data['title'],
+                city=request.data['city'], state=request.data['state'],
+                zip_code=request.data['zip_code'], country_name=request.data['country_name'],
+                country_code=request.data['country_code'], mobile_number=request.data['mobile_number'],
+                email=request.data['email'],
+                password=request.data['password'])
+            alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
+            customer_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
+            if 'company_name' in request.data: customer_data.company_name = request.data['company_name']
+            if 'address2' in request.data: customer_data.address2 = request.data['address2']
+            if 'near_by_location' in request.data: customer_data.near_by_location = request.data['company_name']
+            if 'near_by_location_lat' in request.data:
+                customer_data.near_by_location_lat = request.data['near_by_location_lat']
+            if 'near_by_location_lng' in request.data:
+                customer_data.near_by_location_lng = request.data['near_by_location_lng']
+            customer_data.save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'You are registered successfully'})
+            # except:
+            #     return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class CustomerProfile(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            customer_data = Customer.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'message': 'Customer does not exist with this id',
+                             'Data': 'Null'})
+        serializer = CustomerSerializer(customer_data)
+        return Response({'code': 1, 'message': 'Customer profile success',
+                         'Data': serializer.data})
+
+
+class CustomerUpdateProfile(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not Customer.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Customer does not Exist'})
+        else:
+            try:
+                customer_data = Customer.objects.get(id=int(self.kwargs['pk']))
+                customer_data.first_name = request.data['first_name']
+                customer_data.last_name = request.data['last_name']
+                customer_data.title = request.data['title']
+                customer_data.email = request.data['email']
+                customer_data.address1 = request.data['address1']
+                customer_data.city = request.data['city']
+                customer_data.state = request.data['state']
+                customer_data.zip_code = request.data['zip_code']
+                customer_data.country_name = request.data['country_name']
+                customer_data.country_code = request.data['country_code']
+                customer_data.mobile_number = request.data['mobile_number']
+                if 'company_name' in request.data:
+                    customer_data.company_name = request.data['company_name']
+                if 'address2' in request.data:
+                    customer_data.address2 = request.data['address2']
+                if 'near_by_location' in request.data:
+                    customer_data.near_by_location = request.data['near_by_location']
+                if 'near_by_location_lat' in request.data:
+                    customer_data.near_by_location_lat = request.data['near_by_location_lat']
+                if 'near_by_location_lng' in request.data:
+                    customer_data.near_by_location_lng = request.data['near_by_location_lng']
+                if 'password' in request.data:
+                    customer_data.password = request.data['password']
+                customer_data.save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Customer profile updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class CustomerLogin(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        try:
+            customer_data = Customer.objects.get(email=request.data['email'], password=request.data['password'])
+            serializer = CustomerSerializer(customer_data)
+            return Response({'code': 1, 'message': 'Customer profile success',
+                             'Data': serializer.data})
+        except:
+            return Response({'code': 0, 'message': 'Wrong Credentials',
+                             'Data': 'Null'})
+
+
+class CustomerPassword(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        print "coming here"
+        customer_email = request.data['email']
+        if Customer.objects.filter(email=customer_email).exists():
+            customer_data = Customer.objects.get(email=request.POST['email'])
+
+            site = settings.SERVER_URL
+            t = loader.get_template('customer_password')
+            c = Context({'name': customer_data.first_name, 'email': customer_email, 'site': site,
+                         'token': customer_data.token})
+
+            send_mail(
+                '[%s] %s' % (site, 'Customer Forget Password Request'),
+                t.render(c),
+                settings.EMAIL_HOST_USER,
+                [customer_email],
+                fail_silently=False
+            )
+            return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
+        else:
+            return Response({'code': 0, 'status': 200, 'message': 'Customer does not exist'})
