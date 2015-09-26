@@ -104,7 +104,9 @@ body {
     margin-top: -0.3rem;
     margin-right: 0rem;
 }
-.page .left-map input,
+.page .left-map input[type=text],
+.page .left-map input[type=number],
+.page .left-map input[type=search],
 .page .left-map select {
     border-radius: 0;
 }
