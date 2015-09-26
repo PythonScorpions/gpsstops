@@ -196,6 +196,25 @@ class ResetPassword(TemplateView):
         return render_to_response(self.template_name, context_instance=RequestContext(request),)
 
 
+class CustomerResetPassword(TemplateView):
+
+    template_name = 'change-password.html'
+    template2_name = 'index.html'
+
+    def post(self, request, *args, **kwargs):
+        print "yes"
+        customer_data = Customer.objects.get(token=kwargs['key'])
+        if customer_data and request.POST['password1'] == request.POST['password2']:
+            customer_data = Customer.objects.get(id=int(customer_data.id))
+            customer_data.password = request.POST['password2']
+            customer_data.save()
+            print "yes 2"
+            return render_to_response(self.template2_name, context_instance=RequestContext(request),)
+        else:
+            messages.success(request, 'Please Make Sure Two password Fields are Same')
+        return render_to_response(self.template_name, context_instance=RequestContext(request),)
+
+
 class UpdateProfile(UpdateView):
     template_name = 'my-account.html'
     form_class = ProfileUpdateForm

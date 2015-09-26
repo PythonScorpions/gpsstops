@@ -37,5 +37,12 @@ urlpatterns = patterns("api.views",
 
     url(r'^', include(router.urls)),
     url(r'agenda/$', AgendaView.as_view(), name='agendas'),
-    url(r'theme/$', ThemeView.as_view(), name='theme_view')
+    url(r'theme/$', ThemeView.as_view(), name='theme_view'),
+
+    url(r'customer_post/$', CustomerPost.as_view(), name='customer-post'),
+    url(r'customer_profile/(?P<pk>[a-zA-Z0-9]+)', CustomerProfile.as_view(), name='customer-profile'),
+    url(r'customer_update_profile/(?P<pk>[a-zA-Z0-9]+)', CustomerUpdateProfile.as_view(),
+        name='customer-update-profile'),
+    url(r'customer_login/$', CustomerLogin.as_view(), name='customer-login'),
+    url(r'customer_forget_password$', CustomerPassword.as_view(), name='customer-forgot-password'),
 )
