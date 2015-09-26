@@ -627,7 +627,7 @@ class ThemeView(View):
                 mobile_theme_form.save()
             else:
                 print mobile_theme_form.errors
-        elif request.POST.has_key('mobile_web_theme'):
+        elif request.POST.has_key('reset_mobile_theme'):
             context['mobile_theme_form'] = self._reset_mobile_theme(organization.theme)
         else:
             context['mobile_theme_form'] = MobileThemeForm(instance=organization.theme)
