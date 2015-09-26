@@ -61,40 +61,44 @@
                                         <!-- form start -->
                                         <form class="manual_view" name="create_route_form" action="{% url 'create_route' %}" method="POST">
                                         {% csrf_token %}
-                                            <h3>Route / Trip Plan</h3>
-                                            <a href="/route/add/" class="btn btn-primary margin-top15" role="button">Add New Route</a>
-                                            <div>&nbsp;</div>
-
-                                            {% if user.user_profiles.user_role == "super_admin" or user.user_profiles.user_role == "admin" %}
-                                            <div class="field">
-                                                <label>Assign to:</label>
-                                                {{form.user}}
+                                            <h3>
+                                                Route / Trip Plan
+                                                <a href="/route/add/" class="btn btn-primary margin-top15" role="button">Add New Route</a>
+                                            </h3>
+                                            <div>
+                                                <span class="error_msg" style="display:none; color: red; font-size: 13px;">
+                                                   One of your Locations is Invalid. Please Enter Valid Location
+                                                </span>
                                             </div>
-                                            <div class="field">
-                                                <label>Is editable:</label>
-                                                {{form.is_editable}}
-                                            </div>
-                                            {% endif %}
-
-                                            <span class="error_msg" style="display:none; color: red; font-size: 13px;">
-                                               One of your Locations is Invalid. Please Enter Valid Location
-                                            </span>
-
                                             <div class="cl"></div>
-                                            <div class="title">
-                                            <input type="text" class="form-control" name="trip_title" value="" id="trip_title"
-                                                           placeholder="Give it a name" required="true"/>
-                                            <span class="error_title" style="display:none; color: red; font-size: 13px;">
-                                               Please give it a name
-                                            </span>
-                                            <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control"
-                                                        placeholder="Date / Time"/>
-                                            <span class="error_datetime" style="display:none; color: red; font-size: 13px;">
-                                               Please enter Date / Time
-                                            </span>
-                                            </div>
-                                            <div>&nbsp;</div>
 
+                                            <div class="info-input">
+                                                <div class="field">
+                                                    <label>Name</label>
+                                                    <input type="text" class="form-control" name="trip_title" value="" id="trip_title" placeholder="Give it a name" required="true"/>
+                                                    <span class="error_title" style="display:none; color: red; font-size: 13px;">Please give it a name</span>
+                                                </div>
+                                                <div class="field">
+                                                    <label>Schedule On</label>
+                                                    <input type="text" required="true" name="trip_datetime" id="datepicker" class="form-control" placeholder="Date / Time"/>
+                                                    <span class="error_datetime" style="display:none; color: red; font-size: 13px;">Please enter Date / Time</span>
+                                                </div>
+                                                {% if user.user_profiles.user_role == "super_admin" or user.user_profiles.user_role == "admin" %}
+                                                <div class="field">
+                                                    <label>Assign to:</label>
+                                                    <div>
+                                                        {{form.user}}
+                                                    </div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>Is editable:</label>
+                                                    {{form.is_editable}}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <!-- <div class="title"></div> -->
+
+                                            <h5>Stops</h5>
                                             <ul id="myList">
                                                 <li class="title loc">
 
@@ -214,6 +218,8 @@
             formatTime:'g:i A',
             format: 'M d,Y h:i A'
         });
+
+        $('input, select').addClass('form-control');
     })();
 </script>
 

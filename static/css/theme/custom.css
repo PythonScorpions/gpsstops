@@ -91,6 +91,53 @@ body {
     border: 2px solid;
     width: 15rem;
 }
+.page .left-map h3 {
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 2rem;
+    font-weight: lighter;
+    letter-spacing: 0;
+    padding-bottom: 1.2rem;
+    margin: 0rem 0 2rem;
+}
+.page .left-map h3 .btn {
+    float: right;
+    margin-top: -0.3rem;
+    margin-right: 0rem;
+}
+.page .left-map input,
+.page .left-map select {
+    border-radius: 0;
+}
+.page .left-map h5 {
+    margin: 1.2rem 1rem 0;
+    font-size: 1.7rem;
+    font-weight: lighter;
+    letter-spacing: 0;
+}
+.page .left-map .info-input {
+    border-bottom: 1px solid #f0f0f0;
+}
+.page .left-map .info-input .field {
+    margin-bottom: 2rem;
+}
+.page .left-map .info-input .field label {
+    font-weight: normal;
+    font-size: 1.4rem;
+}
+.page .left-map .info-input .field span.error_title {
+    float: none;
+}
+.page .left-map .info-input .field input[type=checkbox] {
+    box-shadow: none;
+    float: right;
+    display: inline-block;
+    margin-left: 1rem;
+    margin-top: -1rem;
+    width: auto;
+}
+.page .left-map #myList {
+    padding: 0;
+}
 
 .calendar .btn {
     background: #24a9e1 none repeat scroll 0 0;
