@@ -1171,29 +1171,29 @@ class CustomerPost(APIView):
         if Customer.objects.filter(email=request.data['email']):
             return Response({'code': 0, 'Data': 'Null', 'message': 'Email Already Exist'})
         else:
-            # try:
-            customer_data = Customer(
-                first_name=request.data['first_name'], last_name=request.data['last_name'],
-                address1=request.data['address1'], title=request.data['title'],
-                city=request.data['city'], state=request.data['state'],
-                zip_code=request.data['zip_code'], country_name=request.data['country_name'],
-                country_code=request.data['country_code'], mobile_number=request.data['mobile_number'],
-                email=request.data['email'],
-                password=request.data['password'])
-            alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
-            customer_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
-            if 'company_name' in request.data: customer_data.company_name = request.data['company_name']
-            if 'address2' in request.data: customer_data.address2 = request.data['address2']
-            if 'near_by_location' in request.data: customer_data.near_by_location = request.data['company_name']
-            if 'near_by_location_lat' in request.data:
-                customer_data.near_by_location_lat = request.data['near_by_location_lat']
-            if 'near_by_location_lng' in request.data:
-                customer_data.near_by_location_lng = request.data['near_by_location_lng']
-            customer_data.save()
-            return Response({'code': 1, 'Data': 'Null',
-                             'message': 'You are registered successfully'})
-            # except:
-            #     return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+            try:
+                customer_data = Customer(
+                    first_name=request.data['first_name'], last_name=request.data['last_name'],
+                    address1=request.data['address1'], title=request.data['title'],
+                    city=request.data['city'], state=request.data['state'],
+                    zip_code=request.data['zip_code'], country_name=request.data['country_name'],
+                    country_code=request.data['country_code'], mobile_number=request.data['mobile_number'],
+                    email=request.data['email'],
+                    password=request.data['password'])
+                alphabet = [c for c in string.letters + string.digits if ord(c) < 128]
+                customer_data.token = ''.join([random.choice(alphabet) for x in xrange(30)])
+                if 'company_name' in request.data: customer_data.company_name = request.data['company_name']
+                if 'address2' in request.data: customer_data.address2 = request.data['address2']
+                if 'near_by_location' in request.data: customer_data.near_by_location = request.data['company_name']
+                if 'near_by_location_lat' in request.data:
+                    customer_data.near_by_location_lat = request.data['near_by_location_lat']
+                if 'near_by_location_lng' in request.data:
+                    customer_data.near_by_location_lng = request.data['near_by_location_lng']
+                customer_data.save()
+                return Response({'code': 1, 'Data': 'Null',
+                                 'message': 'You are registered successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
 
 
 class CustomerProfile(APIView):
