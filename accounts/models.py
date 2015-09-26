@@ -78,6 +78,7 @@ class Company(models.Model):
 
 
 class Customer(models.Model):
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
