@@ -662,7 +662,7 @@ class CssThemeView(View):
             if request.user.user_profiles.user_role == "super_admin":
                 organization = Organization.objects.get(super_admin=request.user)
             elif request.user.user_profiles.user_role == "admin":
-                organization = Organization.objects.get(admins=request.user)
+                organization = Organization.objects.get(super_admin=request.user)
             elif request.user.user_profiles.user_role == "employee":
                 organization = Organization.objects.get(employees=request.user)
         except:

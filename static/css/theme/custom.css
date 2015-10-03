@@ -141,6 +141,18 @@ body {
     padding: 0;
 }
 
+.page #aboutUs h2 {
+    font-weight: lighter;
+}
+.page #aboutUs p {
+    font-family: "Lato", sans-serif;
+    font-weight: normal;
+    /*font-size: 2rem;*/
+}
+.page #aboutUs h4 {
+    margin-bottom: 1rem;
+}
+
 .calendar .btn {
     background: #24a9e1 none repeat scroll 0 0;
     border: medium none;
