@@ -37,6 +37,7 @@ body {
 .page {
     /*float: left;
     margin-top: -3.2rem;*/
+    min-height: 70vh;
 }
 .page #login-block .input-box {
     text-align: right;
@@ -141,16 +142,22 @@ body {
     padding: 0;
 }
 
-.page #aboutUs h2 {
+.page .static h2 {
     font-weight: lighter;
 }
-.page #aboutUs p {
+.page .static p {
     font-family: "Lato", sans-serif;
     font-weight: normal;
     /*font-size: 2rem;*/
 }
-.page #aboutUs h4 {
+.page .static h4 {
     margin-bottom: 1rem;
+}
+
+.page .download a img {
+    width: auto;
+    height: 5rem;
+    margin: 1rem;
 }
 
 .calendar .btn {
