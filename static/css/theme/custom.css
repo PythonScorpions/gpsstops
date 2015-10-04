@@ -150,6 +150,9 @@ body {
     font-weight: normal;
     /*font-size: 2rem;*/
 }
+.page .static p span {
+    color: #03c;
+}
 .page .static h4 {
     margin-bottom: 1rem;
 }

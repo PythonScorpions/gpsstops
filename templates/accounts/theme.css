@@ -77,6 +77,9 @@ body {
     background: {{theme.background_color}} !important;
     color: {{theme.text_color}} !important;
 }
+.page .static p span {
+    color: {{theme.link_active_color}} !important;
+}
 .footer {
     background: {{theme.footer_background_color}} !important;
     color: {{theme.footer_text_color}} !important;
