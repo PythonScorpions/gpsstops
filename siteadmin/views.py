@@ -128,11 +128,12 @@ class HelpSectionEditView(View):
     def get(self, request, pk=None, *args, **kwargs):
         if request.user.is_active and request.user.is_authenticated and \
             request.user.is_superuser is True:
+            help_section = None
             if pk:
                 try:
                     help_section = HelpSection.objects.get(pk=pk)
                 except:
-                    help_section = None
+                    pass
 
             if help_section:
                 form = HelpSectionForm(instance=help_section)
@@ -145,11 +146,12 @@ class HelpSectionEditView(View):
     def post(self, request, pk=None, *args, **kwargs):
         if request.user.is_active and request.user.is_authenticated and \
             request.user.is_superuser is True:
+            help_section = None
             if pk:
                 try:
                     help_section = HelpSection.objects.get(pk=pk)
                 except:
-                    help_section = None
+                    pass
 
             if help_section:
                 form = HelpSectionForm(request.POST, instance=help_section)
