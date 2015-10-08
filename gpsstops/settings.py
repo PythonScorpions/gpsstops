@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     'django_cron',
 
     # 'django_wysiwyg',
-    'ckeditor',
+    # 'ckeditor',
 
     'maps',
     'appointments',
