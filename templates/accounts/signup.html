@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include "logo_account.html" %}
+<div class="contan-eria subscription">
+  <div class="container">
+    <h2>Sign Up</h2>
+    <div class="row registration-steps hidden-xs hidden-sm">
+      <div class="col col-md-2 col-lg-2">
+        <div class="row">
+          <div class="col col-md-2 col-lg-2">1.</div>
+          <div class="col col-md-10 col-lg-10">Select Subscription Plan</div>
+        </div>
+      </div>
+      <div class="col col-md-2 col-lg-2">
+        <div class="row">
+          <div class="col col-md-2 col-lg-2">2.</div>
+          <div class="col col-md-10 col-lg-10">Terms &amp; Services</div>
+        </div>
+      </div>
+      <div class="col col-md-2 col-lg-2">
+        <div class="row">
+          <div class="col col-md-2 col-lg-2">3.</div>
+          <div class="col col-md-10 col-lg-10">Fill Details</div>
+        </div>
+      </div>
+      <div class="col col-md-2 col-lg-2">
+        <div class="row">
+          <div class="col col-md-2 col-lg-2">4.</div>
+          <div class="col col-md-10 col-lg-10">Payment</div>
+        </div>
+      </div>
+      <div class="col col-md-2 col-lg-2">
+        <div class="row">
+          <div class="col col-md-2 col-lg-2">5.</div>
+          <div class="col col-md-10 col-lg-10">Completion</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contan-eria">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="form">
+                    <h3>Sign up now</h3>
+
+                    <form id="form" name="form" method="post" action="/signup">
+                    {% csrf_token %}
+                        {{ form.first_name }}{{ form.first_name.errors }}
+                        {{ form.address }}{{ form.address.errors }}
+                        {{ form.city }}{{ form.city.errors }}
+                        {{ form.state }}{{ form.state.errors }}
+                        {{ form.zip_code }}{{ form.zip_code.errors }}
+                        {{ form.country}}{{ form.country.errors }}
+                        {{ form.phone_number }}{{ form.phone_number.errors }}
+                        {{ form.email }}{{ form.email.errors }}
+                        {{ form.password1 }}{{ form.password1.errors }}
+                        {{ form.password2 }}{{ form.password2.errors }}
+                        {{ form.occupation }}{{ form.occupation.errors }}
+                        {{ form.company_name }}{{ form.company_name.errors }}
+
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div role="tabpanel">
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li role="presentation" class="active presentation2">
+                            <a href="#home" class="right-tab" aria-controls="home" role="tab"
+                               data-toggle="tab" aria-expanded="true">Pricing Plans
+                            </a>
+                        </li>
+                        <li role="presentation" class="presentation1">
+                            <a href="#profile" class="right-tab" aria-controls="profile" role="tab"
+                               data-toggle="tab" aria-expanded="false">Tier 1
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div class="pricing">
+                                <ul>
+                                    <li><span>Sync desktop with mobile app</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Unlimited destinations</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>Fully functioning googe maps</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Turm by turn voice navigation</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>Off-linestep by step directions</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Auto sync desktop with mobile app</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>GPS location in real-time</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Mobile App Lock (what's this)</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>Free Unlimited Tech Support &amp; Release</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Monthly Price</span>
+                                        <small>Free</small>
+                                    </li>
+                                    <li class="color"><span>&nbsp;</span>
+                                        <small class="submit-bg">
+                                            <input type="submit" class="btn btn-primary submit-buttun buttun" value="Submit" />
+                                        </small>
+                                    </li>
+                                    </form>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="profile">
+                            <div class="pricing">
+                                <ul>
+                                    <li><span>Sync desktop with mobile app</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Unlimited destinations</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>Fully functioning googe maps</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Turm by turn voice navigation</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>Off-linestep by step directions</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Auto sync desktop with mobile app</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>GPS location in real-time</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Mobile App Lock (what's this)</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li><span>Free Unlimited Tech Support &amp; Release</span>
+                                        <small>
+                                            <img width="24" height="22" alt="" src="{{ STATIC_URL }}images/icon.jpg">
+                                        </small>
+                                    </li>
+                                    <li class="color"><span>Monthly Price</span>
+                                        <small>Free</small>
+                                    </li>
+                                    <li class="color"><span>&nbsp;</span>
+                                        <small class="submit-bg">
+                                            <a href="email.html" class="btn btn-primary submit-buttun buttun" type="button">Sbumit</a>
+                                        </small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,10 +1,15 @@
+'''
+'''
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView, UpdateView, View
 from django.shortcuts import render_to_response, redirect, render
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
+
 from accounts.models import *
+from siteadmin.forms import *
+from siteadmin.models import *
 
 
 def admin_login_required(f):
@@ -105,3 +110,27 @@ class DisableUser(View):
         profile_data.admin_status = 'disabled'
         profile_data.save()
         return HttpResponse('success')
+
+
+class HelpSection(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and request.user.is_superuser is True:
+            return render(request, "siteadmin/help_section.html")
+        return redirect("/admin/")
+help_section_view = HelpSection.as_view()
+
+
+class HelpSectionEdit(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            form = HelpSectionForm()
+            context_data = {'form':form}
+            return render(request, "siteadmin/help_section_edit.html", context_data)
+        return redirect("/admin/")
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and request.user.is_superuser is True:
+            return render(request, "siteadmin/help_section_edit.html")
+        return redirect("/admin/")
+edit_help_section_view = HelpSectionEdit.as_view()

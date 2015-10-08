@@ -142,7 +142,7 @@ body {
     padding: 0;
 }
 
-.page .static h2 {
+.page h2 {
     font-weight: lighter;
 }
 .page .static p {
@@ -162,6 +162,8 @@ body {
     height: 5rem;
     margin: 1rem;
 }
+
+.page .subscription-page {}
 
 .calendar .btn {
     background: #24a9e1 none repeat scroll 0 0;

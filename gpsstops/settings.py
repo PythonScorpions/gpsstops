@@ -51,9 +51,14 @@ INSTALLED_APPS = (
 
     'django_cron',
 
+    # 'django_wysiwyg',
+    'ckeditor',
+
     'maps',
     'appointments',
-    'custom_forms'
+    'custom_forms',
+
+    'siteadmin',
 
     # 'corsheaders',
 )
@@ -184,10 +189,11 @@ EMAIL_PORT = 587
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# STATICFILES_DIRS = (
+#     STATIC_ROOT,
+# )
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -237,6 +243,20 @@ CRON_CLASSES = [
 ]
 
 SERVER_URL = 'http://bennyapp.com'
+
+# DJANGO_WYSIWYG_FLAVOR = "ckeditor"
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ]
+    }
+}
 
 try:
     from local_settings import *

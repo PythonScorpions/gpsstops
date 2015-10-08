@@ -26,13 +26,14 @@ class IndexView(View):
     template_name = 'index.html'
 
     def get(self, request, *args, **kwargs):
-
         if request.user.is_authenticated():
             today = datetime.date.today()
             today_routes = Route.objects.filter(user=request.user)
             final_routes = False
             for route in today_routes:
-                if route.trip_datetime.day == today.day and route.trip_datetime.year == today.year and route.trip_datetime.month == today.month:
+                if route.trip_datetime.day == today.day and \
+                    route.trip_datetime.year == today.year and \
+                        route.trip_datetime.month == today.month:
                     final_routes = True
                     break
 
@@ -40,8 +41,43 @@ class IndexView(View):
                 url_to_direct = '/maps/routes/'
             else:
                 url_to_direct = '/route/add/'
-
         return render(request, self.template_name, locals())
+
+
+class SignUpView(View):
+    '''
+    Registers new customer
+    '''
+    template_name = 'accounts/signup.html'
+
+    def get(self, request, *args, **kwargs):
+        form = RegisterForm()
+        context_data = {'form':form}
+        return render(request, self.template_name, context_data)
+
+    def post(self, request, *args, **kwargs):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Organization Entry
+            user_obj = User.objects.get(id=user.user.id)
+            Organization(super_admin=user_obj).save()
+
+            request.session['token'] = user.token
+            message = '%s/verification/%s/' % (settings.SERVER_URL, user.token)
+            print user.user.email
+
+            t = loader.get_template('verification.txt')
+            c = Context({'varification_link': message})
+            send_mail('Welcome to gpsstops.com', t.render(c),
+                settings.EMAIL_HOST_USER, [str(user.user.email)],
+                fail_silently=False)
+            print "yes sent"
+            return redirect('email-sent')
+        else:
+            print "errors", form.errors
+        return render(request, self.template_name, context_data)
+signup_view = SignUpView.as_view()
 
 
 def register(request):
