@@ -21,6 +21,6 @@ def logo(user): # Only one argument.
         pass
 
     # print organization.web_theme.logo
-    if organization == None or not organization.web_theme.logo:
+    if organization == None or organization.web_theme == None or not organization.web_theme.logo:
         return '/static/images/theme/logo.jpg'
     return '/media/' + organization.web_theme.logo.name
