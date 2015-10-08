@@ -98,21 +98,13 @@
           </tr>
         </thead>
         <tbody>
+          {% for help_section in help_sections %}
           <tr>
-            <td>Getting Started</td>
-            <td>getting-started</td>
-            <td><a href="#">Edit</a></td>
+            <td>{{help_section.title}}</td>
+            <td>{{help_section.slug}}</td>
+            <td><a href="/admin/help_section/{{help_section.id}}/edit/">Edit</a></td>
           </tr>
-          <tr>
-            <td>Getting Started</td>
-            <td>getting-started</td>
-            <td><a href="#">Edit</a></td>
-          </tr>
-          <tr>
-            <td>Getting Started</td>
-            <td>getting-started</td>
-            <td><a href="#">Edit</a></td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>

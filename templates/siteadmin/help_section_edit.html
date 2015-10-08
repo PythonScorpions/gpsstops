@@ -4,8 +4,8 @@
 {% block content %}
 <div class="container-fluid content-block">
   <h2>Create New Help Section</h2>
-  <div class="content">
-    <form method="post">
+  <div class="content row">
+    <form method="post" class="col-xs-12 col-sm-12 col-md-8 col-lg-6">{% csrf_token %}
       <div class="form-group">
         <label>Title</label>
         {{form.title}}
@@ -30,6 +30,9 @@
         <label>Order By</label>
         {{form.order_by}}
         {% if form.order_by.errors %}{{form.order_by.errors}}{% endif %}
+      </div>
+      <div class="form-group">
+        <input type="submit" value="SAVE" class="form-control btn btn-primary">
       </div>
     </form>
   </div>

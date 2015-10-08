@@ -23,7 +23,7 @@ def custom_login_required(f):
         """
            this will check user is logged in , if not it will redirect to login page
         """
-        if request.user.is_authenticated() and request.user.is_superuser is False:
+        if request.user.is_authenticated(): # and request.user.is_superuser is False:
             pass
         else:
             return render_to_response('index.html', locals(), context_instance=RequestContext(request))

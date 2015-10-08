@@ -112,25 +112,55 @@ class DisableUser(View):
         return HttpResponse('success')
 
 
-class HelpSection(View):
-    def get(self, request, *args, **kwargs):
-        if request.user.is_active and request.user.is_authenticated and request.user.is_superuser is True:
-            return render(request, "siteadmin/help_section.html")
-        return redirect("/admin/")
-help_section_view = HelpSection.as_view()
-
-
-class HelpSectionEdit(View):
+class HelpSectionView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_active and request.user.is_authenticated and \
             request.user.is_superuser is True:
-            form = HelpSectionForm()
+            context_data = {
+                'help_sections': HelpSection.objects.all()
+            }
+            return render(request, "siteadmin/help_section.html", context_data)
+        return redirect("/admin/")
+help_section_view = HelpSectionView.as_view()
+
+
+class HelpSectionEditView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            if pk:
+                try:
+                    help_section = HelpSection.objects.get(pk=pk)
+                except:
+                    help_section = None
+
+            if help_section:
+                form = HelpSectionForm(instance=help_section)
+            else:
+                form = HelpSectionForm()
             context_data = {'form':form}
             return render(request, "siteadmin/help_section_edit.html", context_data)
         return redirect("/admin/")
 
-    def post(self, request, *args, **kwargs):
-        if request.user.is_active and request.user.is_authenticated and request.user.is_superuser is True:
-            return render(request, "siteadmin/help_section_edit.html")
+    def post(self, request, pk=None, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            if pk:
+                try:
+                    help_section = HelpSection.objects.get(pk=pk)
+                except:
+                    help_section = None
+
+            if help_section:
+                form = HelpSectionForm(request.POST, instance=help_section)
+            else:
+                form = HelpSectionForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('/admin/help_section/')
+            else:
+                print form.errors
+            context_data = {'form':form}
+            return render(request, "siteadmin/help_section_edit.html", context_data)
         return redirect("/admin/")
-edit_help_section_view = HelpSectionEdit.as_view()
+edit_help_section_view = HelpSectionEditView.as_view()

@@ -6,7 +6,7 @@ from ckeditor.fields import RichTextField
 
 class HelpSection(models.Model):
     title = models.CharField(max_length=150)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     # content = models.TextField()
     content = RichTextField()
     order_by = models.IntegerField(default=0)
