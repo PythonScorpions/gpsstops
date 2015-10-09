@@ -163,6 +163,57 @@ body {
     margin: 1rem;
 }
 
+.page .help-section-block {
+    margin-bottom: 5rem;
+}
+.page .help-section-block h2 {
+    margin-top: 2rem;
+}
+.page .help-section-block .sections {
+    min-height: 500px;
+    background-color: #197095;
+    border-radius: 4px;
+    color: #fff;
+    padding: 1rem;
+    font-size: 1.8rem;
+}
+.page .help-section-block .sections .section {
+    cursor: pointer;
+    border-bottom: 1px solid #fff;
+    padding: 1rem;
+}
+.page .help-section-block .sections .section.active {
+    background-color: #fff;
+    border-radius: 4px;
+    color: #197095;
+}
+.page .help-section-block .section-content {}
+.page .help-section-block .section-content h4,
+.modal-body.section-content h4 {
+    margin-bottom: 0.5rem;
+}
+.page .help-section-block .section-content .slug,
+.modal-body.section-content .slug {
+    font-size: 1.2rem;
+}
+.page .help-section-block .section-content .content,
+.modal-body.section-content .content {
+    margin: 2rem 0;
+}
+.page .help-section-block .section-content .content h5,
+.modal-body.section-content .content h5 {
+    margin-bottom: 0.5rem;
+    font-weight: normal;
+    font-size: 1.7rem;
+    letter-spacing: 0px;
+}
+.page .help-section-block .section-content .content .content-info,
+.modal-body.section-content .content .content-info {
+    border: 1px solid #bbb;
+    padding: 1rem;
+}
+
+
 .page .subscription-page {}
 
 .calendar .btn {
@@ -376,4 +427,8 @@ body {
 .colorpicker-custom .colorpicker-color,
 .colorpicker-custom .colorpicker-color div{
     height: 30px;
+}
+
+.modal-dialog {
+    z-index: 100000;
 }

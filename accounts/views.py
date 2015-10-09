@@ -12,11 +12,13 @@ from django.views.generic import TemplateView, UpdateView, View
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.db.models import Q
+from django.http import HttpResponse
 
 from accounts.constants import *
 from accounts.forms import *
 from maps.models import *
 from maps.views import custom_login_required
+from siteadmin.models import *
 
 from os import urandom
 import datetime, random, string
@@ -710,3 +712,28 @@ class CssThemeView(View):
         return render(request, 'accounts/theme.css',
             {'theme':organization.web_theme}, content_type='text/css')
 css_theme_view = CssThemeView.as_view()
+
+
+class HelpView(View):
+    def get(self, request, *args, **kwargs):
+        section_id = request.GET.get('section', None)
+        if section_id:
+            try:
+                section = HelpSection.objects.get(pk=section_id)
+            except:
+                section = None
+
+            if section == None:
+                try:
+                    section = HelpSection.objects.get(slug=section_id)
+                except:
+                    return HttpResponse("Couldn't find required help section.")
+
+            context_data = {'help_section':section}
+            return render(request, 'accounts/help_section.html', context_data)
+
+        help_sections = HelpSection.objects.all().order_by('order_by')
+        context_data = {'help_sections':help_sections}
+        return render(request, 'accounts/help.html', context_data)
+help_view = HelpView.as_view()
+
