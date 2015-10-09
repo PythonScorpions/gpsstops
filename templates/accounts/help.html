@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="help-section-block container">
+  <h2>Help Section</h2>
+  <div class="row">
+    <div class="col col-md-3 col-ld-3">
+      <div class="sections">
+      {% for help_section in help_sections %}
+        <div class="section" data-section="{{help_section.id}}">{{help_section.title}}</div>
+      {% endfor %}
+      </div>
+    </div>
+    <div class="col col-md-9 col-ld-9">
+      <div class="section-content">
+        <!-- <h4>{{help_sections.0.title}}</h4>
+        <div class="slug">{{help_sections.0.slug}}</div>
+        <div class="content">{{help_sections.0.content|safe}}</div> -->
+        {% with help_sections.0 as help_section %}
+        {% include "accounts/help_section.html" %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script type="text/javascript">
+$(function() {
+  $(".sections .section:first").addClass("active");
+
+  $(".sections .section").click(function() {
+    $(".sections .section").removeClass("active");
+    $(this).addClass("active");
+
+    $(".section-content").html("Loading....");
+    $.get('/help/?section=' + $(this).data('section'), function(data) {
+      if (data) {
+        $(".section-content").html(data);
+      } else {
+        $(".section-content").html("Error loading help section.");
+      }
+    });
+  });
+});
+</script>
+{% endblock extra_js %}
