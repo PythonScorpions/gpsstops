@@ -3,45 +3,223 @@
 
 {% block content %}
 {% include "logo_account.html" %}
-<div class="contan-eria subscription">
+<div class="contan-eria subscription-page">
   <div class="container">
     <h2>Sign Up</h2>
     <div class="row registration-steps hidden-xs hidden-sm">
-      <div class="col col-md-2 col-lg-2">
+      <div class="col col-md-2 col-lg-2 step active">
         <div class="row">
           <div class="col col-md-2 col-lg-2">1.</div>
-          <div class="col col-md-10 col-lg-10">Select Subscription Plan</div>
+          <div class="col col-md-10 col-lg-10">Select <br/>Subscription Plan</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2">
+      <div class="col col-md-2 col-lg-2 step done">
         <div class="row">
           <div class="col col-md-2 col-lg-2">2.</div>
           <div class="col col-md-10 col-lg-10">Terms &amp; Services</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2">
+      <div class="col col-md-2 col-lg-2 step">
         <div class="row">
           <div class="col col-md-2 col-lg-2">3.</div>
           <div class="col col-md-10 col-lg-10">Fill Details</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2">
+      <div class="col col-md-2 col-lg-2 step">
         <div class="row">
           <div class="col col-md-2 col-lg-2">4.</div>
           <div class="col col-md-10 col-lg-10">Payment</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2">
+      <div class="col col-md-2 col-lg-2 step">
         <div class="row">
           <div class="col col-md-2 col-lg-2">5.</div>
           <div class="col col-md-10 col-lg-10">Completion</div>
         </div>
       </div>
     </div>
+    <div class="registration-step registration-step-1">
+        <h2>Package Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Standard Package</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <h4>Create And Assign Multiple Users And Roles Types</h4>
+                        <p>managers, employees, customers can be grouped and targeted</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Calendar. Tasks. Contacts. Contact Groups</h4>
+                        <p>central booking updates users individual calendars and task list<br/> maintain individual contacs and gropus for easy access</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Dispatch Route Planning With Multiple Stops</h4>
+                        <p>feature-rich integrated GPS navigaion with multi-stop resequencing</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Customer Contact Forms</h4>
+                        <p>create unlimited custom forms for data collection or task assignment and completion</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Customer Account Integration</h4>
+                        <p>maintain customer account informatin, and access it in the field</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Reminders, Alerts, And Consolidated Views</h4>
+                        <p>alerts, reminders, communications, and tasks all in one place</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Brand Mobile App With Your Company Logo And Colors</h4>
+                        <p>add your logo and change the colors of your mobile app</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Mobile Store</h4>
+                        <p>upload unlimted of products and services to your mobile store<br/> separate product library allows display and no-sell feature</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Global Business Directory Listing</h4>
+                        <p>customers can find your store and informaion within the Bennyapp global directory</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Reports And Analysis Tools</h4>
+                        <p>create charts, graphs, and reports of your data with ease</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Design Custom Forms And Distribute From System</h4>
+                        <p>used for estimates, invoices, statements, etc.</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>AddOn Customizations Available</h4>
+                        <p>need more enhanced features, our platform was designed to build on it</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Unlimited Everything</h4>
+                        <p>users, downloads, custom forms, data storage, routes, store items, etc.</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>All Inclusive Mobile App</h4>
+                        <p>account creator pay only; users and customers use Bennyapp for FREE</p>
+                    </td>
+                    <td>
+                        <i class="fa fa-check-circle-o"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Choose Subscription Plan</h2>
+        <div class="plans">
+            <div class="plan">
+                <div class="field">
+                    <input type="radio" name="plan" value="monthly">
+                    <div class="title">Monthly</div>
+                    <div class="price">$100</div>
+                    <div class="info">
+                        <div class="title">Trail Period</div>
+                        <div class="value">7</div>
+                    </div>
+                    <div class="info">
+                        <div class="title">One Time Setup Fee</div>
+                        <div class="value">$0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="plan">
+                <div class="field">
+                    <input type="radio" name="plan" value="annually">
+                    <div class="title">Annually</div>
+                    <div class="old-price">$1,200</div>
+                    <div class="price">$960</div>
+                    <div class="info">
+                        <div class="title">First Year Promotional Discount</div>
+                        <div class="value">$240</div>
+                    </div>
+                    <div class="info">
+                        <div class="title">One Time Setup Fee</div>
+                        <div class="value">$0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary">NEXT</button>
+        </div>
+    </div>
   </div>
 </div>
 
-<div class="contan-eria">
+<!-- <div class="contan-eria">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -206,6 +384,6 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 {% endblock %}
