@@ -148,13 +148,15 @@ body {
 .page .static p {
     font-family: "Lato", sans-serif;
     font-weight: normal;
-    /*font-size: 2rem;*/
+    font-size: 1.4rem;
 }
 .page .static p span {
     color: #03c;
 }
 .page .static h4 {
+    font-weight: normal;
     margin-bottom: 1rem;
+    margin-top: 3rem;
 }
 
 .page .download a img {

@@ -73,6 +73,11 @@ body {
     border-botton: 1px solid {{theme.menu_text_color}} !important;
 }
 
+.help-section-handler.fa.fa-question-circle {
+    color: {{theme.primary_button_text_color}};
+    margin-left: 0.5rem;
+}
+
 .page {
     background: {{theme.background_color}} !important;
     color: {{theme.text_color}} !important;

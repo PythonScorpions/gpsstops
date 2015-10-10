@@ -342,6 +342,9 @@ class About(TemplateView):
 class LearnMore(TemplateView):
     template_name = 'learn_more.html'
 
+class FAQsView(TemplateView):
+    template_name = 'faqs.html'
+
 
 def get_users_list(user):
     if user.user_profiles.user_role == "super_admin":

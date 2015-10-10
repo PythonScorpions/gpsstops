@@ -19,5 +19,6 @@ urlpatterns = patterns('',
    url(r'contact_us/$', Contact.as_view(), name='contact'),
    url(r'about_us/$', About.as_view(), name='about'),
    url(r'learn_more/$', LearnMore.as_view(), name='learn-more'),
+   url(r'faqs/$', FAQsView.as_view(), name='faqs'),
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
