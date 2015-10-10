@@ -9,6 +9,9 @@ a:hover {
     color: {{theme.link_active_hover_color}} !important;
 }
 
+button {
+    outline: none;
+}
 button.btn.btn-default, a.btn.btn-default {
     background: {{theme.default_button_color}} !important;
     border-color: {{theme.default_button_border_color}} !important;

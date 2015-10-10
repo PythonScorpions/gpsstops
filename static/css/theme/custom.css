@@ -356,17 +356,119 @@ body {
     font-size: 1.7rem;
     color: #00A8FF;
 }
+.page .subscription-page .registration-step .confirmations {
+    margin: 0;
+}
+.page .subscription-page .registration-step .confirmations .col:first-child {
+    text-align: right;
+    padding: 0;
+}
+.page .subscription-page .registration-step .confirmations input[type=checkox] {
+    font-size: 2rem;
+}
+.page .subscription-page .registration-step .confirmations p,
+.page .subscription-page .registration-step .confirmations label {
+    font-size: 1.4rem;
+    color: #555;
+    font-weight: normal;
+}
 .page .subscription-page .registration-step .actions {
     text-align: center;
 }
 .page .subscription-page .registration-step .actions button {
-    width: 200px;
+    min-width: 200px;
 }
 
 .page .subscription-page .registration-step-2,
 .page .subscription-page .registration-step-3,
 .page .subscription-page .registration-step-4 {
     display: none;
+}
+
+.page .subscription-page .registration-step-3 form {
+    margin-bottom: 5rem;
+}
+.page .subscription-page .registration-step-3 select {
+    height: 4rem;
+}
+
+.page .subscription-page .registration-step-4 {}
+.page .subscription-page .registration-step-4 .payment {
+    margin-bottom: 5rem;
+}
+.page .subscription-page .registration-step-4 .payment h6 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    letter-spacing: 0;
+
+    margin: 3rem 0 1rem;
+}
+.page .subscription-page .registration-step-4 .payment .methods {}
+.page .subscription-page .registration-step-4 .payment .methods .method {
+    margin: 0;
+}
+.page .subscription-page .registration-step-4 .payment .methods .method .col:first-child {
+    text-align: right;
+    height: 10rem;
+    border-right: 0px solid;
+    background-color: #f0f0f0;
+    padding-top: 3rem;
+    border-radius: 5px 0 0 5px;
+}
+.page .subscription-page .registration-step-4 .payment .methods .method .col:last-child {
+    height: 10rem;
+    background-color: #f0f0f0;
+    padding: 0.5rem 1rem;
+    border-radius: 0px 5px 5px 0;
+}
+.page .subscription-page .registration-step-4 .payment .methods .method .col:last-child img {
+    height: 9rem;
+}
+
+.terms-content {
+    background-color: #fff;
+    color: #000 !important;
+    font-family: monospace;
+
+    border: 1px solid #aaa;
+    border-radius: 4px;
+
+    padding: 2rem;
+    margin-bottom: 5rem;
+
+    width: 100%;
+    height: 400px;
+    overflow: auto;
+}
+.terms-content p {
+    color: #000;
+}
+.terms h4 {
+    margin: 3rem 0rem 1rem;
+    font-size: 1.5rem;
+    font-weight: normal;
+    letter-spacing: 0;
+    color: #000;
+}
+.terms ol {
+  list-style-type: none;
+  counter-reset: item;
+}
+.terms ol > li {
+  display: table;
+  counter-increment: item;
+  margin-bottom: 1em;
+}
+.terms ol > li:before {
+  content: counters(item, ".") ". ";
+  display: table-cell;
+  padding-right: 0.6em;
+}
+.terms li ol > li {
+  margin: 0;
+}
+.terms li ol > li:before {
+  content: counters(item, ".") " ";
 }
 
 
@@ -585,4 +687,10 @@ body {
 
 .modal-dialog {
     z-index: 100000;
+}
+
+.bootbox button.btn-primary {
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    min-width: 100px;
 }

@@ -7,34 +7,34 @@
   <div class="container">
     <h2>Sign Up</h2>
     <div class="row registration-steps hidden-xs hidden-sm">
-      <div class="col col-md-2 col-lg-2 step active">
+      <div class="col col-md-2 col-lg-2 step step-1 active">
         <div class="row">
           <div class="col col-md-2 col-lg-2">1.</div>
           <div class="col col-md-10 col-lg-10">Select <br/>Subscription Plan</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2 step">
+      <div class="col col-md-2 col-lg-2 step step-2">
         <div class="row">
           <div class="col col-md-2 col-lg-2">2.</div>
           <div class="col col-md-10 col-lg-10">Terms &amp; Services</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2 step">
+      <div class="col col-md-2 col-lg-2 step step-3">
         <div class="row">
           <div class="col col-md-2 col-lg-2">3.</div>
           <div class="col col-md-10 col-lg-10">Fill Details</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2 step">
+      <div class="col col-md-2 col-lg-2 step step-4">
         <div class="row">
           <div class="col col-md-2 col-lg-2">4.</div>
           <div class="col col-md-10 col-lg-10">Payment</div>
         </div>
       </div>
-      <div class="col col-md-2 col-lg-2 step">
+      <div class="col col-md-2 col-lg-2 step step-5">
         <div class="row">
           <div class="col col-md-2 col-lg-2">5.</div>
-          <div class="col col-md-10 col-lg-10">Completion</div>
+          <div class="col col-md-10 col-lg-10">Complete</div>
         </div>
       </div>
     </div>
@@ -213,21 +213,86 @@
             </div>
         </div>
 
+        <div class="confirmations row">
+            <div class="col col-xs-2 col-sm-1 col-md-1 col-lg-1">
+                <input type="checkbox" name="confirmation" id="confirm_plan">
+            </div>
+            <div class="col col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <label for="confirm_plan">Your credit card will automatically be charged on the first day of every month after your trial period ends. To cancel service, you must email email cancel_account@bennyapp.com prior to the first day of the month (UTC-06:00) Central Time (US &amp; Canada.  Check the box indicating you agree to these terms.</label>
+            </div>
+        </div>
+
         <div class="actions">
-            <button class="btn btn-primary">NEXT</button>
+            <button class="btn btn-primary">SIGN UP</button>
         </div>
     </div>
 
     <div class="registration-step registration-step-2">
         <h2>Terms &amp; Services</h2>
+        <div class="terms">
+            <h4>Terms of Use</h4>
+            {% include 'accounts/terms_of_use.html' %}
+        </div>
+        <div class="terms">
+            <h4>Terms of Services</h4>
+            {% include 'accounts/terms_of_services.html' %}
+        </div>
+        <div class="confirmations row">
+            <div class="col col-xs-2 col-sm-1 col-md-1 col-lg-1">
+                <input type="checkbox" name="confirmation" id="confirm_terms">
+            </div>
+            <div class="col col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <label for="confirm_terms">I agree to the above terms.</label>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary">CONTINUE TO CHECKOUT</button>
+        </div>
     </div>
 
     <div class="registration-step registration-step-3">
         <h2>Fill Details</h2>
+        <div class="row">
+            <form id="form" name="form" method="post" action="/signup"
+                class="col col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            {% csrf_token %}
+            {{ form.first_name }}{{ form.first_name.errors }}
+            {{ form.address }}{{ form.address.errors }}
+            {{ form.city }}{{ form.city.errors }}
+            {{ form.state }}{{ form.state.errors }}
+            {{ form.zip_code }}{{ form.zip_code.errors }}
+            {{ form.country}}{{ form.country.errors }}
+            {{ form.phone_number }}{{ form.phone_number.errors }}
+            {{ form.email }}{{ form.email.errors }}
+            {{ form.password1 }}{{ form.password1.errors }}
+            {{ form.password2 }}{{ form.password2.errors }}
+            {{ form.occupation }}{{ form.occupation.errors }}
+            {{ form.company_name }}{{ form.company_name.errors }}
+            </form>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary">CONTINUE TO PAYMENT</button>
+        </div>
     </div>
 
     <div class="registration-step registration-step-4">
-        <h2>Fill Details</h2>
+        <h2>Payment</h2>
+        <div class="payment">
+            <h6>Payment Method</h6>
+            <div class="methods">
+                <div class="method row">
+                    <div class="col col-xs-2 col-sm-2 col-md-1 col-lg-1">
+                        <input type="radio" name="payment" value="paypal" checked>
+                    </div>
+                    <div class="col col-xs-6 col-sm-6 col-md-4 col-lg-4">
+                        <img src="/static/images/img_paypal.gif">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary">PAY</button>
+        </div>
     </div>
 
   </div>
