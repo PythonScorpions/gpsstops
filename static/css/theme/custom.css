@@ -177,7 +177,7 @@ body {
     border-radius: 4px;
     color: #fff;
     padding: 1rem;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
 }
 .page .help-section-block .sections .section {
     cursor: pointer;
@@ -211,8 +211,12 @@ body {
 }
 .page .help-section-block .section-content .content .content-info,
 .modal-body.section-content .content .content-info {
-    border: 1px solid #bbb;
-    padding: 1rem;
+    /*border: 1px solid #bbb;
+    padding: 1rem;*/
+}
+.page .help-section-block .section-content .content .content-info p,
+.modal-body.section-content .content .content-info p {
+    color: #000;
 }
 
 
