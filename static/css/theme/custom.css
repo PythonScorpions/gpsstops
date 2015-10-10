@@ -363,6 +363,12 @@ body {
     width: 200px;
 }
 
+.page .subscription-page .registration-step-2,
+.page .subscription-page .registration-step-3,
+.page .subscription-page .registration-step-4 {
+    display: none;
+}
+
 
 .calendar .btn {
     background: #24a9e1 none repeat scroll 0 0;

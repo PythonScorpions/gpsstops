@@ -214,13 +214,21 @@
         </div>
 
         <div class="actions">
-            <button class="btn btn-primary disabled">NEXT</button>
+            <button class="btn btn-primary">NEXT</button>
         </div>
     </div>
 
-    <!-- <div class="registration-step registration-step-1">
+    <div class="registration-step registration-step-2">
         <h2>Terms &amp; Services</h2>
-    </div> -->
+    </div>
+
+    <div class="registration-step registration-step-3">
+        <h2>Fill Details</h2>
+    </div>
+
+    <div class="registration-step registration-step-4">
+        <h2>Fill Details</h2>
+    </div>
 
   </div>
 </div>
@@ -393,3 +401,7 @@
 </div> -->
 
 {% endblock %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/subscriptions.js" type="text/javascript"></script>
+{% endblock extra_js %}
