@@ -45,4 +45,38 @@ urlpatterns = patterns("api.views",
         name='customer-update-profile'),
     url(r'customer_login/$', CustomerLogin.as_view(), name='customer-login'),
     url(r'customer_forget_password$', CustomerPassword.as_view(), name='customer-forgot-password'),
+
+    url(r'product_category_post/$', ProCategoryPost.as_view(), name='pro-category-post'),
+    url(r'product_category_update/(?P<pk>[a-zA-Z0-9]+)', ProCategoryUpdate.as_view(), name='pro-category-update'),
+    url(r'product_category_delete/(?P<pk>[a-zA-Z0-9]+)', ProCategoryDelete.as_view(), name='pro-category-delete'),
+    url(r'product_category_list/(?P<pk>[a-zA-Z0-9]+)', ProCategoryList.as_view(), name='pro-category-list'),
+    #
+    url(r'product_subcategory_post/$', ProSubCategoryPost.as_view(), name='pro-subcategory-post'),
+    url(r'product_subcategory_update/(?P<pk>[a-zA-Z0-9]+)', ProSubCategoryUpdate.as_view(),
+        name='pro-subcategory-update'),
+    url(r'product_subcategory_delete/(?P<pk>[a-zA-Z0-9]+)', ProSubCategoryDelete.as_view(),
+        name='pro-subcategory-delete'),
+    url(r'product_subcategory_list/(?P<pk>[a-zA-Z0-9]+)', ProSubCategoryList.as_view(), name='pro-subcategory-list'),
+    #
+    url(r'product_post/$', ProductPost.as_view(), name='product-post'),
+    url(r'product_update/(?P<pk>[a-zA-Z0-9]+)', ProductUpdate.as_view(), name='product-update'),
+    url(r'product_delete/(?P<pk>[a-zA-Z0-9]+)', ProductDelete.as_view(), name='product-delete'),
+    url(r'product_list/(?P<pk>[a-zA-Z0-9]+)', ProductList.as_view(), name='product-list'),
+    #
+    url(r'service_category_post/$', SerCategoryPost.as_view(), name='ser-category-post'),
+    url(r'service_category_update/(?P<pk>[a-zA-Z0-9]+)', SerCategoryUpdate.as_view(), name='ser-category-update'),
+    url(r'service_category_delete/(?P<pk>[a-zA-Z0-9]+)', SerCategoryDelete.as_view(), name='ser-category-delete'),
+    url(r'service_category_list/(?P<pk>[a-zA-Z0-9]+)', SerCategoryList.as_view(), name='ser-category-list'),
+
+    url(r'service_subcategory_post/$', SerSubCategoryPost.as_view(), name='ser-subcategory-post'),
+    url(r'service_subcategory_update/(?P<pk>[a-zA-Z0-9]+)', SerSubCategoryUpdate.as_view(),
+        name='ser-subcategory-update'),
+    url(r'service_subcategory_delete/(?P<pk>[a-zA-Z0-9]+)', SerSubCategoryDelete.as_view(),
+        name='ser-subcategory-delete'),
+    url(r'service_subcategory_list/(?P<pk>[a-zA-Z0-9]+)', SerSubCategoryList.as_view(), name='ser-subcategory-list'),
+
+    url(r'service_post/$', ServicePost.as_view(), name='service-post'),
+    url(r'service_update/(?P<pk>[a-zA-Z0-9]+)', ServiceUpdate.as_view(), name='service-update'),
+    url(r'service_delete/(?P<pk>[a-zA-Z0-9]+)', ServiceDelete.as_view(), name='service-delete'),
+    url(r'service_list/(?P<pk>[a-zA-Z0-9]+)', ServiceList.as_view(), name='service-list'),
 )

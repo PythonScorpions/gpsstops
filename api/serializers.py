@@ -14,6 +14,8 @@ from rest_framework import exceptions, serializers
 from accounts.models import UserProfiles, Customer
 from appointments.models import *
 from maps.models import *
+from products.models import *
+from services.models import *
 
 from os import urandom
 import datetime, random, string
@@ -543,3 +545,100 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         write_only_fields = ('token',)
+
+
+class ProCategorySerializer(serializers.ModelSerializer):
+    super_admin_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductCategory
+        fields = ('id', 'category_name', 'cat_description', 'super_admin_id')
+
+    def get_super_admin_id(self, obj):
+        return obj.super_admin.super_admin.id
+
+
+class ProSubCategorySerializer(serializers.ModelSerializer):
+    product_category = ProCategorySerializer()
+
+    class Meta:
+        model = ProductSubCategory
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductImages
+        fields = ('product_image',)
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    product_category = ProCategorySerializer()
+    product_sub_category = ProSubCategorySerializer()
+    super_admin_id = serializers.SerializerMethodField()
+    super_admin_first_name = serializers.SerializerMethodField()
+    super_admin_last_name = serializers.SerializerMethodField()
+    product_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Products
+        fields = ('id', 'product_category', 'product_sub_category', 'product_name', 'product_desc1', 'product_desc2',
+                  'about_product', 'start_price', 'end_price', 'price_info', 'features', 'specs', 'super_admin_id',
+                  'super_admin_first_name', 'super_admin_last_name', 'product_image')
+
+    def get_super_admin_id(self, obj):
+        return obj.product_category.super_admin.super_admin.id
+
+    def get_super_admin_first_name(self, obj):
+        return obj.product_category.super_admin.super_admin.first_name
+
+    def get_super_admin_last_name(self, obj):
+        return obj.product_category.\
+            super_admin.super_admin.last_name
+
+    def get_product_image(self, obj):
+        all_images = ProductImages.objects.filter(product=obj)
+        serializer = ProductImageSerializer(all_images, many=True)
+        return serializer.data
+
+
+class SerCategorySerializer(serializers.ModelSerializer):
+    super_admin_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ServiceCategory
+        fields = ('id', 'category_name', 'cat_description', 'super_admin_id')
+
+    def get_super_admin_id(self, obj):
+        return obj.super_admin.super_admin.id
+
+
+class SerSubCategorySerializer(serializers.ModelSerializer):
+    service_category = SerCategorySerializer()
+
+    class Meta:
+        model = ServiceSubCategory
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    service_category = SerCategorySerializer()
+    service_sub_category = SerSubCategorySerializer()
+    super_admin_id = serializers.SerializerMethodField()
+    super_admin_first_name = serializers.SerializerMethodField()
+    super_admin_last_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Services
+        fields = ('id', 'service_category', 'service_sub_category', 'service_name', 'service_desc1', 'service_desc2',
+                  'about_service', 'start_price', 'end_price', 'price_info', 'super_admin_id',
+                  'super_admin_first_name', 'super_admin_last_name')
+
+    def get_super_admin_id(self, obj):
+        return obj.service_category.super_admin.super_admin.id
+
+    def get_super_admin_first_name(self, obj):
+        return obj.service_category.super_admin.super_admin.first_name
+
+    def get_super_admin_last_name(self, obj):
+        return obj.service_category.\
+            super_admin.super_admin.last_name

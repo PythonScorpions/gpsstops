@@ -11,18 +11,18 @@
 
                         <ul role="tablist" class="nav nav-tabs text-left">
                             <li role="presentation" class="">
-                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
-                                     Product Category
+                                <a href="{% url 'ser-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Service Category
                                 </a>
                             </li>
                             <li role="presentation" class="">
-                                <a href="{% url 'pro-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Product SubCategory
+                                <a href="{% url 'ser-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Service SubCategory
                                 </a>
                             </li>
                             <li role="presentation" class="active">
-                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Products List
+                                <a href="{% url 'ser-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Services List
                                 </a>
                             </li>
                         </ul>
@@ -30,8 +30,8 @@
                         <br>
                         <ul role="tablist" class="nav nav-tabs text-left">
                             <li style="margin-left: 20px;">
-                                <a role="button" class="btn btn-primary btn-1" href="{% url 'product-add' %}"
-                                               >Add New Product
+                                <a role="button" class="btn btn-primary btn-1" href="{% url 'service-add' %}"
+                                               >Add New Service
                                 </a>
                             </li>
                         </ul>
@@ -48,10 +48,10 @@
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Product Id</th>
+                        <th>Service Id</th>
                         <th>Category</th>
                         <th>SubCategory</th>
-                        <th>Product Name</th>
+                        <th>Service Name</th>
                         <th>Description 1</th>
                         <th>Price Range</th>
                         <th>Price Info</th>
@@ -59,18 +59,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for pro in products %}
+                    {% for ser in services %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ pro.product_category }}</td>
-                        <td>{{ pro.product_sub_category }}</td>
-                        <td>{{ pro.product_name }}</td>
-                        <td>{{ pro.product_desc1 }}</td>
-                        <td>${{ pro.start_price }}- ${{ pro.end_price }}</td>
-                        <td>{{ pro.price_info }}</td>
+                        <td>{{ ser.service_category }}</td>
+                        <td>{{ ser.service_sub_category }}</td>
+                        <td>{{ ser.service_name }}</td>
+                        <td>{{ ser.service_desc1 }}</td>
+                        <td>${{ ser.start_price }}- ${{ ser.end_price }}</td>
+                        <td>{{ ser.price_info }}</td>
                         <td>
-                            <a href="{% url 'product-edit' pro.id %}">Edit</a>
-                            <a href="{% url 'product-delete' pro.id %}">Delete</a>
+                            <a href="{% url 'service-edit' ser.id %}">Edit</a>
+                            <a href="{% url 'service-delete' ser.id %}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}

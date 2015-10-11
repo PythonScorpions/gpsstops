@@ -11,24 +11,24 @@
 
                         <ul role="tablist" class="nav nav-tabs text-left">
                             <li role="presentation" class="active">
-                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
-                                     Product Category
+                                <a href="{% url 'ser-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Service Category
                                 </a>
                             </li>
                             <li role="presentation" class="">
-                                <a href="{% url 'pro-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Product SubCategory
+                                <a href="{% url 'ser-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Service SubCategory
                                 </a>
                             </li>
                             <li role="presentation" class="">
-                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Products List
+                                <a href="{% url 'ser-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Services List
                                 </a>
                             </li>
                         </ul>
 
                         <br><br>
-                        <form method="post" name="categoryproduct">
+                        <form method="post" name="categoryservice">
                         {% csrf_token %}
 
                             <ul role="tablist" class="nav nav-tabs text-left">

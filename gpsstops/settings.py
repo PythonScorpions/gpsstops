@@ -53,7 +53,9 @@ INSTALLED_APPS = (
 
     'maps',
     'appointments',
-    'custom_forms'
+    'custom_forms',
+    'products',
+    'services'
 
     # 'corsheaders',
 )

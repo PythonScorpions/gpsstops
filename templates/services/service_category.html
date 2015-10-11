@@ -11,18 +11,18 @@
 
                         <ul role="tablist" class="nav nav-tabs text-left">
                             <li role="presentation" class="active">
-                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
-                                     Product Category
+                                <a href="{% url 'ser-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Service Category
                                 </a>
                             </li>
                             <li role="presentation" class="">
-                                <a href="{% url 'pro-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Product SubCategory
+                                <a href="{% url 'ser-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Service SubCategory
                                 </a>
                             </li>
                             <li role="presentation" class="">
-                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Products List
+                                <a href="{% url 'ser-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Services List
                                 </a>
                             </li>
                         </ul>
@@ -30,7 +30,7 @@
                         <br>
                         <ul role="tablist" class="nav nav-tabs text-left">
                             <li style="margin-left: 20px;">
-                                <a role="button" class="btn btn-primary btn-1" href="{% url 'category-add' %}"
+                                <a role="button" class="btn btn-primary btn-1" href="{% url 'ser-category-add' %}"
                                                >Add New Category
                                 </a>
                             </li>
@@ -61,8 +61,8 @@
                         <td>{{ cat.category_name }}</td>
                         <td>{{ cat.cat_description }}</td>
                         <td>
-                            <a href="{% url 'category-edit' cat.id %}">Edit</a>
-                            <a href="{% url 'category-delete' cat.id %}">Delete</a>
+                            <a href="{% url 'ser-category-edit' cat.id %}">Edit</a>
+                            <a href="{% url 'ser-category-delete' cat.id %}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}

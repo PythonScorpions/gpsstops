@@ -1,10 +1,92 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li role="presentation" class="">
+                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Product Category
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="{% url 'pro-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Product SubCategory
+                                </a>
+                            </li>
+                            <li role="presentation" class="active">
+                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Products List
+                                </a>
+                            </li>
+                        </ul>
+
+                        <br>
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li style="margin-left: 20px;">
+                                <a role="button" class="btn btn-primary btn-1" href="{% url 'product-add' %}"
+                                               >Add New Product
+                                </a>
+                            </li>
+                        </ul>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrapper panel panel-default" style="margin-left: 15px; margin-top: 20px;">
+        <h4 class="panel-heading">Categories</h4>
+        <div class="listBlock panel-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Product Id</th>
+                        <th>Category</th>
+                        <th>SubCategory</th>
+                        <th>Product Name</th>
+                        <th>Description 1</th>
+                        <th>Price Range</th>
+                        <th>Price Info</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pro in products %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ pro.product_category }}</td>
+                        <td>{{ pro.product_sub_category }}</td>
+                        <td>{{ pro.product_name }}</td>
+                        <td>{{ pro.product_desc1 }}</td>
+                        <td>${{ pro.start_price }}- ${{ pro.end_price }}</td>
+                        <td>{{ pro.price_info }}</td>
+                        <td>
+                            <a href="{% url 'product-edit' pro.id %}">Edit</a>
+                            <a href="{% url 'product-delete' pro.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}

@@ -1,34 +1,34 @@
 from django import forms
-from products.models import *
+from services.models import *
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from multiupload.fields import MultiFileField
 
 
-class ProCategoryForm(forms.ModelForm):
+class SerCategoryForm(forms.ModelForm):
 
     class Meta:
-        model = ProductCategory
+        model = ServiceCategory
         exclude = ('super_admin',)
         labels = {
             'cat_description': _('Description'),
         }
 
 
-class ProSubCategoryForm(forms.ModelForm):
+class SerSubCategoryForm(forms.ModelForm):
 
     class Meta:
-        model = ProductSubCategory
+        model = ServiceSubCategory
         exclude = ('super_admin',)
         labels = {
             'sub_cat_description': _('Description'),
         }
 
 
-class ProductForm(forms.ModelForm):
+class ServiceForm(forms.ModelForm):
 
     class Meta:
-        model = Products
+        model = Services
         # exclude = ('super_admin',)
         # labels = {
         #     'sub_cat_description': _('Description'),
