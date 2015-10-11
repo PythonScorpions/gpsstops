@@ -9,6 +9,9 @@ a:hover {
     color: {{theme.link_active_hover_color}} !important;
 }
 
+button {
+    outline: none;
+}
 button.btn.btn-default, a.btn.btn-default {
     background: {{theme.default_button_color}} !important;
     border-color: {{theme.default_button_border_color}} !important;
@@ -73,9 +76,17 @@ body {
     border-botton: 1px solid {{theme.menu_text_color}} !important;
 }
 
+.help-section-handler.fa.fa-question-circle {
+    color: {{theme.primary_button_text_color}};
+    margin-left: 0.5rem;
+}
+
 .page {
     background: {{theme.background_color}} !important;
     color: {{theme.text_color}} !important;
+}
+.page .static p span {
+    color: {{theme.link_active_color}} !important;
 }
 .footer {
     background: {{theme.footer_background_color}} !important;

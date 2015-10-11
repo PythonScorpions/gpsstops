@@ -27,3 +27,5 @@ django_cron
 django-push-notifications==1.2.1
 django-uuidfield==0.5.0
 #gcm-client==0.1.4
+django-wysiwyg
+django-ckeditor

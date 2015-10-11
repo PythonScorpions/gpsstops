@@ -1,10 +1,15 @@
+'''
+'''
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView, UpdateView, View
 from django.shortcuts import render_to_response, redirect, render
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
+
 from accounts.models import *
+from siteadmin.forms import *
+from siteadmin.models import *
 
 
 def admin_login_required(f):
@@ -105,3 +110,59 @@ class DisableUser(View):
         profile_data.admin_status = 'disabled'
         profile_data.save()
         return HttpResponse('success')
+
+
+class HelpSectionView(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            context_data = {
+                'help_sections': HelpSection.objects.all()
+            }
+            return render(request, "siteadmin/help_section.html", context_data)
+        return redirect("/admin/")
+help_section_view = HelpSectionView.as_view()
+
+
+class HelpSectionEditView(View):
+    def get(self, request, pk=None, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            help_section = None
+            if pk:
+                try:
+                    help_section = HelpSection.objects.get(pk=pk)
+                except:
+                    pass
+
+            if help_section:
+                form = HelpSectionForm(instance=help_section)
+            else:
+                form = HelpSectionForm()
+            context_data = {'form':form}
+            return render(request, "siteadmin/help_section_edit.html", context_data)
+        return redirect("/admin/")
+
+    def post(self, request, pk=None, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            help_section = None
+            if pk:
+                try:
+                    help_section = HelpSection.objects.get(pk=pk)
+                except:
+                    pass
+
+            if help_section:
+                form = HelpSectionForm(request.POST, instance=help_section)
+            else:
+                form = HelpSectionForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('/admin/help_section/')
+            else:
+                print form.errors
+            context_data = {'form':form}
+            return render(request, "siteadmin/help_section_edit.html", context_data)
+        return redirect("/admin/")
+edit_help_section_view = HelpSectionEditView.as_view()
