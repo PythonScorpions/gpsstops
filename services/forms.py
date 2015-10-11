@@ -2,7 +2,6 @@ from django import forms
 from services.models import *
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
-from multiupload.fields import MultiFileField
 
 
 class SerCategoryForm(forms.ModelForm):
