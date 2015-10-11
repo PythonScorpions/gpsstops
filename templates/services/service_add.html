@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li role="presentation" class="">
+                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Product Category
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="{% url 'pro-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Product SubCategory
+                                </a>
+                            </li>
+                            <li role="presentation" class="active">
+                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Products List
+                                </a>
+                            </li>
+                        </ul>
+
+                        <br><br>
+
+                        <form method="post" name="product" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.product_category.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.product_category }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.product_category.errors %}{{ form.product_category.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.product_sub_category.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.product_sub_category }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.product_sub_category.errors %}{{ form.product_sub_category.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.product_name.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.product_name }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.product_name.errors %}{{ form.product_name.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.product_desc1.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.product_desc1 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.product_desc1.errors %}{{ form.product_desc1.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.product_desc2.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.product_desc2 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.product_desc2.errors %}{{ form.product_desc2.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.about_product.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.about_product }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.about_product.errors %}{{ form.about_product.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.start_price.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.start_price }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.start_price.errors %}{{ form.start_price.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.end_price.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.end_price }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.end_price.errors %}{{ form.end_price.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.price_info.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.price_info }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.price_info.errors %}{{ form.price_info.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.features.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.features }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.features.errors %}{{ form.features.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>{{ form.specs.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.specs }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.specs.errors %}{{ form.specs.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+
+                            {% if editing == 'true' %}
+                                <ul role="tablist" class="nav nav-tabs text-left all_aluls" id="alul_{{ forloop.counter }}">
+                                    <li style="margin-left: 62px; width: 200px;">
+                                        <div class="field-row">
+                                            <label>Product Images</label>
+                                        </div>
+                                    </li>
+                                {% for img in product_images %}
+
+                                        <li style="margin-left: 45px;" id="li_{{ forloop.counter }}">
+                                            <div class="field">
+                                                <img src="{{ server_url }}/media/{{ img.product_image }}" id="alimg_{{ forloop.counter }}" height="100px" width="160px">
+                                            </div>
+                                        </li>
+
+                                        <li style="margin-left: 10px;" id="imgli_{{ forloop.counter }}">
+                                            <div class="field">
+                                                <img src="{{ STATIC_URL }}images/icon.jpg" id="aldel_{{ forloop.counter }}" class="delete_alimage" style="height: 28px;">
+                                            </div>
+                                        </li>
+
+
+                                {% endfor %}
+                                </ul>
+                                <br>
+                            {% endif %}
+                                <ul role="tablist" class="nav nav-tabs text-left all_uls" id="ul_1">
+                                    <li style="margin-left: 62px; width: 200px;">
+                                        <div class="field-row">
+                                            <label>{% if editing == 'true' %}Add Extra Images{% else %}Product Images{% endif %}</label>
+                                        </div>
+                                    </li>
+                                    <li style="margin-left: 38px;">
+                                        <div class="field">
+                                            <input type="file" name="product_images" id="image_1">
+                                        </div>
+                                    </li>
+                                    <li style="margin-left: 17px;">
+                                        <div class="field">
+                                            <img class ="add_image" src="{{ STATIC_URL }}images/plus.png" style="height: 28px;">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        {% if error_msg %}
+                                            <ul class="errorlist">
+                                                <li>At Least One Product Image Should be there</li>
+                                            </ul>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+
+
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li>
+
+                                </li>
+                                <li style="margin-left: 182px;">
+                                    <div class="field-row actions" style="width: 100px;">
+                <input type="submit" value="Save"/>
+            </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+var image_counter = 1;
+var product_id = {{ product_id }};
+$(function() {
+
+    $("#id_product_sub_category").empty();
+    if($("#id_product_category option:selected" ).val() != '') {
+        $.ajax({
+            type: "GET",
+            url: "/products/all_suboptions",
+            data: {cat_id: $("#id_product_category option:selected").val()},
+            success: function (data) {
+                $.each(data, function (key, value) {
+                    if ({{ editing }} == true)
+                    {
+                        if (key == {{ subcatid }}) {
+                            $('select[name=product_sub_category]').append('<option value="' + key + '" selected>' + value + '</option>');
+                        }
+                        else {
+                            $('select[name=product_sub_category]').append('<option value="' + key + '">' + value + '</option>');
+                        }
+                    }
+                    else
+                    {
+                        $('select[name=product_sub_category]').append('<option value="' + key + '">' + value + '</option>');
+                    }
+                });
+            },
+            error: function (data) {
+                console.log("something went wrong");
+            }
+
+        });
+    }
+
+    $("#id_product_category").change(function(){
+        $("#id_product_sub_category").empty();
+        $.ajax({
+                    type: "GET",
+                    url: "/products/all_suboptions",
+                    data: {cat_id: this.value},
+                    success: function (data) {
+                        $.each(data, function(key, value){
+                            $('select[name=product_sub_category]').append('<option value="' + key + '">' + value +'</option>');
+                        });
+                    },
+                    error: function (data) {
+                        console.log("something went wrong");
+                    }
+
+            });
+    });
+
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+
+    $(".add_image").click(function(){
+        image_counter += 1;
+        $("#ul_"+(image_counter-1)).after('<br><ul role="tablist" class="nav nav-tabs text-left all_uls" id="ul_'+image_counter+'"><li style="margin-left: 303px;">' +
+        '<div class="field"><input type="file" name="product_images" id="image_2"></div></li>' +
+        '<li style="margin-left: 17px;"><div class="field">' +
+        '<img src="{{ STATIC_URL }}images/icon.jpg" id="del_'+image_counter+'" class="delete_image" style="height: 28px;"></div></li></ul>');
+
+        $("form field-row").addClass("form-group");
+        $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+        $("form input[type=submit]").addClass("btn btn-primary");
+    });
+
+});
+
+$(document).on("click",".delete_image", function() {
+
+    image_counter -= 1;
+
+    console.log("clicked");
+    console.log('#ul_'+$(this).attr('id').slice(-1));
+    $('#ul_'+$(this).attr('id').slice(-1)).remove();
+
+    $('.all_uls').each(function(i, obj) {
+        obj.id = 'ul_'+(i+1);
+    });
+
+    $('.delete_image').each(function(i, obj) {
+        obj.id = 'del_' + (i + 2);
+    });
+
+});
+
+$(document).on("click",".delete_alimage", function() {
+
+    var img_src = 'alimg_'+$(this).attr('id').slice(-1);
+    var w = $(this).attr('id').slice(-1);
+    console.log(img_src);
+    var a = document.getElementById(img_src).src.split('/').slice(-1)[0];
+
+    $.ajax({
+                    type: "GET",
+                    url: "/products/delete_image",
+                    data: {'img_src': a, 'product_id': product_id},
+                    success: function (data) {
+                        var li = '#li_'+w;
+                        $(li).remove();
+                        var liimg = '#imgli_'+w;
+                        $(liimg).remove();
+                    },
+                    error: function (data) {
+                        console.log("something went wrong");
+                    }
+
+            });
+
+});
+</script>
+
+{% endblock content %}
