@@ -79,4 +79,17 @@ urlpatterns = patterns("api.views",
     url(r'service_update/(?P<pk>[a-zA-Z0-9]+)', ServiceUpdate.as_view(), name='service-update'),
     url(r'service_delete/(?P<pk>[a-zA-Z0-9]+)', ServiceDelete.as_view(), name='service-delete'),
     url(r'service_list/(?P<pk>[a-zA-Z0-9]+)', ServiceList.as_view(), name='service-list'),
+
+    url(r'company_post/$', CompanyPost.as_view(), name='company-post'),
+    url(r'company_details/(?P<pk>[a-zA-Z0-9]+)', CompanyDetails.as_view(), name='company-details'),
+    url(r'company_update/(?P<pk>[a-zA-Z0-9]+)', CompanyUpdate.as_view(), name='company-update'),
+
+    url(r'company_follow/$', CompanyFollow.as_view(), name='company-follow'),
+    url(r'company_unfollow/$', CompanyUnFollow.as_view(), name='company-unfollow'),
+
+    url(r'all_company_list/(?P<pk>[a-zA-Z0-9]+)', AllCompanyList.as_view(), name='all-company-list'),
+    url(r'my_company_list/(?P<pk>[a-zA-Z0-9]+)', MyCompanyList.as_view(), name='my-company-list'),
+
+    url(r'request_product_quote/$', RequestProductQuote.as_view(), name='request-product-quote'),
+    url(r'request_service_quote/$', RequestServiceQuote.as_view(), name='request-service-quote'),
 )

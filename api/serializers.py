@@ -642,3 +642,58 @@ class ServiceSerializer(serializers.ModelSerializer):
     def get_super_admin_last_name(self, obj):
         return obj.service_category.\
             super_admin.super_admin.last_name
+
+
+class CompanySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CompanyRegistration
+
+
+class CompanyGetSerializer(serializers.ModelSerializer):
+    super_admin_id = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = CompanyRegistration
+
+    def get_super_admin_id(self, obj):
+        return Organization.objects.get(id=obj.super_admin_id.id).super_admin.id
+
+
+class CustomerCompanySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomerCompany
+
+
+class AllCompanyListSerializer(serializers.ModelSerializer):
+    is_following = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CompanyRegistration
+
+    def get_is_following(self, obj):
+        customer_id = self.context.get("customer_id")
+        if CustomerCompany.objects.filter(company_id=obj, customer_id__id=customer_id):
+            return 1
+        else:
+            return 0
+
+
+class MyCompanyListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CompanyRegistration
+        exclude = ('super_admin_id',)
+
+
+class ProInquirySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductInquiry
+
+
+class SerInquirySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ServiceInquiry

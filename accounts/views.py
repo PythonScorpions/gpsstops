@@ -22,6 +22,7 @@ from siteadmin.models import *
 
 from os import urandom
 import datetime, random, string
+from custom_forms.utils import *
 
 
 class IndexView(View):
@@ -740,3 +741,95 @@ class HelpView(View):
         return render(request, 'accounts/help.html', context_data)
 help_view = HelpView.as_view()
 
+
+class CompanyRegi(View):
+    template_name = 'accounts/company_regi.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, *args, **kwargs):
+        org_obj = retrieve_organization(request)
+        if org_obj.org_registration:
+            com_obj = CompanyRegistration.objects.get(id=int(org_obj.org_registration.id))
+            initial_data = {
+                'company_name': com_obj.company_name,
+                'logo': com_obj.logo,
+                'address1': com_obj.address1,
+                'address2': com_obj.address2,
+                'near_by_location': com_obj.near_by_location,
+                'speciality': com_obj.speciality,
+                'phone1': com_obj.phone1,
+                'phone2': com_obj.phone2,
+                'email_address1': com_obj.email_address1,
+                'email_address2': com_obj.email_address2,
+                'about_us': com_obj.about_us,
+            }
+            form = CompanyRegiForm(instance=com_obj, initial=initial_data)
+
+        else:
+            form = CompanyRegiForm()
+
+        return render_to_response(self.template_name, {'form': form},
+                                  context_instance=RequestContext(request),)
+
+    @method_decorator(custom_login_required)
+    def post(self, request, *args, **kwargs):
+
+        org_obj = retrieve_organization(request)
+
+        if org_obj.org_registration:
+            com_obj = CompanyRegistration.objects.get(id=int(org_obj.org_registration.id))
+            form = CompanyRegiForm(data=request.POST, files=request.FILES, instance=com_obj)
+        else:
+            form = CompanyRegiForm(data=request.POST, files=request.FILES)
+
+        if form.is_valid():
+            if org_obj.org_registration:
+                com_obj.company_name = form.cleaned_data['company_name']
+                com_obj.logo = form.cleaned_data['logo']
+                com_obj.address1 = form.cleaned_data['address1']
+                com_obj.address2 = form.cleaned_data['address2']
+                com_obj.near_by_location = form.cleaned_data['near_by_location']
+                com_obj.speciality = form.cleaned_data['speciality']
+                com_obj.phone1 = form.cleaned_data['phone1']
+                com_obj.phone2 = form.cleaned_data['phone2']
+                com_obj.email_address1 = form.cleaned_data['email_address1']
+                com_obj.email_address2 = form.cleaned_data['email_address2']
+                com_obj.about_us = form.cleaned_data['about_us']
+                com_obj.save()
+            else:
+                new_company = CompanyRegistration(super_admin_id=org_obj,
+                                                  company_name=form.cleaned_data['company_name'],
+                                                  logo=form.cleaned_data['logo'],
+                                                  address1=form.cleaned_data['address1'],
+                                                  address2=form.cleaned_data['address2'],
+                                                  near_by_location=form.cleaned_data['near_by_location'],
+                                                  speciality=form.cleaned_data['speciality'],
+                                                  phone1=form.cleaned_data['phone1'],
+                                                  phone2=form.cleaned_data['phone2'],
+                                                  email_address1=form.cleaned_data['email_address1'],
+                                                  email_address2=form.cleaned_data['email_address2'],
+                                                  about_us=form.cleaned_data['about_us'],
+                                                  )
+                new_company.save()
+            return redirect("/")
+        else:
+            print form.errors
+
+        return render_to_response(self.template_name, {'form': form}, context_instance=RequestContext(request),)
+
+
+class CustomerFollowers(View):
+    template_name = 'accounts/customer_followers.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, *args, **kwargs):
+
+        org_obj = retrieve_organization(request)
+
+        customer_ids = CustomerCompany.objects.filter(company_id__super_admin_id=org_obj).\
+            values_list('customer_id', flat=True)
+
+        customer_data = Customer.objects.filter(id__in=customer_ids)
+
+        return render_to_response(self.template_name, {'customer_data': customer_data},
+                                  context_instance=RequestContext(request),)

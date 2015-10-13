@@ -289,6 +289,20 @@ class ProductAdd(View):
                                   context_instance=RequestContext(request),)
 
 
+class ProInquiries(View):
+    template_name = 'products/product_inquiries.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, *args, **kwargs):
+
+        org_obj = retrieve_organization(request)
+
+        product_inquiries = ProductInquiry.objects.filter(company_id__super_admin_id=org_obj).order_by('-id')
+
+        return render_to_response(self.template_name, {'inquiries': product_inquiries},
+                                  context_instance=RequestContext(request),)
+
+
 def all_suboptions(request):
     # to retrieve categories in new campaign page
     cat_id = int(request.GET['cat_id'])

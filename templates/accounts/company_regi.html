@@ -1,10 +1,226 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li role="presentation" class="active" style="margin-left: 156px;">
+                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Company Registration
+                                </a>
+                            </li>
+                        </ul>
+
+                        <br><br>
+                        <form method="post" name="company_registration" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.company_name.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.company_name }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.company_name.errors %}{{ form.company_name.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.logo.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.logo }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.logo.errors %}{{ form.logo.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.address1.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.address1 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.address1.errors %}{{ form.address1.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.address2.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.address2 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.address2.errors %}{{ form.address2.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.near_by_location.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.near_by_location }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.near_by_location.errors %}{{ form.near_by_location.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.speciality.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.speciality }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.speciality.errors %}{{ form.speciality.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.phone1.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.phone1 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.phone1.errors %}{{ form.phone1.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.phone2.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.phone2 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.phone2.errors %}{{ form.phone2.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.email_address1.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.email_address1 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.email_address1.errors %}{{ form.email_address1.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.email_address2.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.email_address2 }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.email_address2.errors %}{{ form.email_address2.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 150px;">
+                                    <div class="field-row">
+                                        <label>{{ form.about_us.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.about_us }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.about_us.errors %}{{ form.about_us.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li>
+
+                                </li>
+                                <li style="margin-left: 182px;">
+                                    <div class="field-row actions" style="width: 100px;">
+                <input type="submit" value="Save"/>
+            </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}

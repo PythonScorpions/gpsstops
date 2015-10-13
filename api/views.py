@@ -1872,3 +1872,171 @@ class ServiceList(APIView):
         serializer = ServiceSerializer(all_cats, many=True)
         return Response({'code': 1, 'message': 'Service List success',
                          'Data': serializer.data})
+
+
+class CompanyPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        # try:
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        try:
+            com_obj = CompanyRegistration.objects.get(super_admin_id=org_obj)
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Company is Already Registered'})
+        except:
+            request.data['super_admin_id'] = Organization.objects.get(super_admin__id=request.data['super_admin_id']).id
+            serializer = CompanySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'code': 1, 'Data': 'Null',
+                                 'message': 'Company created successfully '})
+            else:
+                error_msg = ''
+                for k, v in enumerate(serializer.errors.iteritems()):
+                    if k == 0:
+                        error_msg += v[0]+':'+v[1][0]
+                    else:
+                        error_msg += ' and '+v[0]+':'+v[1][0]
+                return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+
+
+class CompanyDetails(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            company_data = CompanyRegistration.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'message': 'Company Data not exist with this id',
+                             'Data': 'Null'})
+        serializer = CompanyGetSerializer(company_data)
+        # serializer.data['super_admin_id'] = 11
+        return Response({'code': 1, 'message': 'Company Data success',
+                         'Data': serializer.data})
+
+
+class CompanyUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            com_obj = CompanyRegistration.objects.get(id=int(self.kwargs['pk']))
+            request.data['super_admin_id'] = Organization.objects.get(super_admin__id=request.data['super_admin_id']).id
+            serializer = CompanySerializer(instance=com_obj, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'code': 1, 'Data': 'Null',
+                                 'message': 'Company updated successfully'})
+            else:
+                error_msg = ''
+                for k, v in enumerate(serializer.errors.iteritems()):
+                    if k == 0:
+                        error_msg += v[0]+':'+v[1][0]
+                    else:
+                        error_msg += ' and '+v[0]+':'+v[1][0]
+                return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Company is not Registered'})
+
+
+class CompanyFollow(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            follow_obj = CustomerCompany.objects.get(customer_id__id=int(request.data['customer_id']),
+                                                     company_id__id=int(request.data['company_id']))
+
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Customer is Already Following this company'})
+        except:
+            serializer = CustomerCompanySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'code': 1, 'Data': 'Null',
+                                 'message': 'You are following successfully'})
+            else:
+                error_msg = ''
+                for k, v in enumerate(serializer.errors.iteritems()):
+                    if k == 0:
+                        error_msg += v[0]+':'+v[1][0]
+                    else:
+                        error_msg += ' and '+v[0]+':'+v[1][0]
+                return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+
+
+class CompanyUnFollow(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            follow_obj = CustomerCompany.objects.get(customer_id__id=int(request.data['customer_id']),
+                                                     company_id__id=int(request.data['company_id']))
+
+            follow_obj.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'You are unfollowing successfully'})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Customer is Not Following this company'})
+
+
+class AllCompanyList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            customer_data = Customer.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'message': 'Customer Data not exist with this id',
+                             'Data': 'Null'})
+        all_companies = CompanyRegistration.objects.all()
+        serializer = AllCompanyListSerializer(all_companies, context={'customer_id': customer_data.id}, many=True)
+        return Response({'code': 1, 'message': 'Companies listed successfully',
+                         'Data': serializer.data})
+
+
+class MyCompanyList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            customer_data = Customer.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'message': 'Customer Data not exist with this id',
+                             'Data': 'Null'})
+
+        all_followed_companies = CustomerCompany.objects.filter(customer_id=customer_data).values_list('company_id', flat=True)
+
+        my_companies = CompanyRegistration.objects.filter(id__in=all_followed_companies)
+        serializer = MyCompanyListSerializer(my_companies, many=True)
+        return Response({'code': 1, 'message': 'Companies listed successfully',
+                         'Data': serializer.data})
+
+
+class RequestProductQuote(APIView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = ProInquirySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'code': 1, 'Data': 'Null', 'message': 'Product quote sent successfully'})
+        else:
+            error_msg = ''
+            for k, v in enumerate(serializer.errors.iteritems()):
+                if k == 0:
+                    error_msg += v[0]+':'+v[1][0]
+                else:
+                    error_msg += ' and '+v[0]+':'+v[1][0]
+            return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+
+
+class RequestServiceQuote(APIView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = SerInquirySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'code': 1, 'Data': 'Null', 'message': 'Service quote sent successfully'})
+        else:
+            error_msg = ''
+            for k, v in enumerate(serializer.errors.iteritems()):
+                if k == 0:
+                    error_msg += v[0]+':'+v[1][0]
+                else:
+                    error_msg += ' and '+v[0]+':'+v[1][0]
+            return Response({'code': 0, 'Data': 'Null', 'message': error_msg})

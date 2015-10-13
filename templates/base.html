@@ -63,10 +63,12 @@
               <li class="init-un-active"><a href="/calender/"><span class="gw-menu-text">Calender</span></a></li>
               <li class="init-un-active"><a href="/maps/routes/"><span class="gw-menu-text">Created routes</span></a></li>
               <li class="init-un-active"><a href="/route/add/"><span class="gw-menu-text">Add Route</span></a></li>
-              <li class="init-un-active"><a href="{% url 'pro-category' %}"><span class="gw-menu-text">Products</span></a></li>
-              <li class="init-un-active"><a href="{% url 'ser-category' %}"><span class="gw-menu-text">Services</span></a></li>
-              <li class="init-un-active"><a href="/route/add/"><span class="gw-menu-text">Product Inquiry</span></a></li>
-              <li class="init-un-active"><a href="/route/add/"><span class="gw-menu-text">Service Inquiry</span></a></li>
+              {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
+                  <li class="init-un-active"><a href="{% url 'pro-category' %}"><span class="gw-menu-text">Products</span></a></li>
+                  <li class="init-un-active"><a href="{% url 'ser-category' %}"><span class="gw-menu-text">Services</span></a></li>
+                  <li class="init-un-active"><a href="{% url 'pro-inquiry' %}"><span class="gw-menu-text">Product Inquiry</span></a></li>
+                  <li class="init-un-active"><a href="/route/add/"><span class="gw-menu-text">Service Inquiry</span></a></li>
+              {% endif %}
               {% endif %}
               <li class="init-un-active"><a href="/faqs/" style="border:none;"><span class="gw-menu-text">FAQ's</span></a></li>
               <li class="init-un-active"><a href="/help/" style="border:none;"><span class="gw-menu-text">Help</span></a></li>
@@ -128,6 +130,10 @@
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Change Password</a></li>
                 {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/accounts/users/">Users</a></li>
+                {% endif %}
+                {% if user.user_profiles.user_role == 'super_admin' %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/accounts/company_registration/">Company Registration</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/accounts/customer_followers/">Customer Followers</a></li>
                 {% endif %}
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact/">Contact</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/appointments/contact_group/">Contact Group</a></li>
