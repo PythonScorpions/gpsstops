@@ -13,8 +13,15 @@
       </div>
       <div class="form-group">
         <label>Slug</label>
+        <p class="info">This is a unique field used for mapping help section on the website.
+        Example: if title is "Getting Started", then slug would be "getting-started"</p>
         {{form.slug}}
         {% if form.slug.errors %}{{form.slug.errors}}{% endif %}
+      </div>
+      <div class="form-group">
+        <label>Reference</label>
+        {{form.ref}}
+        {% if form.ref.errors %}{{form.ref.errors}}{% endif %}
       </div>
       <div class="form-group">
         <label>Help Section</label>
