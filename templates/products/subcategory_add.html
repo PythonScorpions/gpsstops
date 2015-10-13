@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'logo_account.html' %}
+
+    <div class="appointmentBlock list">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div role="tabpanel">
+
+                        <ul role="tablist" class="nav nav-tabs text-left">
+                            <li role="presentation" class="">
+                                <a href="{% url 'pro-category' %}" class="right-tab" style="font-size: 16px;">
+                                     Product Category
+                                </a>
+                            </li>
+                            <li role="presentation" class="active">
+                                <a href="{% url 'pro-subcat' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Product SubCategory
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Products List
+                                </a>
+                            </li>
+                        </ul>
+
+                        <br><br>
+                        <form method="post" name="categoryproduct">
+                        {% csrf_token %}
+
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px;">
+                                    <div class="field-row">
+                                        <label>{{ form.subcategory_name.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ form.subcategory_name }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.subcategory_name.errors %}{{ form.subcategory_name.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 85px;">
+                                    <div class="field-row">
+                                        <label>{{ form.sub_cat_description.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.sub_cat_description }}
+                                    </div>
+                                </li>
+                                <li>
+                                    {% if form.sub_cat_description.errors %}{{ form.sub_cat_description.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 47px;">
+                                    <div class="field-row">
+                                        <label>{{ form.product_category.label }}</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 62px;">
+                                    <div class="field">
+                                        {{ form.product_category }}
+                                    </div>
+                                </li>
+                                <li style="margin-left: 71px">
+                                    {% if form.product_category.errors %}{{ form.product_category.errors }}{% endif %}
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li>
+
+                                </li>
+                                <li style="margin-left: 182px;">
+                                    <div class="field-row actions" style="width: 100px;">
+                <input type="submit" value="Save"/>
+            </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+$(function() {
+    $("form field-row").addClass("form-group");
+    $("form input:not(:checkbox), form select, form textarea").addClass("form-control");
+    $("form input[type=submit]").addClass("btn btn-primary");
+});
+</script>
+
+{% endblock content %}

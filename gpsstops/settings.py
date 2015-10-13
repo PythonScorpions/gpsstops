@@ -57,6 +57,8 @@ INSTALLED_APPS = (
     'maps',
     'appointments',
     'custom_forms',
+    'products',
+    'services',
 
     'siteadmin',
 

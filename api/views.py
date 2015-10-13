@@ -29,6 +29,8 @@ from accounts.utils import *
 
 from datetime import timedelta
 import string, random, datetime, sys
+from products.models import *
+from services.models import *
 
 
 for user in User.objects.all():
@@ -1286,3 +1288,587 @@ class CustomerPassword(APIView):
             return Response({'code': 1, 'status': 200, 'Data': 'Null', 'message': 'Email has been sent'})
         else:
             return Response({'code': 0, 'status': 200, 'message': 'Customer does not exist'})
+
+
+class ProCategoryPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            cat_data = ProductCategory(category_name=request.data['category_name'], super_admin=org_obj)
+            if 'description' in request.data: cat_data.cat_description = request.data['description']
+            cat_data.save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Product category created successfully '})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class ProCategoryUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ProductCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Category does not Exist'})
+        else:
+            try:
+                try:
+                    org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+                try:
+                    cate_data = ProductCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'Category is not created by this super admin'})
+                cate_data.category_name = request.data['category_name']
+
+                if 'description' in request.data:
+                    cate_data.cat_description = request.data['description']
+
+                cate_data.save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Product category updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class ProCategoryDelete(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ProductCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Category does not Exist'})
+        else:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cate_data = ProductCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+            except:
+                return Response({'code': 0, 'Data': 'Null',
+                                 'message': 'Category is not created by this super admin'})
+            cate_data.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Product category deleted successfully'})
+
+
+class ProCategoryList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        print "coming here"
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = ProductCategory.objects.filter(super_admin=org_obj)
+        serializer = ProCategorySerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Product Category List success',
+                         'Data': serializer.data})
+
+
+class ProSubCategoryPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cat_obj = ProductCategory.objects.get(id=int(request.data['category_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Category Does not Exist'})
+            subcat_data = ProductSubCategory(subcategory_name=request.data['sub_category_name'], product_category=cat_obj)
+            if 'sub_category_description' in request.data:
+                subcat_data.sub_cat_description = request.data['sub_category_description']
+            subcat_data.save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Product sub category created successfully '})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class ProSubCategoryUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ProductSubCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory does not Exist'})
+        else:
+            try:
+                try:
+                    org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+                try:
+                    subcate_data = ProductSubCategory.objects.get(product_category__super_admin=org_obj,
+                                                                  id=int(self.kwargs['pk']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'SubCategory is not created by this super admin'})
+                subcate_data.subcategory_name = request.data['sub_category_name']
+
+                if 'sub_category_description' in request.data:
+                    subcate_data.sub_cat_description = request.data['sub_category_description']
+
+                subcate_data.save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Product sub category updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class ProSubCategoryDelete(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ProductSubCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory does not Exist'})
+        else:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cate_data = ProductSubCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+            except:
+                return Response({'code': 0, 'Data': 'Null',
+                                 'message': 'SubCategory is not created by this super admin'})
+            cate_data.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Product sub category deleted successfully'})
+
+
+class ProSubCategoryList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = ProductSubCategory.objects.filter(product_category__super_admin=org_obj)
+        serializer = ProSubCategorySerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Product SubCategory List success',
+                         'Data': serializer.data})
+
+
+class ProductPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                pro_cat = ProductCategory.objects.get(id=int(request.data['category_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Category Does not Exist'})
+            try:
+                pro_subcat = ProductSubCategory.objects.get(id=int(request.data['sub_category_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory Does not Exist'})
+
+            if float(request.data['start_price']) > float(request.data['end_price']):
+                return Response({'code': 0, 'Data': 'Null', 'message': 'End Price Should be greater then Start Price'})
+
+            pro_data = Products(product_category=pro_cat, product_sub_category=pro_subcat,
+                                product_name=request.data['product_name'], product_desc1=request.data['description1'],
+                                price_info=request.data['price_info'],
+                                start_price=float(request.data['start_price']),
+                                end_price=float(request.data['end_price']))
+            if 'description2' in request.data: pro_data.product_desc2 = request.data['description2']
+            if 'about_product' in request.data: pro_data.about_product = request.data['about_product']
+            if 'features' in request.data: pro_data.features = request.data['features']
+            if 'specs' in request.data: pro_data.specs = request.data['specs']
+            pro_data.save()
+            for img in request.FILES.getlist('product_image'):
+                ProductImages(product=pro_data, product_image=img).save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Product created successfully '})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class ProductUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not Products.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Product does not Exist'})
+        else:
+            try:
+                try:
+                    org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+                try:
+                    pro_cat = ProductCategory.objects.get(id=int(request.data['category_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Category Does not Exist'})
+                try:
+                    pro_subcat = ProductSubCategory.objects.get(id=int(request.data['sub_category_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory Does not Exist'})
+                try:
+                    pro_data = Products.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'Product is not created by this super admin'})
+
+                if float(request.data['start_price']) > float(request.data['end_price']):
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'End Price Should be greater then Start Price'})
+
+                pro_data.product_name = request.data['product_name']
+                pro_data.product_desc1 = request.data['description1']
+                pro_data.start_price = float(request.data['start_price'])
+                pro_data.end_price = float(request.data['end_price'])
+                pro_data.price_info = request.data['category_name']
+
+                if 'description2' in request.data:
+                    pro_data.product_desc2 = request.data['description2']
+                if 'about_product' in request.data:
+                    pro_data.about_product = request.data['about_product']
+                if 'features' in request.data:
+                    pro_data.features = request.data['features']
+                if 'specs' in request.data:
+                    pro_data.specs = request.data['specs']
+
+                pro_data.save()
+
+                ProductImages.objects.filter(product=pro_data).delete()
+
+                for img in request.FILES.getlist('product_image'):
+                    ProductImages(product=pro_data, product_image=img).save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Product updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class ProductDelete(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not Products.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Product does not Exist'})
+        else:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cate_data = Products.objects.get(product_category__super_admin=org_obj, id=int(self.kwargs['pk']))
+            except:
+                return Response({'code': 0, 'Data': 'Null',
+                                 'message': 'Product is not created by this super admin'})
+            cate_data.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Product deleted successfully'})
+
+
+class ProductList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = Products.objects.filter(product_category__super_admin=org_obj)
+        serializer = ProductSerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Product List success',
+                         'Data': serializer.data})
+
+
+class SerCategoryPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            cat_data = ServiceCategory(category_name=request.data['category_name'], super_admin=org_obj)
+            if 'description' in request.data: cat_data.cat_description = request.data['description']
+            cat_data.save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Service category created successfully '})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class SerCategoryUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ServiceCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Category does not Exist'})
+        else:
+            try:
+                try:
+                    org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+                try:
+                    cate_data = ServiceCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'Category is not created by this super admin'})
+                cate_data.category_name = request.data['category_name']
+
+                if 'description' in request.data:
+                    cate_data.cat_description = request.data['description']
+
+                cate_data.save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Service category updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class SerCategoryDelete(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ServiceCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Category does not Exist'})
+        else:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cate_data = ServiceCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+            except:
+                return Response({'code': 0, 'Data': 'Null',
+                                 'message': 'Category is not created by this super admin'})
+            cate_data.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Service category deleted successfully'})
+
+
+class SerCategoryList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        print "coming here"
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = ServiceCategory.objects.filter(super_admin=org_obj)
+        serializer = SerCategorySerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Service Category List success',
+                         'Data': serializer.data})
+
+
+class SerSubCategoryPost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cat_obj = ServiceCategory.objects.get(id=int(request.data['category_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Category Does not Exist'})
+            subcat_data = ServiceSubCategory(subcategory_name=request.data['sub_category_name'], service_category=cat_obj)
+            if 'sub_category_description' in request.data:
+                subcat_data.sub_cat_description = request.data['sub_category_description']
+            subcat_data.save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Service sub category created successfully '})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class SerSubCategoryUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ServiceSubCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory does not Exist'})
+        else:
+            try:
+                try:
+                    org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+                try:
+                    subcate_data = ServiceSubCategory.objects.get(product_category__super_admin=org_obj,
+                                                                  id=int(self.kwargs['pk']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'SubCategory is not created by this super admin'})
+                subcate_data.subcategory_name = request.data['sub_category_name']
+
+                if 'sub_category_description' in request.data:
+                    subcate_data.sub_cat_description = request.data['sub_category_description']
+
+                subcate_data.save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Service sub category updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class SerSubCategoryDelete(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not ServiceSubCategory.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory does not Exist'})
+        else:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cate_data = ServiceSubCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+            except:
+                return Response({'code': 0, 'Data': 'Null',
+                                 'message': 'SubCategory is not created by this super admin'})
+            cate_data.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Service sub category deleted successfully'})
+
+
+class SerSubCategoryList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = ServiceSubCategory.objects.filter(product_category__super_admin=org_obj)
+        serializer = SerSubCategorySerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Service SubCategory List success',
+                         'Data': serializer.data})
+
+
+class ServicePost(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                pro_cat = ServiceCategory.objects.get(id=int(request.data['category_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Category Does not Exist'})
+            try:
+                pro_subcat = ServiceSubCategory.objects.get(id=int(request.data['sub_category_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory Does not Exist'})
+
+            if float(request.data['start_price']) > float(request.data['end_price']):
+                return Response({'code': 0, 'Data': 'Null', 'message': 'End Price Should be greater then Start Price'})
+
+            pro_data = Services(service_category=pro_cat, service_sub_category=pro_subcat,
+                                service_name=request.data['service_name'], service_desc1=request.data['description1'],
+                                price_info=request.data['price_info'],
+                                start_price=float(request.data['start_price']),
+                                end_price=float(request.data['end_price']))
+            if 'description2' in request.data: pro_data.service_desc2 = request.data['description2']
+            if 'about_service' in request.data: pro_data.about_service = request.data['about_service']
+            if 'service_image' in request.FILES:
+                pro_data.service_image = request.FILES['service_image']
+            pro_data.save()
+
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Service created successfully '})
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Please Enter All mandatory Fields'})
+
+
+class ServiceUpdate(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not Services.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Service does not Exist'})
+        else:
+            try:
+                try:
+                    org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+                try:
+                    pro_cat = ServiceCategory.objects.get(id=int(request.data['category_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'Category Does not Exist'})
+                try:
+                    pro_subcat = ServiceSubCategory.objects.get(id=int(request.data['sub_category_id']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory Does not Exist'})
+                try:
+                    pro_data = Services.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                except:
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'Service is not created by this super admin'})
+
+                if float(request.data['start_price']) > float(request.data['end_price']):
+                    return Response({'code': 0, 'Data': 'Null',
+                                     'message': 'End Price Should be greater then Start Price'})
+
+                pro_data.service_name = request.data['service_name']
+                pro_data.service_desc1 = request.data['description1']
+                pro_data.start_price = float(request.data['start_price'])
+                pro_data.end_price = float(request.data['end_price'])
+                pro_data.price_info = request.data['category_name']
+
+                if 'description2' in request.data:
+                    pro_data.service_desc2 = request.data['description2']
+                if 'about_product' in request.data:
+                    pro_data.about_service = request.data['about_service']
+                if 'service_image' in request.FILES:
+                    pro_data.service_image = request.FILES['service_image']
+
+                pro_data.save()
+
+                return Response({'code': 1, 'Data': 'Null', 'message': 'Service updated successfully'})
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+
+
+class ServiceDelete(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        if not Services.objects.filter(id=int(self.kwargs['pk'])):
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Service does not Exist'})
+        else:
+            try:
+                org_obj = Organization.objects.get(super_admin__id=int(request.data['super_admin_id']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+            try:
+                cate_data = Services.objects.get(product_category__super_admin=org_obj, id=int(self.kwargs['pk']))
+            except:
+                return Response({'code': 0, 'Data': 'Null',
+                                 'message': 'Service is not created by this super admin'})
+            cate_data.delete()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Service deleted successfully'})
+
+
+class ServiceList(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = Services.objects.filter(service_category__super_admin=org_obj)
+        serializer = ServiceSerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Service List success',
+                         'Data': serializer.data})
