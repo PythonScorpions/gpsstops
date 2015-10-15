@@ -1435,7 +1435,7 @@ class ProSubCategoryDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
             try:
-                cate_data = ProductSubCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                cate_data = ProductSubCategory.objects.get(product_category__super_admin=org_obj, id=int(self.kwargs['pk']))
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'SubCategory is not created by this super admin'})
@@ -1702,7 +1702,7 @@ class SerSubCategoryUpdate(APIView):
                 except:
                     return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
                 try:
-                    subcate_data = ServiceSubCategory.objects.get(product_category__super_admin=org_obj,
+                    subcate_data = ServiceSubCategory.objects.get(service_category__super_admin=org_obj,
                                                                   id=int(self.kwargs['pk']))
                 except:
                     return Response({'code': 0, 'Data': 'Null',
@@ -1731,7 +1731,8 @@ class SerSubCategoryDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
             try:
-                cate_data = ServiceSubCategory.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                cate_data = ServiceSubCategory.objects.get(service_category__super_admin=org_obj,
+                                                           id=int(self.kwargs['pk']))
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'SubCategory is not created by this super admin'})
@@ -1747,7 +1748,7 @@ class SerSubCategoryList(APIView):
             org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
         except:
             return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
-        all_cats = ServiceSubCategory.objects.filter(product_category__super_admin=org_obj)
+        all_cats = ServiceSubCategory.objects.filter(service_category__super_admin=org_obj)
         serializer = SerSubCategorySerializer(all_cats, many=True)
         return Response({'code': 1, 'message': 'Service SubCategory List success',
                          'Data': serializer.data})
@@ -1906,9 +1907,13 @@ class CompanyDetails(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            company_data = CompanyRegistration.objects.get(pk=self.kwargs['pk'])
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
         except:
-            return Response({'code': 0, 'message': 'Company Data not exist with this id',
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        try:
+            company_data = CompanyRegistration.objects.get(super_admin_id=org_obj)
+        except:
+            return Response({'code': 0, 'message': 'Company is not registration by this super admin yet',
                              'Data': 'Null'})
         serializer = CompanyGetSerializer(company_data)
         # serializer.data['super_admin_id'] = 11
@@ -1920,23 +1925,28 @@ class CompanyUpdate(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            com_obj = CompanyRegistration.objects.get(id=int(self.kwargs['pk']))
-            request.data['super_admin_id'] = Organization.objects.get(super_admin__id=request.data['super_admin_id']).id
-            serializer = CompanySerializer(instance=com_obj, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({'code': 1, 'Data': 'Null',
-                                 'message': 'Company updated successfully'})
-            else:
-                error_msg = ''
-                for k, v in enumerate(serializer.errors.iteritems()):
-                    if k == 0:
-                        error_msg += v[0]+':'+v[1][0]
-                    else:
-                        error_msg += ' and '+v[0]+':'+v[1][0]
-                return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
         except:
-            return Response({'code': 0, 'Data': 'Null', 'message': 'Company is not Registered'})
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        try:
+            com_obj = CompanyRegistration.objects.get(super_admin_id=org_obj)
+        except:
+            return Response({'code': 0, 'message': 'Company is not registration by this super admin yet',
+                             'Data': 'Null'})
+        request.data['super_admin_id'] = org_obj.id
+        serializer = CompanySerializer(instance=com_obj, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'code': 1, 'Data': 'Null',
+                             'message': 'Company updated successfully'})
+        else:
+            error_msg = ''
+            for k, v in enumerate(serializer.errors.iteritems()):
+                if k == 0:
+                    error_msg += v[0]+':'+v[1][0]
+                else:
+                    error_msg += ' and '+v[0]+':'+v[1][0]
+            return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
 
 
 class CompanyFollow(APIView):
