@@ -674,17 +674,24 @@ class AllCompanyListSerializer(serializers.ModelSerializer):
 
     def get_is_following(self, obj):
         customer_id = self.context.get("customer_id")
-        if CustomerCompany.objects.filter(company_id=obj, customer_id__id=customer_id):
-            return 1
-        else:
+        if customer_id == 'null':
             return 0
+        else:
+            if CustomerCompany.objects.filter(company_id=obj, customer_id__id=customer_id):
+                return 1
+            else:
+                return 0
 
 
 class MyCompanyListSerializer(serializers.ModelSerializer):
+    is_following = serializers.SerializerMethodField()
 
     class Meta:
         model = CompanyRegistration
         exclude = ('super_admin_id',)
+
+    def get_is_following(self, obj):
+        return 1
 
 
 class ProInquirySerializer(serializers.ModelSerializer):

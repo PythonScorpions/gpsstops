@@ -1990,13 +1990,17 @@ class CompanyUnFollow(APIView):
 class AllCompanyList(APIView):
 
     def get(self, request, *args, **kwargs):
-        try:
-            customer_data = Customer.objects.get(pk=self.kwargs['pk'])
-        except:
-            return Response({'code': 0, 'message': 'Customer Data not exist with this id',
-                             'Data': 'Null'})
         all_companies = CompanyRegistration.objects.all()
-        serializer = AllCompanyListSerializer(all_companies, context={'customer_id': customer_data.id}, many=True)
+        if self.kwargs['pk'] == 'null':
+            serializer = AllCompanyListSerializer(all_companies, context={'customer_id': 'null'}, many=True)
+        else:
+            try:
+                customer_data = Customer.objects.get(pk=self.kwargs['pk'])
+            except:
+                return Response({'code': 0, 'message': 'Customer Data not exist with this id',
+                                 'Data': 'Null'})
+            all_companies = CompanyRegistration.objects.all()
+            serializer = AllCompanyListSerializer(all_companies, context={'customer_id': customer_data.id}, many=True)
         return Response({'code': 1, 'message': 'Companies listed successfully',
                          'Data': serializer.data})
 
