@@ -149,6 +149,7 @@ body {
 
 .page h2 {
     font-weight: lighter;
+    font-size: 2rem;
 }
 .page .static p {
     font-family: "Lato", sans-serif;

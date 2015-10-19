@@ -2,24 +2,29 @@
 
 {% block content %}
 {% include 'logo_account.html' %}
-<div class="agendalist appointmentBlock">
-    <h4>Appointments</h4>
-    <div class="agenda_appointments_list agenda_list">
-        {% for appointment in agenda.appointments %}
-        <div class="agenda_appointment item">
-            <span class="date">{{ appointment.start_datetime|date:"SHORT_DATE_FORMAT" }}</span>
-            <span class="title"><a href="{% url 'edit_appointment' appointment.id %}">{{ appointment.title }}</a></span>
+<div class="contan-eria">
+    <div class="container">
+        <h2>Agenda <i class="fa fa-question-circle help-section-handler" data-section="3"></i></h2>
+        <div class="agendalist appointmentBlock">
+            <h4>Appointments</h4>
+            <div class="agenda_appointments_list agenda_list">
+                {% for appointment in agenda.appointments %}
+                <div class="agenda_appointment item">
+                    <span class="date">{{ appointment.start_datetime|date:"SHORT_DATE_FORMAT" }}</span>
+                    <span class="title"><a href="{% url 'edit_appointment' appointment.id %}">{{ appointment.title }}</a></span>
+                </div>
+                {% endfor %}
+            </div>
+            <h4>Tasks</h4>
+            <div class="agenda_tasks_list agenda_list">
+                {% for task in agenda.tasks %}
+                <div class="agenda_task item">
+                    <span class="date">{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</span>
+                    <span class="title"><a href="{% url 'edit_task' task.id %}">{{ task.title }}</a></span>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
-    </div>
-    <h4>Tasks</h4>
-    <div class="agenda_tasks_list agenda_list">
-        {% for task in agenda.tasks %}
-        <div class="agenda_task item">
-            <span class="date">{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</span>
-            <span class="title"><a href="{% url 'edit_task' task.id %}">{{ task.title }}</a></span>
-        </div>
-        {% endfor %}
     </div>
 </div>
 {% endblock content %}
