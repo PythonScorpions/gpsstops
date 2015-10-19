@@ -61,7 +61,8 @@
               <li class="init-un-active"><a href="/about_us/"><span class="gw-menu-text">About</span></a></li>
               {% if user.is_authenticated %}
               <li class="init-un-active"><a href="/calender/"><span class="gw-menu-text">Calender</span></a></li>
-              <li class="init-un-active"><a href="/maps/routes/"><span class="gw-menu-text">Created routes</span></a></li>
+              <li class="init-un-active"><a href="/maps/routes/"><span class="gw-menu-text">Route Map</span></a></li>
+              <!-- <li class="init-un-active"><a href="/maps/routes/"><span class="gw-menu-text">Created routes</span></a></li> -->
               <li class="init-un-active"><a href="/route/add/"><span class="gw-menu-text">Add Route</span></a></li>
               {% if user.user_profiles.user_role == 'super_admin' or user.user_profiles.user_role == 'admin' %}
                   <li class="init-un-active"><a href="{% url 'pro-category' %}"><span class="gw-menu-text">Products</span></a></li>

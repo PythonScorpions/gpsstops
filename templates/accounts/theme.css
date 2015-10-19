@@ -77,7 +77,8 @@ body {
 }
 
 .help-section-handler.fa.fa-question-circle {
-    color: {{theme.primary_button_text_color}};
+    color: {{theme.error_text_color}};
+    font-size: 2rem;
     margin-left: 0.5rem;
 }
 

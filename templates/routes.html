@@ -107,12 +107,12 @@ function optimized_view(){
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div role="tabpanel">
                     <ul role="tablist" class="nav nav-tabs text-center">
-                        <li role="presentation" style="left: -200px;">
+                        <li role="presentation">
                             <img class="previous_date" src="{{ STATIC_URL }}images/less_then.png" style="height: 28px;">
                             {{ date_selected }}
                             <img class="next_date" src="{{ STATIC_URL }}images/greater_then.png" style="height: 28px;">
                         </li>
-                        <li role="presentation" class="">
+                        <!-- <li role="presentation" class="">
                             <a href="{% url 'calender_prime' %}" class="right-tab">
                                 <i class="glyphicon glyphicon-calendar"></i> Calendar
                             </a>
@@ -121,7 +121,7 @@ function optimized_view(){
                             <a href="/maps/routes/" class="right-tab"  aria-expanded="true">
                                 <i class="glyphicon glyphicon-map-marker"></i> Route Map
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                     {% if messages %}
                         {% for message in messages %}
