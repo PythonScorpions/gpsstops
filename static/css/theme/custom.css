@@ -1,5 +1,10 @@
 
 /* custom modification in the theme */
+.gw-sidebar {
+    height: 100vh;
+    overflow: auto;
+}
+
 body {
     padding-top: 100px;
 }
@@ -306,13 +311,14 @@ body {
     color: #21820C;
 }
 .page .subscription-page .registration-step .plans {
-    height: 320px;
+    /*height: 320px;*/
+    margin-bottom: 2rem;
 }
 .page .subscription-page .registration-step .plans .plan {
     display: inline-block;
     width: 300px;
     margin: 2rem;
-    float: left;
+    /*float: left;*/
     text-align: center;
     background-color: #e6e7e8;
     border-radius: 4px;
@@ -377,6 +383,7 @@ body {
 }
 .page .subscription-page .registration-step .actions button {
     min-width: 200px;
+    outline: none;
 }
 
 .page .subscription-page .registration-step-2,
@@ -390,6 +397,29 @@ body {
 }
 .page .subscription-page .registration-step-3 select {
     height: 4rem;
+}
+.page .subscription-page .registration-step-3 #form .field {
+    margin-left: 15px;
+    margin-bottom: 2rem;
+}
+.page .subscription-page .registration-step-3 #form .field label {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: normal;
+}
+.page .subscription-page .registration-step-3 #form .field input, #form .field select {
+    display: block;
+    margin: 0;
+}
+.page .subscription-page .registration-step-3 #form .field .errorlist {
+    font-size: 1.1rem;
+    margin: 0;
+    padding: 0;
+}
+.page .subscription-page .registration-step-3 #form .field .errorlist li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .page .subscription-page .registration-step-4 {}
@@ -423,6 +453,24 @@ body {
 }
 .page .subscription-page .registration-step-4 .payment .methods .method .col:last-child img {
     height: 9rem;
+}
+
+.page .subscription-details.accounts {}
+.page .subscription-details.accounts h2 {
+    font-size: 2rem;
+    letter-spacing: 0px;
+    margin: 0;
+    background-color: #e6e7e8;
+    padding: 1rem;
+}
+.page .subscription-details.accounts .details {
+    border: 1px solid #e6e7e8;
+    padding: 1rem;
+    margin-bottom: 4rem;
+}
+.page .subscription-details.accounts .details p {
+    color: #000;
+    margin: 0;
 }
 
 .terms-content {

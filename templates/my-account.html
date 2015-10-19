@@ -66,7 +66,7 @@
               <td colspan="2" style="height:10px;"></td>
             </tr>
             <tr>
-              <td colspan="2" style="border:none;"><button type="submit" class="btn btn-primary">Update</button>     <a href="{% url 'calender_prime' %}" class="btn btn-danger margin-right5"> Cancel</a></td>
+              <td colspan="2" style="border:none;"><button type="submit" class="btn btn-primary">Update</button>     <a href="{% url 'calender_prime' %}" class="btn btn-primary margin-right5"> Cancel</a></td>
             </tr>
           </tbody>
         </table>
@@ -75,5 +75,17 @@
     </div>
   </div>
 </div>
+
+{% if subscription %}
+<div class="subscription-details accounts container">
+  <h2>Subscription Details</h2>
+  <div class="details">
+    <p>Plan: {{subscription.subscription_plan}}</p>
+    <p>Amount: {{subscription.amount_paid}}</p>
+    <p>Subscribed Date: {{subscription.subscribed_date}}</p>
+    <p>Expiry: {{subscription.expiry_date}}</p>
+  </div>
+</div>
+{% endif %}
 
 {% endblock %}

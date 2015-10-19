@@ -1,0 +1,49 @@
+{% csrf_token %}
+<div class="field">
+    <label>{{form.first_name.label}}</label>
+    {{ form.first_name }}{{ form.first_name.errors }}
+</div>
+<div class="field">
+    <label>{{form.address.label}}</label>
+    {{ form.address }}{{ form.address.errors }}
+</div>
+<div class="field">
+    <label>{{form.city.label}}</label>
+    {{ form.city }}{{ form.city.errors }}
+</div>
+<div class="field">
+    <label>{{form.state.label}}</label>
+    {{ form.state }}{{ form.state.errors }}
+</div>
+<div class="field">
+    <label>{{form.zip_code.label}}</label>
+    {{ form.zip_code }}{{ form.zip_code.errors }}
+</div>
+<div class="field">
+    <label>{{form.country.label}}</label>
+    {{ form.country}}{{ form.country.errors }}
+</div>
+<div class="field">
+    <label>{{form.phone_number.label}}</label>
+    {{ form.phone_number }}{{ form.phone_number.errors }}
+</div>
+<div class="field">
+    <label>{{form.email.label}}</label>
+    {{ form.email }}{{ form.email.errors }}
+</div>
+<div class="field">
+    <label>Password</label>
+    {{ form.password1 }}{{ form.password1.errors }}
+</div>
+<div class="field">
+    <label>Confirm Password</label>
+    {{ form.password2 }}{{ form.password2.errors }}
+</div>
+<div class="field">
+    <label>{{form.occupation.label}}</label>
+    {{ form.occupation }}{{ form.occupation.errors }}
+</div>
+<div class="field">
+    <label>{{form.company_name.label}}</label>
+    {{ form.company_name }}{{ form.company_name.errors }}
+</div>

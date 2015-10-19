@@ -19,10 +19,12 @@ from accounts.forms import *
 from maps.models import *
 from maps.views import custom_login_required
 from siteadmin.models import *
+from custom_forms.utils import *
 
 from os import urandom
+
+import paypalrestsdk
 import datetime, random, string
-from custom_forms.utils import *
 
 
 class IndexView(View):
@@ -53,34 +55,135 @@ class SignUpView(View):
     '''
     template_name = 'accounts/signup.html'
 
+    def _make_payment(self, plan):
+        CID = "AcmyU6YTlL9WatGsFOcCJjbXIqj0RwIvt7UAZwwUW1-XkUD59ofWwb3Ps1i6iHIuw2Wgw9AY3mHYyEOa"
+        SECRET = "ELNECBlmyyU60DXH3os0GUYx9nTKhgkoQewlJwImBrk40odCyIwBYNwbWDLqWmCQJBIM5Rfr7VhHVxX6"
+
+        result = paypalrestsdk.configure({
+            'mode': 'sandbox',
+            'client_id': CID,
+            'client_secret': SECRET
+        });
+
+        if plan == 'monthly':
+            amount = 100
+        else:
+            amount = 960
+
+        payment = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal",
+            },
+            "transactions": [{
+                # "item_list": {
+                #     "items": [{
+                #         "name": "item",
+                #         "sku": "item",
+                #         "price": "1.00",
+                #         "currency": "USD",
+                #         "quantity": 1
+                #     }]
+                # },
+                "amount": {
+                    "total": amount,
+                    "currency": "USD"
+                },
+                "description": "This is the payment transaction description."
+            }],
+            "redirect_urls": {
+                "return_url": "http://127.0.0.1:8000/payment/paypal/?success=true",
+                "cancel_url": "http://127.0.0.1:8000/payment/paypal/?cancel=true"
+            }
+        })
+
+        if payment.create():
+            print "Payment created successfully", payment
+            for link in payment.links:
+                if link.method == "REDIRECT":
+                    return link.href, payment.id
+        else:
+            print(payment.error)
+
+        return None, None
+
+
     def get(self, request, *args, **kwargs):
         form = RegisterForm()
         context_data = {'form':form}
         return render(request, self.template_name, context_data)
 
     def post(self, request, *args, **kwargs):
+        print request.POST
         form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Organization Entry
-            user_obj = User.objects.get(id=user.user.id)
-            Organization(super_admin=user_obj).save()
+        plan = request.POST.get('plan')
+        if form.is_valid() and plan in ['monthly', 'annual']:
+            payment_url, payment_id = self._make_payment(plan)
+            if payment_url:
+                user = form.save()
+                # Organization Entry
+                user_obj = User.objects.get(id=user.user.id)
+                Organization(super_admin=user_obj).save()
 
-            request.session['token'] = user.token
-            message = '%s/verification/%s/' % (settings.SERVER_URL, user.token)
-            print user.user.email
+                if plan == 'monthly':
+                    expiry_date = datetime.date.today() + datetime.timedelta(days=30)
+                    amount_paid = 100
+                elif plan == 'annual':
+                    expiry_date = datetime.date.today() + datetime.timedelta(days=365)
+                    amount_paid = 960
+                else:
+                    expiry_date = datetime.date.today()
+                    amount_paid = 0
 
-            t = loader.get_template('verification.txt')
-            c = Context({'varification_link': message})
-            send_mail('Welcome to gpsstops.com', t.render(c),
-                settings.EMAIL_HOST_USER, [str(user.user.email)],
-                fail_silently=False)
-            print "yes sent"
-            return redirect('email-sent')
+                SubscriptionDetails.objects.create(
+                    user=user_obj,
+                    subscription_plan=plan,
+                    subscribed_date=datetime.date.today(),
+                    expiry_date=expiry_date,
+                    amount_paid=amount_paid,
+                    payment_id=payment_id,
+                    status='processing'
+                )
+
+                response = {'state':'success', 'url':payment_url}
+            else:
+                response = {'state':'error'}
+            return HttpResponse(json.dumps(response), content_type='application/json')
         else:
             print "errors", form.errors
-        return render(request, self.template_name, context_data)
+
+        context_data = {'form':form}
+        return render(request, 'accounts/signup_form.html', context_data)
 signup_view = SignUpView.as_view()
+
+
+class PaymentProcessing(View):
+    def get(self, request, *args, **kwargs):
+        payment_id = request.GET.get('paymentId')
+        status = request.GET.get('success')
+        try:
+            subscription = SubscriptionDetails.objects.get(payment_id=payment_id)
+        except:
+            pass
+        else:
+            if status == 'true':
+                user = subscription.user
+                request.session['token'] = user.token
+                message = '%s/verification/%s/' % (settings.SERVER_URL, user.token)
+                # print user.user.email
+
+                t = loader.get_template('verification.txt')
+                c = Context({'varification_link': message})
+                send_mail('Welcome to gpsstops.com', t.render(c),
+                    settings.EMAIL_HOST_USER, [str(user.user.email)],
+                    fail_silently=False)
+                print "yes sent"
+                return redirect('email-sent')
+            else:
+                subscription.user.delete()
+                subscription.delete()
+        return HttpResponse("DONE")
+payment_processing_view = PaymentProcessing.as_view()
 
 
 def register(request):
@@ -258,6 +361,15 @@ class UpdateProfile(UpdateView):
     template_name = 'my-account.html'
     form_class = ProfileUpdateForm
 
+    def _get_subscription_details(self, user):
+        subscription = None
+        if user.user_profiles.user_role == 'super_admin':
+            try:
+                subscription = SubscriptionDetails.objects.get(user=user)
+            except:
+                pass
+        return subscription
+
     @method_decorator(custom_login_required)
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=request.user)
@@ -268,8 +380,10 @@ class UpdateProfile(UpdateView):
                                 'phone_number': profile.phone_number, 'occupation': profile.occupation,
                                 'company_name': profile.company_name, 'address': profile.address,
                                 'zip_code': profile.zip_code})
-        return render_to_response(self.template_name, {'form': form, 'id': id},
-                                  context_instance=RequestContext(request),)
+
+        subscription = self._get_subscription_details(user)
+        context = {'form': form, 'id': id, 'subscription':subscription}
+        return render(request, self.template_name, context)
 
     @method_decorator(custom_login_required)
     def post(self, request, *args, **kwargs):
@@ -291,8 +405,10 @@ class UpdateProfile(UpdateView):
             profile.save()
             messages.success(request, 'Profile Editted Successfully.')
             return redirect('/update-profile')
-        return render_to_response(self.template_name, {'form': form, 'id': id},
-                                  context_instance=RequestContext(request))
+
+        subscription = self._get_subscription_details(user)
+        context = {'form': form, 'id': id, 'subscription':subscription}
+        return render(request, self.template_name, context)
 
 
 class Add_route_prime(View):

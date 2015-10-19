@@ -33,6 +33,9 @@ urlpatterns = patterns("accounts.views",
     url(r'^accounts/theme/$', theme_view, name='theme'),
     url(r'^accounts/theme/css/$', css_theme_view, name='css-theme'),
 
+
+    url(r'^payment/paypal/$', payment_processing_view, name='payment_processing_view'),
+
     url(r'accounts/company_registration/$', CompanyRegi.as_view(), name='company-registration'),
     url(r'accounts/customer_followers/$', CustomerFollowers.as_view(), name='customer-followers'),
 

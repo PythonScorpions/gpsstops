@@ -1,0 +1,34 @@
+{% extends 'siteadmin/help_section.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container-fluid content-block">
+  <h2>
+    Subscribed Users
+  </h2>
+  <div class="content">
+    <table class="table table-bordered table-striped table-hovered">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Plan</th>
+          <th>Amount Paid</th>
+          <th>Subscribed Date</th>
+          <th>Expiry Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subscription_user in subscription_users %}
+        <tr>
+          <td>{{subscription_user.user.first_name}} {{subscription_user.user.last_name}}</td>
+          <td>{{subscription_user.subscription_plan}}</td>
+          <td>{{subscription_user.amount_paid}}</td>
+          <td>{{subscription_user.subscribed_date}}</td>
+          <td>{{subscription_user.expiry_date}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

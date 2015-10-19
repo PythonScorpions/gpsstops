@@ -166,3 +166,16 @@ class HelpSectionEditView(View):
             return render(request, "siteadmin/help_section_edit.html", context_data)
         return redirect("/admin/")
 edit_help_section_view = HelpSectionEditView.as_view()
+
+
+class SubscriptionUsersView(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_active and request.user.is_authenticated and \
+            request.user.is_superuser is True:
+            context_data = {
+                'subscription_users': SubscriptionDetails.objects.filter(status='paid')
+            }
+            return render(request, "siteadmin/subscription_users.html", context_data)
+        return redirect("/admin/")
+subscription_users_view = SubscriptionUsersView.as_view()
+

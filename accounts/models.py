@@ -293,6 +293,26 @@ class FormFieldEntries(models.Model):
     choice_value = models.CharField(max_length=100, blank=True, null=True)
 
 
+class SubscriptionDetails(models.Model):
+    PLANS = (
+        ('monthly', 'Monthly'),
+        ('annual', 'Annual')
+    )
+    TRANSACTION_STATUS = (
+        ('processing', 'Processing'),
+        ('paid', 'Paid'),
+        ('expired', 'Expired'),
+        ('cancelled', 'Cancelled'),
+    )
+    user = models.ForeignKey(User)
+    subscription_plan = models.CharField(choices=PLANS, max_length=100)
+    subscribed_date = models.DateField()
+    expiry_date = models.DateField()
+    amount_paid = models.IntegerField()
+    payment_id = models.CharField(max_length=150)
+    status = models.CharField(choices=TRANSACTION_STATUS, max_length=100)
+
+
 class CompanyRegistration(models.Model):
 
     super_admin_id = models.OneToOneField(Organization, related_name='org_registration')
@@ -313,6 +333,6 @@ class CompanyRegistration(models.Model):
 
 
 class CustomerCompany(models.Model):
-
     customer_id = models.ForeignKey(Customer, related_name='customer_follower')
     company_id = models.ForeignKey(CompanyRegistration, related_name='company_followed')
+
