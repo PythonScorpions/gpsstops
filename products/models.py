@@ -44,3 +44,26 @@ class ProductImages(models.Model):
 
     product = models.ForeignKey(Products, related_name='product-rev')
     product_image = models.FileField(_('Attachment'), upload_to='attachments')
+
+
+class ProductInquiry(models.Model):
+
+    customer_id = models.ForeignKey(Customer, related_name='customer-pro-inquiry')
+    product_id = models.ForeignKey(Products, related_name='pro-inquiry')
+    company_id = models.ForeignKey(CompanyRegistration, related_name='company-pro-inquiry')
+    note = models.CharField(max_length=1000)
+    reply_status = models.BooleanField(default=False)
+    accept_status = models.BooleanField(default=False)
+    reject_status = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u'%s %s' % self.customer_id, self.product_id
+
+
+class ProductInquiryReply(models.Model):
+
+    inquiry_id = models.ForeignKey(ProductInquiry, related_name='inquiry-reply')
+    reply_note = models.TextField(max_length=1000)
+
+    def __unicode__(self):
+        return u'%s %s' % self.reply_note

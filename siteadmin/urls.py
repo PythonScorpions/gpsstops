@@ -14,4 +14,6 @@ urlpatterns = patterns("siteadmin.views",
     url('^help_section/$', help_section_view, name="admin_help_section"),
     url('^help_section/add/$', edit_help_section_view, name="admin_help_section_edit"),
     url('^help_section/(?P<pk>\d+)/edit/$', edit_help_section_view, name="admin_help_section_edit"),
+
+    url('^subscription/users/$', subscription_users_view, name="subscription-users"),
 )

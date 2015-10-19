@@ -38,3 +38,28 @@ class Services(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.service_name
+
+
+class ServiceInquiry(models.Model):
+
+    customer_id = models.ForeignKey(Customer, related_name='customer-ser-inquiry')
+    service_id = models.ForeignKey(Services, related_name='ser-inquiry')
+    company_id = models.ForeignKey(CompanyRegistration, related_name='company-ser-inquiry')
+    note = models.CharField(max_length=1000)
+    service_datetime = models.CharField(max_length=100)
+    image = models.FileField(upload_to='service_inquiries', blank=True, null=True)
+    reply_status = models.BooleanField(default=False)
+    accept_status = models.BooleanField(default=False)
+    reject_status = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u'%s %s' % self.customer_id, self.service_id
+
+
+class ServiceInquiryReply(models.Model):
+
+    inquiry_id = models.ForeignKey(ServiceInquiry, related_name='ser-inquiry-reply')
+    reply_note = models.TextField(max_length=1000)
+
+    def __unicode__(self):
+        return u'%s %s' % self.reply_note

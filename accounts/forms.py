@@ -269,3 +269,10 @@ class MobileThemeForm(forms.ModelForm):
 
     class Meta:
         model = Theme
+
+
+class CompanyRegiForm(forms.ModelForm):
+
+    class Meta:
+        model = CompanyRegistration
+        exclude = ('super_admin_id',)

@@ -311,3 +311,28 @@ class SubscriptionDetails(models.Model):
     amount_paid = models.IntegerField()
     payment_id = models.CharField(max_length=150)
     status = models.CharField(choices=TRANSACTION_STATUS, max_length=100)
+
+
+class CompanyRegistration(models.Model):
+
+    super_admin_id = models.OneToOneField(Organization, related_name='org_registration')
+    company_name = models.CharField(max_length=100)
+    logo = models.FileField(_('Company Logo'), upload_to='company_logos')
+    address1 = models.CharField(max_length=300, blank=True, null=True)
+    address2 = models.CharField(max_length=300, blank=True, null=True)
+    near_by_location = models.CharField(max_length=500, blank=True, null=True)
+    speciality = models.CharField(max_length=500, blank=True, null=True)
+    phone1 = models.CharField(max_length=20, blank=True, null=True)
+    phone2 = models.CharField(max_length=20, blank=True, null=True)
+    email_address1 = models.EmailField()
+    email_address2 = models.EmailField()
+    about_us = models.CharField(max_length=1000, blank=True, null=True)
+
+    def __unicode__(self):
+        return u'%s' % self.company_name
+
+
+class CustomerCompany(models.Model):
+    customer_id = models.ForeignKey(Customer, related_name='customer_follower')
+    company_id = models.ForeignKey(CompanyRegistration, related_name='company_followed')
+
