@@ -668,6 +668,7 @@ class CustomerCompanySerializer(serializers.ModelSerializer):
 
 class AllCompanyListSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
+    super_admin_id = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = CompanyRegistration
@@ -682,9 +683,13 @@ class AllCompanyListSerializer(serializers.ModelSerializer):
             else:
                 return 0
 
+    def get_super_admin_id(self, obj):
+        return Organization.objects.get(id=obj.super_admin_id.id).super_admin.id
+
 
 class MyCompanyListSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
+    super_admin_id = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = CompanyRegistration
@@ -693,14 +698,63 @@ class MyCompanyListSerializer(serializers.ModelSerializer):
     def get_is_following(self, obj):
         return 1
 
+    def get_super_admin_id(self, obj):
+        return Organization.objects.get(id=obj.super_admin_id.id).super_admin.id
+
 
 class ProInquirySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductInquiry
+        exclude = ('accept_status', 'reject_status', 'reply_status')
 
 
 class SerInquirySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceInquiry
+        exclude = ('accept_status', 'reject_status', 'reply_status')
+
+
+class ProInquiryReplySerializer(serializers.ModelSerializer):
+    is_accepted = serializers.CharField(max_length=2, write_only=True)
+
+    class Meta:
+        model = ProductInquiryReply
+
+    def create(self, validated_data):
+        inquiry_reply = ProductInquiryReply.objects.create(product_request_id=validated_data['product_request_id'],
+                                                           comments=validated_data['comments'])
+
+        if validated_data['is_accepted'] == '0':
+            print "yes"
+            inquiry_reply.product_request_id.accept_status = False
+            inquiry_reply.product_request_id.reject_status = True
+        else:
+            inquiry_reply.product_request_id.accept_status = True
+            inquiry_reply.product_request_id.reject_status = False
+        inquiry_reply.product_request_id.save()
+
+        return inquiry_reply
+
+
+class SerInquiryReplySerializer(serializers.ModelSerializer):
+    is_accepted = serializers.CharField(max_length=2, write_only=True)
+
+    class Meta:
+        model = ServiceInquiryReply
+
+    def create(self, validated_data):
+        inquiry_reply = ServiceInquiryReply.objects.create(service_request_id=validated_data['service_request_id'],
+                                                           comments=validated_data['comments'])
+
+        if validated_data['is_accepted'] == '0':
+            print "yes"
+            inquiry_reply.service_request_id.accept_status = False
+            inquiry_reply.service_request_id.reject_status = True
+        else:
+            inquiry_reply.service_request_id.accept_status = True
+            inquiry_reply.service_request_id.reject_status = False
+        inquiry_reply.service_request_id.save()
+
+        return inquiry_reply

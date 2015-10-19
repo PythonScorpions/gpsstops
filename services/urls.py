@@ -18,5 +18,11 @@ urlpatterns = patterns("services.views",
                        url(r'edit_ser/(?P<pk>\d+)$', ServiceAdd.as_view(), name='service-edit'),
                        url(r'delete_ser/(?P<key>\d+)$', ServiceAdd.as_view(), name='service-delete'),
 
+                       url(r'service-inquiries', SerInquiries.as_view(), name='ser-inquiry'),
+                       url(r'service_inquiries_view/(?P<pk>\d+)$', SerInquiriesView.as_view(), name='ser-inquiry-view'),
+                       url(r'service_inquiry_status/(?P<pk>\d+)/(?P<key>\d+)$', SerInquiryStatus.as_view(),
+                           name='ser-inquiry-status'),
+                       url(r'service_inquiry_reply/(?P<pk>\d+)$', SerInquiryReply.as_view(), name='ser-inquiry-reply'),
+
                        url('^all_suboptions', all_suboptions)
                        )
