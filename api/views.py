@@ -1516,7 +1516,7 @@ class ProductUpdate(APIView):
                 except:
                     return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory Does not Exist'})
                 try:
-                    pro_data = Products.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                    pro_data = Products.objects.get(product_category__super_admin=org_obj, id=int(self.kwargs['pk']))
                 except:
                     return Response({'code': 0, 'Data': 'Null',
                                      'message': 'Product is not created by this super admin'})
@@ -1581,6 +1581,21 @@ class ProductList(APIView):
         except:
             return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
         all_cats = Products.objects.filter(product_category__super_admin=org_obj)
+        serializer = ProductSerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Product List success',
+                         'Data': serializer.data})
+
+
+class ProductListCat(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = Products.objects.filter(product_category__super_admin=org_obj,
+                                           product_category__id=int(self.kwargs['key']),
+                                           product_sub_category__id=int(self.kwargs['val']))
         serializer = ProductSerializer(all_cats, many=True)
         return Response({'code': 1, 'message': 'Product List success',
                          'Data': serializer.data})
@@ -1812,7 +1827,7 @@ class ServiceUpdate(APIView):
                 except:
                     return Response({'code': 0, 'Data': 'Null', 'message': 'SubCategory Does not Exist'})
                 try:
-                    pro_data = Services.objects.get(super_admin=org_obj, id=int(self.kwargs['pk']))
+                    pro_data = Services.objects.get(service_category__super_admin=org_obj, id=int(self.kwargs['pk']))
                 except:
                     return Response({'code': 0, 'Data': 'Null',
                                      'message': 'Service is not created by this super admin'})
@@ -1870,6 +1885,21 @@ class ServiceList(APIView):
         except:
             return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
         all_cats = Services.objects.filter(service_category__super_admin=org_obj)
+        serializer = ServiceSerializer(all_cats, many=True)
+        return Response({'code': 1, 'message': 'Service List success',
+                         'Data': serializer.data})
+
+
+class ServiceListCat(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            org_obj = Organization.objects.get(super_admin__id=int(self.kwargs['pk']))
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Super Admin Does not Exist'})
+        all_cats = Services.objects.filter(service_category__super_admin=org_obj,
+                                           service_category__id=int(self.kwargs['key']),
+                                           service_sub_category__id=int(self.kwargs['val']))
         serializer = ServiceSerializer(all_cats, many=True)
         return Response({'code': 1, 'message': 'Service List success',
                          'Data': serializer.data})
@@ -1999,7 +2029,6 @@ class AllCompanyList(APIView):
             except:
                 return Response({'code': 0, 'message': 'Customer Data not exist with this id',
                                  'Data': 'Null'})
-            all_companies = CompanyRegistration.objects.all()
             serializer = AllCompanyListSerializer(all_companies, context={'customer_id': customer_data.id}, many=True)
         return Response({'code': 1, 'message': 'Companies listed successfully',
                          'Data': serializer.data})
@@ -2054,3 +2083,173 @@ class RequestServiceQuote(APIView):
                 else:
                     error_msg += ' and '+v[0]+':'+v[1][0]
             return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+
+
+class RequestProductDetails(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            product_quote = ProductInquiry.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'message': 'Product Quote not exist with this id',
+                             'Data': 'Null'})
+
+        serializer = ProInquirySerializer(product_quote)
+        a = dict(serializer.data)
+        del a['customer_id']
+        del a['product_id']
+        del a['company_id']
+        a['quote'] = a.pop('note')
+        return Response({'code': 1, 'message': 'Product Quote retrieved successfully',
+                         'Data': a})
+
+
+class RequestServiceDetails(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            service_quote = ServiceInquiry.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'message': 'Service Quote not exist with this id',
+                             'Data': 'Null'})
+
+        serializer = SerInquirySerializer(service_quote)
+        a = dict(serializer.data)
+        del a['customer_id']
+        del a['service_id']
+        del a['company_id']
+        a['quote'] = a.pop('note')
+        if a['image']:
+            a['image'] = settings.SERVER_URL + a['image']
+        return Response({'code': 1, 'message': 'Service Quote retrieved successfully',
+                         'Data': a})
+
+
+class AnswerProductQuote(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            pro_inquiry = ProductInquiry.objects.get(id=request.data['product_request_id'])
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Quote Does not exist with this Id'})
+        try:
+            ProductInquiryReply.objects.get(product_request_id=pro_inquiry)
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Quote Already Answered'})
+        except:
+            serializer = ProInquiryReplySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'code': 1, 'Data': 'Null', 'message': 'quote answered successfully'})
+            else:
+                error_msg = ''
+                for k, v in enumerate(serializer.errors.iteritems()):
+                    if k == 0:
+                        error_msg += v[0]+':'+v[1][0]
+                    else:
+                        error_msg += ' and '+v[0]+':'+v[1][0]
+                return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+
+
+class AnswerServiceQuote(APIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            ser_inquiry = ServiceInquiry.objects.get(id=request.data['service_request_id'])
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Quote Does not exist with this Id'})
+        try:
+            ServiceInquiryReply.objects.get(service_request_id=ser_inquiry)
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Quote Already Answered'})
+        except:
+            serializer = SerInquiryReplySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'code': 1, 'Data': 'Null', 'message': 'quote answered successfully'})
+            else:
+                error_msg = ''
+                for k, v in enumerate(serializer.errors.iteritems()):
+                    if k == 0:
+                        error_msg += v[0]+':'+v[1][0]
+                    else:
+                        error_msg += ' and '+v[0]+':'+v[1][0]
+                return Response({'code': 0, 'Data': 'Null', 'message': error_msg})
+
+
+class QuotesList(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            customer_data = Customer.objects.get(pk=self.kwargs['pk'])
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Customer does not exist with this Id'})
+        try:
+            company_data = CompanyRegistration.objects.get(pk=self.kwargs['key'])
+        except:
+            return Response({'code': 0, 'Data': 'Null', 'message': 'Company does not exist with this Id'})
+        final_list = []
+
+        pro_inquiries = ProductInquiry.objects.filter(customer_id=customer_data, company_id=company_data)
+        ser_inquiries = ServiceInquiry.objects.filter(customer_id=customer_data, company_id=company_data)
+        serializer = ProInquirySerializer(pro_inquiries, many=True)
+        ser_serializer = SerInquirySerializer(ser_inquiries, many=True)
+        for inq in serializer.data:
+            a = dict(inq)
+            del a['customer_id']
+            del a['product_id']
+            del a['company_id']
+            a['quote'] = a.pop('note')
+            a['type'] = 'product_request'
+            a['service_datetime'] = ''
+            a['image'] = ''
+
+            final_list.append(a)
+
+        for inq in ser_serializer.data:
+            a = dict(inq)
+            del a['customer_id']
+            del a['service_id']
+            del a['company_id']
+            a['quote'] = a.pop('note')
+            a['type'] = 'service_request'
+            if a['image']:
+                a['image'] = settings.SERVER_URL + a['image']
+
+            final_list.append(a)
+
+        return Response({'code': 1, 'Data': final_list, 'message': 'quotes listed successfully'})
+
+
+class QuoteAnswer(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        if int(self.kwargs['pk']) == 1:
+            try:
+                inq_reply = ProductInquiryReply.objects.get(product_request_id__id=int(self.kwargs['key']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Answer of this quote does not exist'})
+            serializer = ProInquiryReplySerializer(inq_reply)
+            pro_reply_object = dict(serializer.data)
+            if inq_reply.product_request_id.accept_status is True:
+                pro_reply_object['is_accepted'] = 1
+            elif inq_reply.product_request_id.reject_status is True:
+                pro_reply_object['is_accepted'] = 0
+            else:
+                pro_reply_object['is_accepted'] = ''
+
+        else:
+            try:
+                inq_reply = ServiceInquiryReply.objects.get(service_request_id__id=int(self.kwargs['key']))
+            except:
+                return Response({'code': 0, 'Data': 'Null', 'message': 'Answer of this quote does not exist'})
+            serializer = SerInquiryReplySerializer(inq_reply)
+            pro_reply_object = dict(serializer.data)
+            if inq_reply.service_request_id.accept_status is True:
+                pro_reply_object['is_accepted'] = 1
+            elif inq_reply.service_request_id.reject_status is True:
+                pro_reply_object['is_accepted'] = 0
+            else:
+                pro_reply_object['is_accepted'] = ''
+
+        return Response({'code': 1, 'Data': pro_reply_object, 'message': 'quote answer retrieved successfully'})

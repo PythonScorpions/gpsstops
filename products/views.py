@@ -303,6 +303,65 @@ class ProInquiries(View):
                                   context_instance=RequestContext(request),)
 
 
+class ProInquiriesView(View):
+    template_name = 'products/product_inquiries_view.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, *args, **kwargs):
+
+        product_inquiry = ProductInquiry.objects.get(id=int(pk))
+
+        return render_to_response(self.template_name, {'inquiry': product_inquiry},
+                                  context_instance=RequestContext(request),)
+
+
+class ProInquiryStatus(View):
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, key=None, *args, **kwargs):
+
+        product_inquiry = ProductInquiry.objects.get(id=int(pk))
+
+        if int(key) == 0:
+            product_inquiry.accept_status = True
+            product_inquiry.reject_status = False
+        else:
+            product_inquiry.accept_status = False
+            product_inquiry.reject_status = True
+        product_inquiry.save()
+
+        return HttpResponseRedirect(reverse('pro-inquiry'))
+
+
+class ProInquiryReply(View):
+    template1 = 'products/product_inquiry_reply.html'
+    template2 = 'products/product_inquiry_viewreply.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, *args, **kwargs):
+
+        product_inquiry = ProductInquiry.objects.get(id=int(pk))
+
+        if ProductInquiryReply.objects.filter(product_request_id=product_inquiry):
+            print "replied"
+            return render_to_response(self.template2, {'inquiry': product_inquiry},
+                                      context_instance=RequestContext(request),)
+
+        else:
+            return render_to_response(self.template1, {'inquiry': product_inquiry},
+                                      context_instance=RequestContext(request),)
+
+    @method_decorator(custom_login_required)
+    def post(self, request, pk=None, *args, **kwargs):
+
+        product_inquiry = ProductInquiry.objects.get(id=int(pk))
+
+        inquiry_reply = ProductInquiryReply(product_request_id=product_inquiry, comments=request.POST['reply'])
+        inquiry_reply.save()
+
+        return HttpResponseRedirect(reverse('pro-inquiry'))
+
+
 def all_suboptions(request):
     # to retrieve categories in new campaign page
     cat_id = int(request.GET['cat_id'])

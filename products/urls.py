@@ -19,6 +19,10 @@ urlpatterns = patterns("products.views",
                        url(r'delete_pro/(?P<key>\d+)$', ProductAdd.as_view(), name='product-delete'),
 
                        url(r'product-inquiries', ProInquiries.as_view(), name='pro-inquiry'),
+                       url(r'product_inquiries_view/(?P<pk>\d+)$', ProInquiriesView.as_view(), name='pro-inquiry-view'),
+                       url(r'product_inquiry_status/(?P<pk>\d+)/(?P<key>\d+)$', ProInquiryStatus.as_view(),
+                           name='pro-inquiry-status'),
+                       url(r'product_inquiry_reply/(?P<pk>\d+)$', ProInquiryReply.as_view(), name='pro-inquiry-reply'),
 
                        url('^all_suboptions', all_suboptions),
                        url('^delete_image', delete_image),

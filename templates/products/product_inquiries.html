@@ -46,10 +46,13 @@
                         <td>{{ inquiry.note }}</td>
                         <td>
 {#                            <a href="{% url 'product-edit' pro.id %}">Edit</a>#}
-                            <a href="">View</a>
-                            <a href="">Accept</a>
-                            <a href="">Reject</a>
-                            <a href="">Reply</a>
+                            <a href="{% url 'pro-inquiry-view' inquiry.id %}">View</a>
+                            {% if inquiry.accept_status %}Accepted
+                            {% else %}<a href="{% url 'pro-inquiry-status' inquiry.id 0 %}">Accept</a>{% endif %}
+                            {% if inquiry.reject_status %}Rejected
+                            {% else %}<a href="{% url 'pro-inquiry-status' inquiry.id 1 %}">Reject</a>{% endif %}
+                            <a href="{% url 'pro-inquiry-reply' inquiry.id %}">
+                                {% if inquiry.inq_reply.all %} View Replied Message{% else %}Reply{% endif %}</a>
                         </td>
                     </tr>
                     {% endfor %}

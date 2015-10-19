@@ -58,8 +58,8 @@ class ServiceInquiry(models.Model):
 
 class ServiceInquiryReply(models.Model):
 
-    inquiry_id = models.ForeignKey(ServiceInquiry, related_name='ser-inquiry-reply')
-    reply_note = models.TextField(max_length=1000)
+    service_request_id = models.ForeignKey(ServiceInquiry, related_name='inq_reply')
+    comments = models.TextField(max_length=1000)
 
     def __unicode__(self):
-        return u'%s %s' % self.reply_note
+        return u'%s %s' % self.comments

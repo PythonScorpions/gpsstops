@@ -11,8 +11,8 @@
 
                         <ul role="tablist" class="nav nav-tabs text-left">
                             <li role="presentation" class="active">
-                                <a href="{% url 'pro-list' %}" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
-                                     Products Inquiry View
+                                <a href="" class="right-tab"  style="font-size: 16px;" aria-expanded="true">
+                                     Service Inquiry View
                                 </a>
                             </li>
                         </ul>
@@ -38,12 +38,12 @@
                             <ul role="tablist" class="nav nav-tabs text-left">
                                 <li style="margin-left: 62px; width: 200px;">
                                     <div class="field-row">
-                                        <label>Product Name</label>
+                                        <label>Service Name</label>
                                     </div>
                                 </li>
                                 <li style="margin-left: 38px;">
                                     <div class="field">
-                                        {{ inquiry.product_id.product_name }}
+                                        {{ inquiry.service_id.service_name }}
                                     </div>
                                 </li>
                             </ul>
@@ -74,7 +74,35 @@
                                 </li>
                             </ul>
                         <br>
-                                </ul>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>Datetime</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {{ inquiry.service_datetime }}
+                                    </div>
+                                </li>
+                            </ul>
+                        <br>
+                            <ul role="tablist" class="nav nav-tabs text-left">
+                                <li style="margin-left: 62px; width: 200px;">
+                                    <div class="field-row">
+                                        <label>Image</label>
+                                    </div>
+                                </li>
+                                <li style="margin-left: 38px;">
+                                    <div class="field">
+                                        {% if inquiry.image %}
+                                            <img src="{{ server_url }}/media/{{ inquiry.image }}" height="100px" width="160px">
+                                        {% else %}{% endif %}
+                                    </div>
+                                </li>
+                            </ul>
+                        <br>
+
 
                         </form>
                     </div>

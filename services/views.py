@@ -275,6 +275,79 @@ class ServiceAdd(View):
                                   context_instance=RequestContext(request),)
 
 
+class SerInquiries(View):
+    template_name = 'services/service_inquiries.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, *args, **kwargs):
+
+        org_obj = retrieve_organization(request)
+
+        service_inquiries = ServiceInquiry.objects.filter(company_id__super_admin_id=org_obj).order_by('-id')
+
+        return render_to_response(self.template_name, {'inquiries': service_inquiries},
+                                  context_instance=RequestContext(request),)
+
+
+class SerInquiriesView(View):
+    template_name = 'services/service_inquiries_view.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, *args, **kwargs):
+
+        service_inquiry = ServiceInquiry.objects.get(id=int(pk))
+
+        return render_to_response(self.template_name, {'inquiry': service_inquiry},
+                                  context_instance=RequestContext(request),)
+
+
+class SerInquiryStatus(View):
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, key=None, *args, **kwargs):
+
+        service_inquiry = ServiceInquiry.objects.get(id=int(pk))
+
+        if int(key) == 0:
+            service_inquiry.accept_status = True
+            service_inquiry.reject_status = False
+        else:
+            service_inquiry.accept_status = False
+            service_inquiry.reject_status = True
+        service_inquiry.save()
+
+        return HttpResponseRedirect(reverse('ser-inquiry'))
+
+
+class SerInquiryReply(View):
+    template1 = 'services/service_inquiry_reply.html'
+    template2 = 'services/service_inquiry_viewreply.html'
+
+    @method_decorator(custom_login_required)
+    def get(self, request, pk=None, *args, **kwargs):
+
+        service_inquiry = ServiceInquiry.objects.get(id=int(pk))
+
+        if ServiceInquiryReply.objects.filter(service_request_id=service_inquiry):
+            print "replied"
+            return render_to_response(self.template2, {'inquiry': service_inquiry},
+                                      context_instance=RequestContext(request),)
+
+        else:
+            return render_to_response(self.template1, {'inquiry': service_inquiry},
+                                      context_instance=RequestContext(request),)
+
+    @method_decorator(custom_login_required)
+    def post(self, request, pk=None, *args, **kwargs):
+
+        service_inquiry = ServiceInquiry.objects.get(id=int(pk))
+
+        inquiry_reply = ServiceInquiryReply(service_request_id=service_inquiry, comments=request.POST['reply'])
+        inquiry_reply.save()
+
+        return HttpResponseRedirect(reverse('ser-inquiry'))
+
+
 def all_suboptions(request):
     # to retrieve categories in new campaign page
     cat_id = int(request.GET['cat_id'])
