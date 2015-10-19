@@ -33,5 +33,7 @@ urlpatterns = patterns("accounts.views",
     url(r'^accounts/theme/$', theme_view, name='theme'),
     url(r'^accounts/theme/css/$', css_theme_view, name='css-theme'),
 
+    url(r'^payment/paypal/$', payment_processing_view, name='payment_processing_view'),
+
     url(r'^help/$', help_view, name='help_view'),
 )

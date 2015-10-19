@@ -4,6 +4,7 @@
 {% block content %}
 {% include "logo_account.html" %}
 <div class="contan-eria subscription-page">
+<form id="form" name="form" method="post" action="/signup">
   <div class="container">
     <h2>Sign Up</h2>
     <div class="row registration-steps hidden-xs hidden-sm">
@@ -197,7 +198,7 @@
             </div>
             <div class="plan">
                 <div class="field">
-                    <input type="radio" name="plan" value="annually">
+                    <input type="radio" name="plan" value="annual">
                     <div class="title">Annually</div>
                     <div class="price">$960</div>
                     <div class="old-price">$1,200</div>
@@ -253,22 +254,9 @@
     <div class="registration-step registration-step-3">
         <h2>Fill Details</h2>
         <div class="row">
-            <form id="form" name="form" method="post" action="/signup"
-                class="col col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            {% csrf_token %}
-            {{ form.first_name }}{{ form.first_name.errors }}
-            {{ form.address }}{{ form.address.errors }}
-            {{ form.city }}{{ form.city.errors }}
-            {{ form.state }}{{ form.state.errors }}
-            {{ form.zip_code }}{{ form.zip_code.errors }}
-            {{ form.country}}{{ form.country.errors }}
-            {{ form.phone_number }}{{ form.phone_number.errors }}
-            {{ form.email }}{{ form.email.errors }}
-            {{ form.password1 }}{{ form.password1.errors }}
-            {{ form.password2 }}{{ form.password2.errors }}
-            {{ form.occupation }}{{ form.occupation.errors }}
-            {{ form.company_name }}{{ form.company_name.errors }}
-            </form>
+            <div id="form" class="col col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            {% include 'accounts/signup_form.html' %}
+            </div>
         </div>
         <div class="actions">
             <button class="btn btn-primary">CONTINUE TO PAYMENT</button>
@@ -291,15 +279,12 @@
             </div>
         </div>
         <div class="actions">
-            <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="EAXV36NF32FBL">
-                <button type="submit" class="btn btn-primary">PAY</button>
-            </form>
+            <a id="paypal" class="btn btn-primary">PAY</a>
         </div>
     </div>
 
   </div>
+</form>
 </div>
 
 <!-- <div class="contan-eria">
