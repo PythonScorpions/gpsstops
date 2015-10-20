@@ -39,6 +39,12 @@ body {
     padding: 0.6rem 2rem;
 }
 
+.help-section-handler.fa.fa-question-circle {
+    color: #c33;
+    font-size: 2rem;
+    margin-left: 0.5rem;
+}
+
 .page {
     /*float: left;
     margin-top: -3.2rem;*/
