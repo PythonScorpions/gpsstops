@@ -24,7 +24,7 @@ from custom_forms.utils import *
 from os import urandom
 
 import paypalrestsdk
-import datetime, random, string
+import datetime, random, string, json
 
 
 class IndexView(View):
@@ -118,36 +118,39 @@ class SignUpView(View):
         form = RegisterForm(request.POST)
         plan = request.POST.get('plan')
         if form.is_valid() and plan in ['monthly', 'annual']:
-            payment_url, payment_id = self._make_payment(plan)
-            if payment_url:
-                user = form.save()
-                # Organization Entry
-                user_obj = User.objects.get(id=user.user.id)
-                Organization(super_admin=user_obj).save()
+            if request.POST.get('action') == 'save':
+                payment_url, payment_id = self._make_payment(plan)
+                if payment_url:
+                    user = form.save()
+                    # Organization Entry
+                    user_obj = User.objects.get(id=user.user.id)
+                    Organization(super_admin=user_obj).save()
 
-                if plan == 'monthly':
-                    expiry_date = datetime.date.today() + datetime.timedelta(days=30)
-                    amount_paid = 100
-                elif plan == 'annual':
-                    expiry_date = datetime.date.today() + datetime.timedelta(days=365)
-                    amount_paid = 960
+                    if plan == 'monthly':
+                        expiry_date = datetime.date.today() + datetime.timedelta(days=30)
+                        amount_paid = 100
+                    elif plan == 'annual':
+                        expiry_date = datetime.date.today() + datetime.timedelta(days=365)
+                        amount_paid = 960
+                    else:
+                        expiry_date = datetime.date.today()
+                        amount_paid = 0
+
+                    SubscriptionDetails.objects.create(
+                        user=user_obj,
+                        subscription_plan=plan,
+                        subscribed_date=datetime.date.today(),
+                        expiry_date=expiry_date,
+                        amount_paid=amount_paid,
+                        payment_id=payment_id,
+                        status='processing'
+                    )
+
+                    response = {'state':'success', 'url':payment_url}
                 else:
-                    expiry_date = datetime.date.today()
-                    amount_paid = 0
-
-                SubscriptionDetails.objects.create(
-                    user=user_obj,
-                    subscription_plan=plan,
-                    subscribed_date=datetime.date.today(),
-                    expiry_date=expiry_date,
-                    amount_paid=amount_paid,
-                    payment_id=payment_id,
-                    status='processing'
-                )
-
-                response = {'state':'success', 'url':payment_url}
+                    response = {'state':'error'}
             else:
-                response = {'state':'error'}
+                response = {'state':'form_validation_success'}
             return HttpResponse(json.dumps(response), content_type='application/json')
         else:
             print "errors", form.errors
@@ -160,12 +163,12 @@ signup_view = SignUpView.as_view()
 class PaymentProcessing(View):
     def get(self, request, *args, **kwargs):
         payment_id = request.GET.get('paymentId')
-        status = request.GET.get('success')
         try:
             subscription = SubscriptionDetails.objects.get(payment_id=payment_id)
         except:
             pass
         else:
+            status = request.GET.get('success')
             if status == 'true':
                 user = subscription.user
                 request.session['token'] = user.token
@@ -182,7 +185,8 @@ class PaymentProcessing(View):
             else:
                 subscription.user.delete()
                 subscription.delete()
-        return HttpResponse("DONE")
+                return redirect('signup')
+        return HttpResponse("Something went wrong.")
 payment_processing_view = PaymentProcessing.as_view()
 
 

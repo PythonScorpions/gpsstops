@@ -69,8 +69,8 @@ $(document).ready(function() {
       data: $("form").serialize(),
       success: function(data, textStatus, jqXHR) {
         console.log(data, typeof(data));
-        if (typeof(data) == 'object' && data.state == "success") {
-          $("#paypal").attr("href", data.url);
+        if (typeof(data) == 'object' && data.state == "form_validation_success") {
+          // $("#paypal").attr("href", data.url);
 
           $(".page .subscription-page .registration-steps .step-3")
           .addClass("done")
@@ -86,6 +86,37 @@ $(document).ready(function() {
           $("body").scrollTop(0);
         } else if (typeof(data) == 'string') {
           $("div#form").html(data);
+        }
+      }
+    });
+
+    return false;
+  });
+
+  $(".page .subscription-page .registration-step-4 a#payment")
+  .click(function(event) {
+    $.ajax({
+      type: "POST",
+      url: "http://127.0.0.1:8000/signup",
+      data: $("form").serialize() + "&action=save",
+      success: function(data, textStatus, jqXHR) {
+        if (typeof(data) == 'object' && data.state == "success") {
+          window.location.href = data.url;
+        } else if (typeof(data) == 'string') {
+          $("div#form").html(data);
+
+          $(".page .subscription-page .registration-steps .step-2")
+          .addClass("done")
+          .removeClass("active")
+          ;
+          $(".page .subscription-page .registration-steps .step-3")
+          .addClass("active")
+          ;
+
+          $(".page .subscription-page .registration-step-3").show();
+          $(".page .subscription-page .registration-step-2").hide();
+
+          $("body").scrollTop(0);
         }
       }
     });
