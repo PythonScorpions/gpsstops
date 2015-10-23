@@ -43,9 +43,9 @@ MOBILE_THEME_CONSTANTS = {
     'background_color': "#ffffff",
     'navigation_color': "#337ab7",
 
-    'active_button_color': "#0b9bc1",
-    'active_button_text_color': "#197095",
+    'active_button_color': "#337ab7",
+    'active_button_text_color': "#ffffff",
 
-    'inactive_button_color': "#414042",
+    'inactive_button_color': "#999595",
     'inactive_button_text_color': "#333333"
 }
