@@ -7,6 +7,7 @@ class ServiceCategory(models.Model):
     super_admin = models.ForeignKey(Organization, related_name='super_admin_service')
     category_name = models.CharField(max_length=300)
     cat_description = models.CharField(max_length=500, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.category_name
@@ -17,6 +18,7 @@ class ServiceSubCategory(models.Model):
     service_category = models.ForeignKey(ServiceCategory, related_name='service-category')
     subcategory_name = models.CharField(max_length=300)
     sub_cat_description = models.CharField(max_length=500, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.subcategory_name
@@ -35,6 +37,7 @@ class Services(models.Model):
     price_info = models.CharField(max_length=200)
     service_image = models.FileField(_('Service Attachment'), upload_to='service_attachments',
                                      blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.service_name

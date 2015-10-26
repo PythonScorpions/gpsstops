@@ -69,7 +69,9 @@ class CategoryAdd(View):
             form = SerCategoryForm(instance=cat_obj, initial=initial_data)
         elif key:
             cat_obj = ServiceCategory.objects.get(id=int(key))
-            cat_obj.delete()
+            # cat_obj.delete()
+            cat_obj.is_active = not cat_obj.is_active
+            cat_obj.save()
             return HttpResponseRedirect(reverse('ser-category'))
 
         else:
@@ -121,7 +123,9 @@ class SubCategoryAdd(View):
             form = SerSubCategoryForm(instance=cat_obj, initial=initial_data)
         elif key:
             cat_obj = ServiceSubCategory.objects.get(id=int(key))
-            cat_obj.delete()
+            # cat_obj.delete()
+            cat_obj.is_active = not cat_obj.is_active
+            cat_obj.save()
             return HttpResponseRedirect(reverse('ser-subcat'))
 
         else:
@@ -184,7 +188,9 @@ class ServiceAdd(View):
 
         elif key:
             ser_obj = Services.objects.get(id=int(key))
-            ser_obj.delete()
+            # ser_obj.delete()
+            ser_obj.is_active = not ser_obj.is_active
+            ser_obj.save()
             return HttpResponseRedirect(reverse('ser-list'))
 
         else:

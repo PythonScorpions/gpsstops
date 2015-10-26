@@ -72,7 +72,9 @@ class CategoryAdd(View):
             form = ProCategoryForm(instance=cat_obj, initial=initial_data)
         elif key:
             cat_obj = ProductCategory.objects.get(id=int(key))
-            cat_obj.delete()
+            cat_obj.is_active = not cat_obj.is_active
+            cat_obj.save()
+            # cat_obj.delete()
             return HttpResponseRedirect(reverse('pro-category'))
 
         else:
@@ -124,7 +126,9 @@ class SubCategoryAdd(View):
             form = ProSubCategoryForm(instance=cat_obj, initial=initial_data)
         elif key:
             cat_obj = ProductSubCategory.objects.get(id=int(key))
-            cat_obj.delete()
+            cat_obj.is_active = not cat_obj.is_active
+            cat_obj.save()
+            # cat_obj.delete()
             return HttpResponseRedirect(reverse('pro-subcat'))
 
         else:
@@ -191,7 +195,9 @@ class ProductAdd(View):
 
         elif key:
             pro_obj = Products.objects.get(id=int(key))
-            pro_obj.delete()
+            # pro_obj.delete()
+            pro_obj.is_active = not pro_obj.is_active
+            pro_obj.save()
             return HttpResponseRedirect(reverse('pro-list'))
 
         else:

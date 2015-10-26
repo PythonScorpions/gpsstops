@@ -71,7 +71,9 @@
                         <td>{{ ser.price_info }}</td>
                         <td>
                             <a href="{% url 'service-edit' ser.id %}">Edit</a>
-                            <a href="{% url 'service-delete' ser.id %}">Delete</a>
+                            <a href="{% url 'service-delete' ser.id %}">
+                            {% if ser.is_active %}Inactive{% else %}Active{% endif %}
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

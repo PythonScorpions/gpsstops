@@ -26,11 +26,11 @@ from maps.models import *
 from api.serializers import *
 from accounts.models import *
 from accounts.utils import *
+from products.models import *
+from services.models import *
 
 from datetime import timedelta
 import string, random, datetime, sys
-from products.models import *
-from services.models import *
 
 
 for user in User.objects.all():
@@ -1352,7 +1352,12 @@ class ProCategoryDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'Category is not created by this super admin'})
-            cate_data.delete()
+
+            if request.data['is_active'] == '0':
+                cate_data.is_active = False
+            elif request.data['is_active'] == '1':
+                cate_data.is_active = True
+            cate_data.save()
             return Response({'code': 1, 'Data': 'Null',
                              'message': 'Product category deleted successfully'})
 
@@ -1439,7 +1444,12 @@ class ProSubCategoryDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'SubCategory is not created by this super admin'})
-            cate_data.delete()
+
+            if request.data['is_active'] == '0':
+                cate_data.is_active = False
+            elif request.data['is_active'] == '1':
+                cate_data.is_active = True
+            cate_data.save()
             return Response({'code': 1, 'Data': 'Null',
                              'message': 'Product sub category deleted successfully'})
 
@@ -1549,7 +1559,10 @@ class ProductUpdate(APIView):
 
                 return Response({'code': 1, 'Data': 'Null', 'message': 'Product updated successfully'})
             except:
-                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+                return Response({
+                    'code': 0, 'Data': 'Null',
+                    'message': 'All fields are mandatory. %s' % (sys.exc_info(),)
+                })
 
 
 class ProductDelete(APIView):
@@ -1568,7 +1581,12 @@ class ProductDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'Product is not created by this super admin'})
-            cate_data.delete()
+
+            if request.data['is_active'] == '0':
+                cate_data.is_active = False
+            elif request.data['is_active'] == '1':
+                cate_data.is_active = True
+            cate_data.save()
             return Response({'code': 1, 'Data': 'Null',
                              'message': 'Product deleted successfully'})
 
@@ -1663,7 +1681,12 @@ class SerCategoryDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'Category is not created by this super admin'})
-            cate_data.delete()
+
+            if request.data['is_active'] == '0':
+                cate_data.is_active = False
+            elif request.data['is_active'] == '1':
+                cate_data.is_active = True
+            cate_data.save()
             return Response({'code': 1, 'Data': 'Null',
                              'message': 'Service category deleted successfully'})
 
@@ -1751,7 +1774,12 @@ class SerSubCategoryDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'SubCategory is not created by this super admin'})
-            cate_data.delete()
+
+            if request.data['is_active'] == '0':
+                cate_data.is_active = False
+            elif request.data['is_active'] == '1':
+                cate_data.is_active = True
+            cate_data.save()
             return Response({'code': 1, 'Data': 'Null',
                              'message': 'Service sub category deleted successfully'})
 
@@ -1853,7 +1881,10 @@ class ServiceUpdate(APIView):
 
                 return Response({'code': 1, 'Data': 'Null', 'message': 'Service updated successfully'})
             except:
-                return Response({'code': 0, 'Data': 'Null', 'message': 'All fields are mandatory'})
+                return Response({
+                    'code': 0, 'Data': 'Null',
+                    'message': 'All fields are mandatory. %s' % (sys.exc_info(),)
+                })
 
 
 class ServiceDelete(APIView):
@@ -1872,7 +1903,12 @@ class ServiceDelete(APIView):
             except:
                 return Response({'code': 0, 'Data': 'Null',
                                  'message': 'Service is not created by this super admin'})
-            cate_data.delete()
+
+            if request.data['is_active'] == '0':
+                cate_data.is_active = False
+            elif request.data['is_active'] == '1':
+                cate_data.is_active = True
+            cate_data.save()
             return Response({'code': 1, 'Data': 'Null',
                              'message': 'Service deleted successfully'})
 

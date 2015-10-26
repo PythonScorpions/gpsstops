@@ -71,7 +71,9 @@
                         <td>{{ pro.price_info }}</td>
                         <td>
                             <a href="{% url 'product-edit' pro.id %}">Edit</a>
-                            <a href="{% url 'product-delete' pro.id %}">Delete</a>
+                            <a href="{% url 'product-delete' pro.id %}">
+                            {% if pro.is_active %}Inactive{% else %}Active{% endif %}
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

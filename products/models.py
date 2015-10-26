@@ -7,6 +7,7 @@ class ProductCategory(models.Model):
     super_admin = models.ForeignKey(Organization, related_name='super_admin_product')
     category_name = models.CharField(max_length=300)
     cat_description = models.CharField(max_length=500, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.category_name
@@ -17,6 +18,7 @@ class ProductSubCategory(models.Model):
     product_category = models.ForeignKey(ProductCategory, related_name='product-category')
     subcategory_name = models.CharField(max_length=300)
     sub_cat_description = models.CharField(max_length=500, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.subcategory_name
@@ -35,6 +37,7 @@ class Products(models.Model):
     price_info = models.CharField(max_length=200)
     features = models.TextField(max_length=1000, blank=True, null=True)
     specs = models.TextField(max_length=1000, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.product_name
