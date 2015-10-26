@@ -1539,7 +1539,7 @@ class ProductUpdate(APIView):
                 pro_data.product_desc1 = request.data['description1']
                 pro_data.start_price = float(request.data['start_price'])
                 pro_data.end_price = float(request.data['end_price'])
-                pro_data.price_info = request.data['category_name']
+                pro_data.price_info = request.data['price_info']
 
                 if 'description2' in request.data:
                     pro_data.product_desc2 = request.data['description2']
@@ -1868,7 +1868,7 @@ class ServiceUpdate(APIView):
                 pro_data.service_desc1 = request.data['description1']
                 pro_data.start_price = float(request.data['start_price'])
                 pro_data.end_price = float(request.data['end_price'])
-                pro_data.price_info = request.data['category_name']
+                pro_data.price_info = request.data['price_info']
 
                 if 'description2' in request.data:
                     pro_data.service_desc2 = request.data['description2']
