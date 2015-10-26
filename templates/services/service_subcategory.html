@@ -65,7 +65,9 @@
                         <td>{{ cat.service_category }}</td>
                         <td>
                             <a href="{% url 'ser-subcategory_edit' cat.id %}">Edit</a>
-                            <a href="{% url 'ser-subcategory_delete' cat.id %}">Delete</a>
+                            <a href="{% url 'ser-subcategory_delete' cat.id %}">
+                            {% if cat.is_active %}Inactive{% else %}Active{% endif %}
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}
