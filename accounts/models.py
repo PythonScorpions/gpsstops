@@ -336,3 +336,12 @@ class CustomerCompany(models.Model):
     customer_id = models.ForeignKey(Customer, related_name='customer_follower')
     company_id = models.ForeignKey(CompanyRegistration, related_name='company_followed')
 
+
+
+# class Notification(models.Modal):
+#     sender = models.ForeignKey(User)
+#     is_read = models.BooleanField(default=False)
+#     message = models.CharField(max_length=300)
+#     reference_model = models.
+
+#     sent_at = models.DateTimeField(auto_now_add=True, editable=False)

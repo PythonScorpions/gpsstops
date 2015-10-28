@@ -552,7 +552,7 @@ class ProCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductCategory
-        fields = ('id', 'category_name', 'cat_description', 'super_admin_id')
+        fields = ('id', 'category_name', 'cat_description', 'super_admin_id', 'is_active')
 
     def get_super_admin_id(self, obj):
         return obj.super_admin.super_admin.id
@@ -584,7 +584,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Products
         fields = ('id', 'product_category', 'product_sub_category', 'product_name', 'product_desc1', 'product_desc2',
                   'about_product', 'start_price', 'end_price', 'price_info', 'features', 'specs', 'super_admin_id',
-                  'super_admin_first_name', 'super_admin_last_name', 'product_image')
+                  'super_admin_first_name', 'super_admin_last_name', 'product_image', 'is_active')
 
     def get_super_admin_id(self, obj):
         return obj.product_category.super_admin.super_admin.id
@@ -607,7 +607,7 @@ class SerCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceCategory
-        fields = ('id', 'category_name', 'cat_description', 'super_admin_id')
+        fields = ('id', 'category_name', 'cat_description', 'super_admin_id', 'is_active')
 
     def get_super_admin_id(self, obj):
         return obj.super_admin.super_admin.id
@@ -631,7 +631,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         model = Services
         fields = ('id', 'service_category', 'service_sub_category', 'service_name', 'service_desc1', 'service_desc2',
                   'about_service', 'start_price', 'end_price', 'price_info', 'super_admin_id',
-                  'super_admin_first_name', 'super_admin_last_name')
+                  'super_admin_first_name', 'super_admin_last_name', 'is_active')
 
     def get_super_admin_id(self, obj):
         return obj.service_category.super_admin.super_admin.id
