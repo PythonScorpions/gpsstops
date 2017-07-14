@@ -107,8 +107,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bennyapp_django',
-        'USER': 'bennyapp',
-        'PASSWORD': '2~Pdo4c1',
+        'USER': 'root',
+        # 'PASSWORD': '2~Pdo4c1',
+        'PASSWORD': 'esk]QOv5hMdZ6KCSuk',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -181,8 +182,10 @@ REST_FRAMEWORK = {
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'bennyappservice@gmail.com'
-EMAIL_HOST_PASSWORD = 'benny@1234'
+EMAIL_HOST_USER = 'devlotusstudio@gmail.com'
+# EMAIL_HOST_USER = 'bennyappservice@gmail.com'
+EMAIL_HOST_PASSWORD = 'lotusdevel0pm3net5tudiois100%sexy';
+# EMAIL_HOST_PASSWORD = 'benny@1234'
 EMAIL_PORT = 587
 
 
@@ -244,7 +247,7 @@ CRON_CLASSES = [
     "appointments.cron.NotificationsCronJob",
 ]
 
-SERVER_URL = 'http://bennyapp.com'
+SERVER_URL = 'http://todos.lotusis.in:8000'
 
 # DJANGO_WYSIWYG_FLAVOR = "ckeditor"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'

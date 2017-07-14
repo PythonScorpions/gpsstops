@@ -65,7 +65,7 @@ $(document).ready(function() {
   .click(function(event) {
     $.ajax({
       type: "POST",
-      url: "http://127.0.0.1:8000/signup",
+      url: "/signup",
       data: $("form").serialize(),
       success: function(data, textStatus, jqXHR) {
         console.log(data, typeof(data));
@@ -97,7 +97,7 @@ $(document).ready(function() {
   .click(function(event) {
     $.ajax({
       type: "POST",
-      url: "http://127.0.0.1:8000/signup",
+      url: "/signup",
       data: $("form").serialize() + "&action=save",
       success: function(data, textStatus, jqXHR) {
         if (typeof(data) == 'object' && data.state == "success") {

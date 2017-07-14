@@ -67,3 +67,5 @@ migrations
 dump.rdb
 
 media
+
+env

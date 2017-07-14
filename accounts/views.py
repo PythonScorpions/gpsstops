@@ -92,8 +92,8 @@ class SignUpView(View):
                 "description": "This is the payment transaction description."
             }],
             "redirect_urls": {
-                "return_url": "http://127.0.0.1:8000/payment/paypal/?success=true",
-                "cancel_url": "http://127.0.0.1:8000/payment/paypal/?cancel=true"
+                "return_url": "http://todos.lotusis.in:8000/payment/paypal/?success=true",
+                "cancel_url": "http://todos.lotusis.in:8000/payment/paypal/?cancel=true"
             }
         })
 
@@ -171,16 +171,19 @@ class PaymentProcessing(View):
             status = request.GET.get('success')
             if status == 'true':
                 user = subscription.user
-                request.session['token'] = user.token
-                message = '%s/verification/%s/' % (settings.SERVER_URL, user.token)
+                request.session['token'] = user.user_profiles.token
+                message = '%s/verification/%s/' % (settings.SERVER_URL, user.user_profiles.token)
                 # print user.user.email
 
                 t = loader.get_template('verification.txt')
                 c = Context({'varification_link': message})
-                send_mail('Welcome to gpsstops.com', t.render(c),
-                    settings.EMAIL_HOST_USER, [str(user.user.email)],
-                    fail_silently=False)
-                print "yes sent"
+                try:
+                    send_mail('Welcome to gpsstops.com', t.render(c),
+                        settings.EMAIL_HOST_USER, [str(user.email)],
+                        fail_silently=False)
+                    print "yes sent"
+                except:
+                    pass
                 return redirect('email-sent')
             else:
                 subscription.user.delete()
